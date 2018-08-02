@@ -30,6 +30,18 @@ import (
 	"github.com/openshift/client-go/build/clientset/versioned/fake"
 )
 
+type BuildInterface interface {
+	Create() (*v1.BuildConfig, error)
+	Get() (*v1.BuildConfig, error)
+	Delete() error
+	Build(env []system.Env) (*v1.Build, error)
+	Watch(build *v1.Build, completedHandler func() error) error
+	GetBuild() (*v1.Build, error)
+	GetBuildStatus() (v1.BuildPhase, error)
+}
+
+
+
 type Scm struct {
 	Url    string
 	Ref    string

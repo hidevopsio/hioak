@@ -25,6 +25,8 @@ import (
 
 const NodeSelector  =  "openshift.io/node-selector"
 
+
+
 type Project struct {
 	Name         string
 	DisplayName  string

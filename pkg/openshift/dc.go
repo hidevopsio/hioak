@@ -30,6 +30,13 @@ import (
 	"strings"
 )
 
+type DeploymentConfigInterface interface {
+	Get() (*v1.DeploymentConfig, error)
+	Instantiate() (*v1.DeploymentConfig, error)
+	Delete() error
+}
+
+
 type DeploymentConfig struct {
 	Name      string
 	Namespace string
