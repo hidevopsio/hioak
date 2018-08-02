@@ -20,7 +20,7 @@ import (
 	projectv1 "github.com/openshift/client-go/project/clientset/versioned/typed/project/v1"
 	"github.com/openshift/client-go/project/clientset/versioned/fake"
 	"github.com/hidevopsio/hiboot/pkg/log"
-	"github.com/hidevopsio/hicicd/pkg/orch"
+	"github.com/hidevopsio/hioak/pkg"
 )
 
 const NodeSelector  =  "openshift.io/node-selector"

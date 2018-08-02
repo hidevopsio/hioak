@@ -26,7 +26,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 	"fmt"
 	"github.com/jinzhu/copier"
-	"github.com/hidevopsio/hicicd/pkg/orch"
+	"github.com/hidevopsio/hioak/pkg"
 	"strings"
 )
 

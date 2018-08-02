@@ -4,7 +4,7 @@ import (
 	"github.com/hidevopsio/hiboot/pkg/log"
 	"testing"
 	"github.com/stretchr/testify/assert"
-	"github.com/hidevopsio/hicicd/pkg/orch"
+	"github.com/hidevopsio/hioak/pkg"
 )
 
 func init()  {

@@ -23,9 +23,9 @@ import (
 	meshconfig "istio.io/api/mesh/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"github.com/hidevopsio/hiboot/pkg/log"
-	"github.com/hidevopsio/hicicd/pkg/orch"
+	"github.com/hidevopsio/hioak/pkg"
 	"io/ioutil"
-	"github.com/hidevopsio/hicicd/pkg/orch/istio/inject"
+	"github.com/hidevopsio/hioak/pkg/istio/inject"
 )
 
 

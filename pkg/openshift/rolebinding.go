@@ -4,10 +4,10 @@ import (
 	"github.com/openshift/client-go/authorization/clientset/versioned/typed/authorization/v1"
 	"github.com/openshift/client-go/authorization/clientset/versioned/fake"
 	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"github.com/hidevopsio/hicicd/pkg/orch"
-	"github.com/hidevopsio/hiboot/pkg/log"
+	"github.com/hidevopsio/hioak/pkg"
 	authorization_v1 "github.com/openshift/api/authorization/v1"
 	corev1 "k8s.io/api/core/v1"
+	"github.com/hidevopsio/hiboot/pkg/log"
 )
 
 type RoleBinding struct {

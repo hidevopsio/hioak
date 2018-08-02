@@ -25,7 +25,7 @@ import (
 	"github.com/hidevopsio/hiboot/pkg/system"
 	"github.com/jinzhu/copier"
 	"fmt"
-	"github.com/hidevopsio/hicicd/pkg/orch"
+	"github.com/hidevopsio/hioak/pkg"
 	imagev1 "github.com/openshift/api/image/v1"
 	"github.com/openshift/client-go/build/clientset/versioned/fake"
 )

@@ -4,7 +4,7 @@ import (
 	"github.com/hidevopsio/hiboot/pkg/log"
 	"istio.io/istio/pilot/pkg/model"
 	"istio.io/istio/pilot/pkg/config/kube/crd"
-	"github.com/hidevopsio/hicicd/pkg/orch"
+	"github.com/hidevopsio/hioak/pkg"
 	"os"
 	"github.com/hashicorp/go-multierror"
 	"fmt"

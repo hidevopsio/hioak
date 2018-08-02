@@ -22,7 +22,7 @@ import (
 	"github.com/openshift/client-go/image/clientset/versioned/fake"
 	"github.com/hidevopsio/hiboot/pkg/log"
 	"k8s.io/apimachinery/pkg/api/errors"
-	"github.com/hidevopsio/hicicd/pkg/orch"
+	"github.com/hidevopsio/hioak/pkg"
 )
 
 type ImageStreamInterface interface {

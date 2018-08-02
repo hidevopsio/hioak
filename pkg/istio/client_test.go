@@ -17,7 +17,7 @@ func TestGet(t *testing.T) {
 		Namespace: "demo-dev",
 	}
 	client.Crd = config
-	typ := RouterType
+	typ := "RouterType"
 	c, flag := client.Get(typ)
 	log.Info("get rule :", c)
 	resoureceVersion := c.ResourceVersion
@@ -32,7 +32,7 @@ func TestDelete(t *testing.T) {
 		Name:      "hello-world",
 		Namespace: "demo-dev",
 	}
-	typ := RouterType
+	typ := "RouterType"
 	client.Crd = config
 	err = client.Delete(typ)
 	assert.Equal(t, nil, err)
