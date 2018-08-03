@@ -269,7 +269,6 @@ func (b *BuildConfig) Build(env []system.Env) (*v1.Build, error) {
 		log.Error("b.BuildConfigs.Instantiate err", err)
 		return nil, err
 	}
-	log.Infof("Instantiated Build %v", build.Name)
 	return build, err
 }
 

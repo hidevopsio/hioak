@@ -19,11 +19,13 @@ func TestReplicationControllerWatching(t *testing.T) {
 	app         := "hello-world"
 
 	rc := NewReplicationController(app, namespace)
-	err := rc.Watch(func() error {
-		log.Debug("Completed!")
+	go func() {
+		err := rc.Watch(func() error {
+			log.Debug("Completed!")
+			return nil
+		})
+		assert.Equal(t, nil, err)
 
-		return nil
-	})
-	assert.Equal(t, nil, err)
+	}()
 	assert.Equal(t, app, rc.Name)
 }

@@ -59,7 +59,6 @@ func NewRoleBindingClientSet() (v1.AuthorizationV1Interface, error) {
 	return clientSet, err
 }
 
-
 func NewRoleBinding(name, namespace string) (*RoleBinding, error) {
 	log.Debug("NewPolicy()")
 	client, err := NewRoleBindingClientSet()

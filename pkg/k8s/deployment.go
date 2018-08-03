@@ -17,7 +17,6 @@ package k8s
 
 import (
 	"k8s.io/api/apps/v1beta1"
-	"k8s.io/apimachinery/pkg/api/errors"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -111,9 +110,9 @@ func (d *Deployment) Deploy() (string, error) {
 	switch {
 	case err == nil:
 		log.Info("Deployment updated")
-	case !errors.IsNotFound(err):
+	case err != nil:
 		_, err = deployments.Create(deploySpec)
-		retVal = fmt.Sprintf("Created deployment %q.\n", result.GetObjectMeta().GetName())
+		retVal = fmt.Sprintf("Created deployment %q.\n", result)
 		log.Info(retVal)
 	default:
 		return retVal, fmt.Errorf("could not update deployment controller: %s", err)

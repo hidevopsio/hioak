@@ -20,7 +20,6 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	svcv1 "k8s.io/client-go/kubernetes/typed/core/v1"
-
 	"fmt"
 	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/jinzhu/copier"
@@ -87,4 +86,8 @@ func (s *Service) Create(ports interface{}) error {
 
 func (s *Service) Delete() error {
 	return s.Interface.Delete(s.Name, &metav1.DeleteOptions{})
+}
+
+func (s *Service) Get() (*corev1.Service, error) {
+	return s.Interface.Get(s.Name, metav1.GetOptions{})
 }

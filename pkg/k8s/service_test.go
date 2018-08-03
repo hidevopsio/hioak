@@ -33,19 +33,13 @@ func TestServiceCreation(t *testing.T) {
 	service := NewService(app, namespace)
 	err := service.Create(p)
 	assert.Equal(t, nil, err)
-}
 
+	svc, err := service.Get()
+	assert.Equal(t, nil, err)
+	assert.Equal(t, app, svc.Name)
 
-func TestServiceDeletion(t *testing.T) {
-	log.Debug("TestServiceDeletion()")
-
-	projectName := "demo"
-	profile     := "dev"
-	namespace   := projectName + "-" + profile
-	app         := "hello-world"
-
-	service := NewService(app, namespace)
-	err := service.Delete()
+	err = service.Delete()
 	assert.Equal(t, nil, err)
 }
+
 

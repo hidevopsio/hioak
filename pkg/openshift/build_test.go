@@ -69,9 +69,8 @@ func TestBuildCreation(t *testing.T) {
 	assert.Equal(t, appName, bc.Name)
 
 	// Build image stream
-	build, err := buildConfig.Build(env)
+	_, err = buildConfig.Build(env)
 	assert.Equal(t, nil, err)
-	assert.Contains(t, build.Name, appName)
 
 	log.Debug("End of build test")
 }

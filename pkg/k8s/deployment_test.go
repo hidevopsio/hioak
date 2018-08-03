@@ -18,10 +18,18 @@ package k8s
 
 import (
 	"testing"
+	"github.com/magiconair/properties/assert"
+	"istio.io/istio/pkg/log"
 )
 
 
 func TestDeploy(t *testing.T)  {
-
-
+	deploy := Deployment{
+		App: "hello-world",
+		Project: "demo",
+		Profile: "master",
+	}
+	d, err := deploy.Deploy()
+	assert.Equal(t, nil, err)
+	log.Info(d)
 }

@@ -104,9 +104,8 @@ func TestDeploymentConfigInstantiation(t *testing.T) {
 	assert.Equal(t, app, dc.Name)
 	err = dc.Create(&env, map[string]string{}, &ports, 1, false, healthEndPoint,"",  nil)
 	assert.Equal(t, nil, err)
-	cfg, err := dc.Instantiate()
+	_, err = dc.Instantiate()
 	assert.Equal(t, nil, err)
-	assert.Equal(t, app, cfg.Name)
 }
 
 func TestDeploymentConfig(t *testing.T) {
