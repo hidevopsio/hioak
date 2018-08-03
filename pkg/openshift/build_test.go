@@ -20,7 +20,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/hidevopsio/hiboot/pkg/log"
 	"os"
-	"github.com/hidevopsio/hiboot/pkg/system"
+	"github.com/openshift/api/build/v1"
 )
 
 func init() {
@@ -41,7 +41,7 @@ func TestBuildCreation(t *testing.T) {
 	version := "v1"
 	s2iImageStream := "s2i-java:latest"
 	repoUrl := os.Getenv("MAVEN_MIRROR_URL")
-	env := []system.Env{
+/*	env := []system.Env{
 		{
 			Name: "BUILD_SCRIPT",
 			Value: "mvn clean package -Dmaven.test.skip=true -Djava.net.preferIPv4Stack=true",
@@ -50,18 +50,25 @@ func TestBuildCreation(t *testing.T) {
 			Name: "MAVEN_MIRROR_URL",
 			Value: os.Getenv("MAVEN_MIRROR_URL"),
 		},
-	}
+	}*/
 	log.Debug(repoUrl)
 	log.Debug(scmUrl)
 
 	log.Debugf("workDir: %v", os.Getenv("PWD"))
+	var err error
+	var buildConfig *BuildConfig
 
-	buildConfig, err := NewBuildConfig(namespace, appName, scmUrl, scmRef, secret, version, s2iImageStream, true)
-	assert.Equal(t, nil, err)
+	t.Run("should create buildConfig instance", func(t *testing.T) {
+		buildConfig, err = NewBuildConfig(namespace, appName, scmUrl, scmRef, secret, version, s2iImageStream, true)
+		assert.Equal(t, nil, err)
+	})
 
-	bc, err := buildConfig.Create()
-	assert.Equal(t, nil, err)
-	assert.Equal(t, appName, bc.Name)
+	var bc *v1.BuildConfig
+	t.Run("should create buildConfig", func(t *testing.T) {
+		bc, err = buildConfig.Create()
+		assert.Equal(t, nil, err)
+		assert.Equal(t, appName, bc.Name)
+	})
 
 	// Get build config
 	bc, err = buildConfig.Get()
@@ -69,10 +76,9 @@ func TestBuildCreation(t *testing.T) {
 	assert.Equal(t, appName, bc.Name)
 
 	// Build image stream
-	_, err = buildConfig.Build(env)
+	//_, err = buildConfig.Build(env)
 	assert.Equal(t, nil, err)
 
-	log.Debug("End of build test")
 }
 
 
