@@ -23,3 +23,12 @@
 [[constraint]]
   name = "github.com/kevholditch/gokong"
   branch = "master"
+
+[[constraint]]
+  name = "k8s.io/kubernetes"
+  version = "v1.10.4"
+
+[[constraint]]
+  name = "k8s.io/api"
+  version = "kubernetes-1.10.4"
+
