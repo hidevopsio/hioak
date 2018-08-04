@@ -20,3 +20,19 @@
 #  name = "github.com/x/y"
 #  version = "2.4.0"
 
+[[constraint]]
+  name = "github.com/kevholditch/gokong"
+  branch = "master"
+
+[[constraint]]
+  name = "k8s.io/kubernetes"
+  version = "v1.10.4"
+
+[[constraint]]
+  name = "k8s.io/api"
+  version = "kubernetes-1.10.4"
+
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/docker/distribution"

@@ -54,9 +54,8 @@ const (
 	injectConfigMapKey = "config"
 )
 
-
 func (i *Injector) getMeshConfigFromConfigMap(kubeconfig string) (*meshconfig.MeshConfig, error) {
-	_, client, err := kube.CreateInterface(kubeconfig)
+	client, err := kube.CreateInterface(kubeconfig)
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +76,7 @@ func (i *Injector) getMeshConfigFromConfigMap(kubeconfig string) (*meshconfig.Me
 }
 
 func (i *Injector) getInjectConfigFromConfigMap(kubeconfig string) (string, error) {
-	_, client, err := kube.CreateInterface(kubeconfig)
+	client, err := kube.CreateInterface(kubeconfig)
 	if err != nil {
 		return "", err
 	}

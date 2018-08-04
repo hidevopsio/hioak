@@ -21,8 +21,8 @@ import (
 	"testing"
 	"github.com/stretchr/testify/assert"
 	"github.com/hidevopsio/hiboot/pkg/log"
-	"istio.io/istio/pilot/pkg/kube/inject"
 	"istio.io/istio/pilot/pkg/model"
+	"github.com/hidevopsio/hioak/pkg/istio/inject"
 	meshconfig "istio.io/api/mesh/v1alpha1"
 )
 
