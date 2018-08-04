@@ -851,3 +851,9 @@
     "reference"
   ]
   revision = "83389a148052d74ac602f5f1d62f86ff2f3c4aa5"
+
+[[projects]]
+  name = "github.com/opencontainers/go-digest"
+  packages = ["."]
+  revision = "279bed98673dd5bef374d3b6e4b09e2af76183bf"
+  version = "v1.0.0-rc1"
