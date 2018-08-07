@@ -2,11 +2,11 @@ package kong
 
 import (
 	"testing"
-	"github.com/magiconair/properties/assert"
 	"github.com/hidevopsio/hiboot/pkg/log"
 	"strings"
 	"os"
 	"github.com/kevholditch/gokong"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestApisGet(t *testing.T) {
