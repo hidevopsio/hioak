@@ -136,8 +136,8 @@ func (dc *DeploymentConfig) Create(env interface{}, labels map[string]string, po
 									},
 								},
 								InitialDelaySeconds: 60,
-								TimeoutSeconds:      1,
-								PeriodSeconds:       5,
+								TimeoutSeconds:      10,
+								PeriodSeconds:       60,
 							},
 							LivenessProbe: &corev1.Probe{
 								Handler: corev1.Handler{
@@ -152,8 +152,8 @@ func (dc *DeploymentConfig) Create(env interface{}, labels map[string]string, po
 									},
 								},
 								InitialDelaySeconds: 60,
-								TimeoutSeconds:      1,
-								PeriodSeconds:       5,
+								TimeoutSeconds:      10,
+								PeriodSeconds:       60,
 							},
 						},
 					},

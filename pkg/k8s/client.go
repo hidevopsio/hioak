@@ -28,7 +28,7 @@ func NewClientSet() kubernetes.Interface {
 	cli := orch.GetClientInstance()
 
 	// get the fake ClientSet for testing
-	if cli.IsTestRunning() {
+	if !cli.IsTestRunning() {
 		return fake.NewSimpleClientset()
 	}
 
