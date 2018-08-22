@@ -33,6 +33,6 @@
   version = "kubernetes-1.10.4"
 
 
-[[constraint]]
-  branch = "master"
-  name = "github.com/docker/distribution"
+#[[constraint]]
+#  branch = "master"
+#  name = "github.com/docker/distribution"
