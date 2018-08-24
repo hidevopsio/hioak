@@ -26,10 +26,11 @@ type Image struct {
 }
 
 func (i *Image) PullImage() error {
+	log.Info("image pull :")
 	ctx := context.Background()
 	cli, err := client.NewEnvClient()
 	if err != nil {
-		log.Info("client new envclient error:", err)
+		log.Error("client new envclient error:", err)
 		return err
 	}
 
@@ -55,6 +56,7 @@ func (i *Image) PullImage() error {
 }
 
 func (i *Image) TagImage(imageID string) error {
+	log.Info("imgaes tag")
 	ctx := context.Background()
 	cli, err := client.NewEnvClient()
 	if err != nil {
@@ -66,6 +68,7 @@ func (i *Image) TagImage(imageID string) error {
 }
 
 func (i *Image) PushImage() error {
+	log.Info("image push ")
 	ctx := context.Background()
 	cli, err := client.NewEnvClient()
 	if err != nil {
@@ -95,6 +98,7 @@ func (i *Image) PushImage() error {
 }
 
 func (i *Image) GetImage() (types.ImageSummary, error) {
+	log.Info("get image ")
 	ctx := context.Background()
 	cli, err := client.NewEnvClient()
 	s := types.ImageSummary{}
@@ -113,7 +117,6 @@ func (i *Image) GetImage() (types.ImageSummary, error) {
 			}
 		}
 	}
-
 	return s, err
 }
 

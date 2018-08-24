@@ -619,7 +619,7 @@
     "rbac/v1alpha1"
   ]
   revision = "123b0a79a4dba5bd653dcac09cf731b8002e5341"
-  version = "1.0.0"
+  version = "release-1.0"
 
 [[projects]]
   name = "istio.io/istio"
