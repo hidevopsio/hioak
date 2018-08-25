@@ -34,4 +34,4 @@
 
 [[constraint]]
   name = "github.com/hidevopsio/hiboot"
-  version = "v0.2.0"
+  version = "v0.4.0"

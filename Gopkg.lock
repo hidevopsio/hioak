@@ -346,20 +346,6 @@
   revision = "ef8a98b0bbce4a65b5aa4c368430a80ddc533168"
 
 [[projects]]
-  digest = "1:d80146c9f305604157b6b71ba0549cf3c5c97a4a7bb464943cef4727a6509e75"
-  name = "github.com/hidevopsio/hiboot"
-  packages = [
-    "pkg/log",
-    "pkg/system",
-    "pkg/utils",
-    "pkg/utils/gotest",
-    "pkg/utils/reflector",
-  ]
-  pruneopts = ""
-  revision = "6111d6666ea4c52d586648fd105370cb71efe1c1"
-  version = "v0.2.0"
-
-[[projects]]
   digest = "1:f4b09f5bce3c04016fd09a4539351c8dbfe9f9904b05440449165afa78290ca6"
   name = "github.com/howeyc/fsnotify"
   packages = ["."]
