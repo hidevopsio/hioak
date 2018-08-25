@@ -32,7 +32,6 @@
   name = "k8s.io/api"
   version = "kubernetes-1.10.4"
 
-
 [[constraint]]
-  branch = "master"
-  name = "github.com/docker/distribution"
+  name = "github.com/hidevopsio/hiboot"
+  version = "v0.2.0"
