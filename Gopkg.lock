@@ -768,6 +768,7 @@
   version = "v2.2.1"
 
 [[projects]]
+  branch = "release-1.0"
   digest = "1:441eeedf89569e6bd5fa83c2968aad929dd1c280ca9a4687480f3d9aeb346d40"
   name = "istio.io/api"
   packages = [
@@ -780,7 +781,6 @@
   ]
   pruneopts = ""
   revision = "123b0a79a4dba5bd653dcac09cf731b8002e5341"
-  version = "1.0.0"
 
 [[projects]]
   digest = "1:26bdf8c4130aadc790d916ba4391c6485c95a1a219df2c180cb7ea8983bc61dd"
