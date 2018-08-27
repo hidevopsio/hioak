@@ -35,3 +35,11 @@
 [[constraint]]
   name = "github.com/hidevopsio/hiboot"
   version = "v0.4.0"
+
+[[constraint]]
+  name = "istio.io/api"
+  version = "release-1.0"
+
+[[constraint]]
+  name = "istio.io/istio"
+  version = "1.0.0"
