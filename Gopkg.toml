@@ -36,6 +36,14 @@
   name = "k8s.io/client-go"
   version = "v6.0.0"
 
+[[constraint]]
+  name = "istio.io/api"
+  version = "1.0.0"
+
+[[constraint]]
+   name = "istio.io/istio"
+  version = "1.0.0"
+
 
 #[[constraint]]
 #  branch = "master"
