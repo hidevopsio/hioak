@@ -26,8 +26,11 @@ import (
 func TestDeploy(t *testing.T)  {
 	deploy := Deployment{
 		App: "hello-world",
-		Project: "demo",
+		Project: "demo-dev",
 		Profile: "master",
+		DockerRegistry: "docker-registry-default.app.vpclub.io",
+		ImageTag: "v1",
+
 	}
 	d, err := deploy.Deploy()
 	assert.Equal(t, nil, err)
