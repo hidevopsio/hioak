@@ -11,6 +11,7 @@ import (
 func TestPullImages(t *testing.T) {
 	cli := orch.GetClientInstance()
 	token := cli.Config().BearerToken
+	token = ""
 	image := &Image{
 		Username: "unused",
 		Password: token,

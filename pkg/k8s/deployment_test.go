@@ -28,11 +28,11 @@ func TestDeploy(t *testing.T)  {
 		App: "hello-world",
 		Project: "demo-dev",
 		Profile: "master",
-		DockerRegistry: "docker-registry-default.app.vpclub.io",
+		DockerRegistry: "docker.vpclub.cn",
 		ImageTag: "v1",
 
 	}
-	d, err := deploy.Deploy()
+	d, err := deploy.ExtensionsV1beta1Deploy()
 	assert.Equal(t, nil, err)
 	log.Info(d)
 }
