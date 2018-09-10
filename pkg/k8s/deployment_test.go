@@ -19,7 +19,7 @@ package k8s
 import (
 	"testing"
 	"github.com/magiconair/properties/assert"
-	"istio.io/istio/pkg/log"
+	"github.com/hidevopsio/hiboot/pkg/log"
 )
 
 
