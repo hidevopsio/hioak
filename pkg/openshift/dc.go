@@ -78,7 +78,7 @@ func NewDeploymentConfig(name, namespace, version string) (*DeploymentConfig, er
 	}, nil
 }
 
-func (dc *DeploymentConfig) Create(env interface{}, labels map[string]string, ports interface{}, replicas int32, force bool, healthEndPoint, nodeSelector string, injectSidecar func(in interface{}) (interface{}, error)) error {
+func (dc *DeploymentConfig) Create(env interface{}, labels map[string]string, ports interface{}, replicas int32, force bool, healthEndPoint, nodeSelector string) error {
 	log.Debug("DeploymentConfig.Create()", force)
 	// env
 	e := make([]corev1.EnvVar, 0)
@@ -181,17 +181,6 @@ func (dc *DeploymentConfig) Create(env interface{}, labels map[string]string, po
 				},
 			},
 		},
-	}
-
-	// inject side car here
-	var err error
-	var out interface{}
-	if injectSidecar != nil {
-		out, err = injectSidecar(cfg)
-		if err != nil {
-			return err
-		}
-		cfg = out.(*v1.DeploymentConfig)
 	}
 
 	result, err := dc.Interface.Get(dc.FullName, metav1.GetOptions{})
