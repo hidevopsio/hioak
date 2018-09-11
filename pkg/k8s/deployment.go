@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 package k8s
 
 import (
@@ -20,37 +19,43 @@ import (
 	extensionsV1beta1 "k8s.io/api/extensions/v1beta1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
 	"fmt"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	"github.com/hidevopsio/hiboot/pkg/log"
 	"encoding/json"
+	"strings"
+	"github.com/hidevopsio/hiboot/pkg/utils/copier"
 )
 
 type Deployment struct {
-	App string
-	Project string
-	Profile string
-	ImageTag string
+	App            string
+	Project        string
+	Profile        string
+	ImageTag       string
 	DockerRegistry string
 }
 
-
-
 func int32Ptr(i int32) *int32 { return &i }
-
 
 // @Title Deploy
 // @Description deploy application
 // @Param pipeline
 // @Return error
-func (d *Deployment) Deploy() (string, error) {
+func (d *Deployment) Deploy(env interface{}, labels map[string]string, ports interface{}, replicas int32, force bool, healthEndPoint, nodeSelector string) (string, error) {
 
 	log.Debug("Deployment.Deploy()")
-
+	e := make([]corev1.EnvVar, 0)
+	copier.Copy(&e, env)
+	selector := map[string]string{}
+	if nodeSelector != "" {
+		selector[strings.Split(nodeSelector, "=")[0]] = strings.Split(nodeSelector, "=")[1]
+	}
+	p := make([]corev1.ContainerPort, 0)
+	copier.Copy(&p, ports)
 	deploySpec := &v1beta1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: d.App,
+			Name:      d.App,
+			Namespace: d.Project,
 		},
 		Spec: v1beta1.DeploymentSpec{
 			Replicas: int32Ptr(1),
@@ -70,30 +75,17 @@ func (d *Deployment) Deploy() (string, error) {
 			RevisionHistoryLimit: int32Ptr(10),
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
-					Name: d.App,
-					Labels: map[string]string{
-						"app": d.App,
-					},
+					Name:   d.App,
+					Labels: labels,
 				},
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{
 						{
-							Name:  d.App,
-							Image: d.DockerRegistry + "/" + d.Project + "/" + d.App + ":" + d.ImageTag,
-							Ports: []corev1.ContainerPort{
-								{
-									Name:          "http",
-									Protocol:      corev1.ProtocolTCP,
-									ContainerPort: 8080,
-								},
-							},
-							Env: []corev1.EnvVar{
-								{
-									Name:  "APP_PROFILES_ACTIVE",
-									Value: d.Profile,
-								},
-							},
-							ImagePullPolicy: corev1.PullIfNotPresent,
+							Name:            d.App,
+							Image:           d.DockerRegistry + "/" + d.Project + "/" + d.App + ":" + d.ImageTag,
+							Ports:           p,
+							Env:             e,
+							ImagePullPolicy: corev1.PullAlways,
 						},
 					},
 				},
@@ -124,15 +116,21 @@ func (d *Deployment) Deploy() (string, error) {
 	return retVal, err
 }
 
-
-
-func (d *Deployment) ExtensionsV1beta1Deploy() (string, error) {
+func (d *Deployment) ExtensionsV1beta1Deploy(env interface{}, labels map[string]string, ports interface{}, replicas int32, force bool, healthEndPoint, nodeSelector string) (string, error) {
 
 	log.Debug("Deployment.Deploy()")
-
+	e := make([]corev1.EnvVar, 0)
+	copier.Copy(&e, env)
+	selector := map[string]string{}
+	if nodeSelector != "" {
+		selector[strings.Split(nodeSelector, "=")[0]] = strings.Split(nodeSelector, "=")[1]
+	}
+	p := make([]corev1.ContainerPort, 0)
+	copier.Copy(&p, ports)
 	deploySpec := &extensionsV1beta1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: d.App,
+			Name:      d.App,
+			Namespace: d.Project,
 		},
 		Spec: extensionsV1beta1.DeploymentSpec{
 			Replicas: int32Ptr(1),
@@ -152,30 +150,17 @@ func (d *Deployment) ExtensionsV1beta1Deploy() (string, error) {
 			RevisionHistoryLimit: int32Ptr(10),
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
-					Name: d.App,
-					Labels: map[string]string{
-						"app": d.App,
-					},
+					Name:   d.App,
+					Labels: labels,
 				},
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{
 						{
-							Name:  d.App,
-							Image: d.DockerRegistry + "/" + d.Project + "/" + d.App + ":" + d.ImageTag,
-							Ports: []corev1.ContainerPort{
-								{
-									Name:          "http",
-									Protocol:      corev1.ProtocolTCP,
-									ContainerPort: 8080,
-								},
-							},
-							Env: []corev1.EnvVar{
-								{
-									Name:  "APP_PROFILES_ACTIVE",
-									Value: d.Profile,
-								},
-							},
-							ImagePullPolicy: corev1.PullIfNotPresent,
+							Name:            d.App,
+							Image:           d.DockerRegistry + "/" + d.Project + "/" + d.App + ":" + d.ImageTag,
+							Ports:           p,
+							Env:             e,
+							ImagePullPolicy: corev1.PullAlways,
 						},
 					},
 				},

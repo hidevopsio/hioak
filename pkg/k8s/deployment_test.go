@@ -32,7 +32,7 @@ func TestDeploy(t *testing.T)  {
 		ImageTag: "v1",
 
 	}
-	d, err := deploy.ExtensionsV1beta1Deploy()
+	d, err := deploy.ExtensionsV1beta1Deploy(nil, nil, nil, 0, false, "", "")
 	assert.Equal(t, nil, err)
 	log.Info(d)
 }
