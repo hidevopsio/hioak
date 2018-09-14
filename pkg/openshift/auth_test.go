@@ -9,7 +9,8 @@ import (
 func TestOAuthAccessToken_Get(t *testing.T) {
 	token, err := NewOAuthAccessToken()
 	assert.Equal(t, nil, err)
-	to, err := token.Get("")
+	to, err := token.Create()
+	to, err = token.Get(to.Name)
 	assert.Equal(t, nil, err)
 	log.Info(to)
 }

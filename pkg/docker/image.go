@@ -9,7 +9,7 @@ import (
 	"golang.org/x/net/context"
 	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/docker/docker/client"
-)
+	)
 
 type Image struct {
 	FromImage     string            `json:"from_image"`

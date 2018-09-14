@@ -34,6 +34,15 @@ func NewOAuthAccessToken() (*OAuthAccessToken, error) {
 	}, err
 }
 
+func (o *OAuthAccessToken) Create() (*v1.OAuthAccessToken, error) {
+	log.Debug("openshift get OAuthAccessToken")
+	token := &v1.OAuthAccessToken{
+
+	}
+	token, err := o.Interface.Create(token)
+	return token, err
+}
+
 func (o *OAuthAccessToken) Get(name string) (*v1.OAuthAccessToken, error) {
 	log.Debug("openshift get OAuthAccessToken")
 	opt := meta_v1.GetOptions{}
