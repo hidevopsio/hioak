@@ -214,6 +214,7 @@
     "pkg/log",
     "pkg/system",
     "pkg/utils",
+    "pkg/utils/copier",
     "pkg/utils/gotest",
     "pkg/utils/reflector",
   ]
@@ -518,6 +519,14 @@
   version = "v1.2.2"
 
 [[projects]]
+  branch = "f-api-v3"
+  digest = "1:06d7106f15a3e5417597dc3c0897556c7b75219f7729ecfeeee0d443c2164669"
+  name = "github.com/xanzy/go-gitlab"
+  packages = ["."]
+  pruneopts = ""
+  revision = "896163fa8f7a8178ada89ef13f7a72e728f0c010"
+
+[[projects]]
   branch = "master"
   digest = "1:6acb37854006d86279ba349ff9ae07103a0956569d0eb8dca9fe38732222e3a5"
   name = "golang.org/x/crypto"
@@ -786,6 +795,7 @@
     "github.com/docker/docker/client",
     "github.com/hidevopsio/hiboot/pkg/log",
     "github.com/hidevopsio/hiboot/pkg/system",
+    "github.com/hidevopsio/hiboot/pkg/utils/copier",
     "github.com/hidevopsio/hiboot/pkg/utils/gotest",
     "github.com/jinzhu/copier",
     "github.com/kataras/golog",
@@ -814,6 +824,7 @@
     "github.com/openshift/client-go/route/clientset/versioned/typed/route/v1",
     "github.com/prometheus/common/log",
     "github.com/stretchr/testify/assert",
+    "github.com/xanzy/go-gitlab",
     "golang.org/x/net/context",
     "k8s.io/api/apps/v1beta1",
     "k8s.io/api/core/v1",
