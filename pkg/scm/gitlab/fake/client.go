@@ -1,23 +1,13 @@
 package fake
 
 import (
-	"net/http"
-	"net/url"
-	"strings"
+	"github.com/stretchr/testify/mock"
+	"github.com/xanzy/go-gitlab"
 )
 
 type Client struct {
-	client *http.Client
+	mock.Mock
 
-	baseURL *url.URL
-
-	tokenType tokenType
-
-	token string
-
-	UserAgent string
-
-	session *FakeSession
 }
 type tokenType int
 const (
@@ -25,27 +15,19 @@ const (
 	oAuthToken
 )
 
-func NewClient(httpClient *http.Client, token string) *Client  {
-	return newClient(httpClient, privateToken, token)
-}
+func NewClient(token string) *Client {
+	return &Client{
 
-func newClient(httpClient *http.Client, tokenType tokenType, token string) *Client {
-	if httpClient == nil {
-		httpClient = http.DefaultClient
 	}
-
-	c := &Client{client: httpClient, tokenType: tokenType, token: token, UserAgent: ""}
-	c.session = &FakeSession{client: c}
-	return c
 }
 
 func (c *Client) SetBaseURL(urlStr string) error {
 	// Make sure the given URL end with a slash
-	if !strings.HasSuffix(urlStr, "/") {
-		urlStr += "/"
-	}
+	args := c.Called(nil)
+	return args.Error(0)
+}
 
-	var err error
-	c.baseURL, err = url.Parse(urlStr)
-	return err
+func (c *Client) GetSession(opt *gitlab.GetSessionOptions, options ...gitlab.OptionFunc) (*gitlab.Session, *gitlab.Response, error)   {
+	args := c.Called(nil, nil)
+	return args[0].(*gitlab.Session), args[1].(*gitlab.Response), args.Error(2)
 }
