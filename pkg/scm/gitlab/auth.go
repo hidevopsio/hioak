@@ -18,17 +18,23 @@ import (
 	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/jinzhu/copier"
 	"github.com/xanzy/go-gitlab"
-	"net/http"
 	"github.com/hidevopsio/hioak/pkg/scm"
 )
 
 type Session struct {
 	scm.Session
+	client ClientInterface
 }
 
 const (
 	ApiVersion = "/api/v3"
 )
+
+func NewSession(c ClientInterface) scm.SessionInterface {
+	return &Session{
+		client: c,
+	}
+}
 
 func (s *Session) GetSession(baseUrl, username, password string) error {
 	log.Debug("Session.GetSession()")
@@ -37,10 +43,10 @@ func (s *Session) GetSession(baseUrl, username, password string) error {
 		Login:    &username,
 		Password: &password,
 	}
-	c := gitlab.NewClient(&http.Client{}, "")
-	c.SetBaseURL(baseUrl + ApiVersion)
+	s.client.SetBaseURL(baseUrl + ApiVersion)
 	log.Debug("before c.Session.GetSession(so)")
-	session, _, err := c.Session.GetSession(so)
+
+	session, _, err := s.client.GetSession(so)
 	log.Debug("after c.Session.GetSession(so)", err)
 
 	copier.Copy(s, session)

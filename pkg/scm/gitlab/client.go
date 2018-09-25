@@ -3,24 +3,16 @@ package gitlab
 import (
 	"github.com/xanzy/go-gitlab"
 	"net/http"
-	"github.com/hidevopsio/hiboot/pkg/utils/gotest"
-	"github.com/hidevopsio/hioak/pkg/scm/gitlab/fake"
 )
 
 type ClientInterface interface {
 	SetBaseURL(baseUrl string) error
+	GetSession(opt *gitlab.GetSessionOptions, options ...gitlab.OptionFunc) (*gitlab.Session, *gitlab.Response, error)
 }
 
 
-func NewClient(client *http.Client, token string) ClientInterface {
-
-
-	// get the fake ClientSet for testing
-	if gotest.IsRunning() {
-		return fake.NewClient(client, token)
-	}
-
+func NewClient(token string) *gitlab.Client {
 	// get the real ClientSet
-	clientSet := gitlab.NewClient(client, token)
+	clientSet := gitlab.NewClient(&http.Client{}, token)
 	return clientSet
 }

@@ -12,31 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package gitlab_test
+package fake_test
 
 import (
 	"testing"
 	"github.com/hidevopsio/hiboot/pkg/log"
-	gg "github.com/xanzy/go-gitlab"
+	"github.com/stretchr/testify/assert"
+	"github.com/xanzy/go-gitlab"
 	"github.com/hidevopsio/hioak/pkg/scm/gitlab/fake"
-	"github.com/hidevopsio/hioak/pkg/scm/gitlab"
-	"github.com/magiconair/properties/assert"
 )
 
 func init()  {
 	log.SetLevel(log.DebugLevel)
 }
 
-func TestSession(t *testing.T) {
+func TestFakeClient(t *testing.T) {
 	ss := fake.NewClient("")
-	gs := &gg.Session{
-		Username: "chulei",
-	}
-	gr := new(gg.Response)
-	ss.On("SetBaseURL", nil).Return(nil)
+	gs := new(gitlab.Session)
+	gr := new(gitlab.Response)
 	ss.On("GetSession", nil, nil).Return(gs, gr, nil)
-
-	s := gitlab.NewSession(ss)
-	e := s.GetSession("", "", "")
+	s, r, e := ss.GetSession(nil, nil)
 	assert.Equal(t, nil, e)
+	assert.Equal(t, s, gs)
+	assert.Equal(t, r, gr)
 }
