@@ -20,13 +20,6 @@ func TestReplicationControllerWatching(t *testing.T) {
 	app         := "hello-world"
 	clientSet := fake.NewSimpleClientset()
 	rc := NewReplicationController(clientSet, app, namespace)
-	go func() {
-		err := rc.Watch(func() error {
-			log.Debug("Completed!")
-			return nil
-		})
-		assert.Equal(t, nil, err)
-
-	}()
-	assert.Equal(t, app, rc.Name)
+	_, err := rc.Create(1)
+	assert.Equal(t, nil, err)
 }
