@@ -8,10 +8,10 @@ import (
 	"github.com/docker/docker/api/types"
 	"golang.org/x/net/context"
 	"github.com/hidevopsio/hiboot/pkg/log"
-	"github.com/docker/docker/client"
-	)
+		)
 
 type Image struct {
+	client ClientInterface
 	FromImage     string            `json:"from_image"`
 	Tag           string            `json:"tag"`
 	Username      string            `json:"username"`
@@ -25,15 +25,13 @@ type Image struct {
 	ServerAddress string            `json:"server_address"`
 }
 
+type ImageInterface interface {
+	PullImage() error
+}
+
 func (i *Image) PullImage() error {
 	log.Info("image pull :")
 	ctx := context.Background()
-	cli, err := client.NewEnvClient()
-	if err != nil {
-		log.Error("client new envclient error:", err)
-		return err
-	}
-
 	authConfig := types.AuthConfig{
 		Username: i.Username,
 		Password: i.Password,
@@ -44,12 +42,11 @@ func (i *Image) PullImage() error {
 	}
 	authStr := base64.URLEncoding.EncodeToString(encodedJSON)
 	ref := GetTag(i.Tag, i.FromImage)
-	out, err := cli.ImagePull(ctx, ref, types.ImagePullOptions{RegistryAuth: authStr})
+	out, err := i.client.ImagePull(ctx, ref, types.ImagePullOptions{RegistryAuth: authStr})
 	if err != nil {
 		log.Info("ImagePull error:", err)
 		return err
 	}
-
 	defer out.Close()
 	io.Copy(os.Stdout, out)
 	return nil
@@ -58,24 +55,14 @@ func (i *Image) PullImage() error {
 func (i *Image) TagImage(imageID string) error {
 	log.Info("imgaes tag")
 	ctx := context.Background()
-	cli, err := client.NewEnvClient()
-	if err != nil {
-		return err
-	}
 	ref := GetTag(i.Tag, i.FromImage)
-	cli.ImageTag(ctx, imageID, ref)
+	err := i.client.ImageTag(ctx, imageID, ref)
 	return err
 }
 
 func (i *Image) PushImage() error {
 	log.Info("image push ")
 	ctx := context.Background()
-	cli, err := client.NewEnvClient()
-	if err != nil {
-		log.Info("client new envclient error:", err)
-		return err
-	}
-
 	authConfig := types.AuthConfig{
 		Username: i.Username,
 		Password: i.Password,
@@ -86,9 +73,9 @@ func (i *Image) PushImage() error {
 	}
 	authStr := base64.URLEncoding.EncodeToString(encodedJSON)
 	ref := GetTag(i.Tag, i.FromImage)
-	out, err := cli.ImagePush(ctx, ref, types.ImagePushOptions{RegistryAuth: authStr})
+	out, err := i.client.ImagePush(ctx, ref, types.ImagePushOptions{RegistryAuth: authStr})
 	if err != nil {
-		log.Info("ImagePull error:", err)
+		log.Info("ImagePush error:", err)
 		return err
 	}
 
@@ -100,14 +87,10 @@ func (i *Image) PushImage() error {
 func (i *Image) GetImage() (types.ImageSummary, error) {
 	log.Info("get image ")
 	ctx := context.Background()
-	cli, err := client.NewEnvClient()
 	s := types.ImageSummary{}
-	if err != nil {
-		return s, err
-	}
 	ref := GetTag(i.Tag, i.FromImage)
 	opt := types.ImageListOptions{}
-	summaries, err := cli.ImageList(ctx, opt)
+	summaries, err := i.client.ImageList(ctx, opt)
 	for _, summary := range summaries {
 		log.Infof("Summary RepoTags: %v ", summary.RepoTags)
 		for _, tag := range summary.RepoTags {
