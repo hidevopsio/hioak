@@ -5,6 +5,7 @@ import (
 	"testing"
 	"github.com/stretchr/testify/assert"
 	"github.com/hidevopsio/hioak/pkg"
+	"k8s.io/client-go/kubernetes/fake"
 )
 
 func init()  {
@@ -29,8 +30,8 @@ func TestServiceCreation(t *testing.T) {
 			Port: 7575,
 		},
 	}
-
-	service := NewService(app, namespace)
+	clientSet := fake.NewSimpleClientset()
+	service := NewService(clientSet, app, namespace)
 	err := service.Create(p)
 	assert.Equal(t, nil, err)
 

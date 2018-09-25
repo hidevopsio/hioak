@@ -7,17 +7,17 @@ import (
 	"k8s.io/client-go/kubernetes/typed/core/v1"
 	"k8s.io/apimachinery/pkg/watch"
 	"fmt"
+	"k8s.io/client-go/kubernetes"
 )
 
 type ReplicationController struct{
 	Name string
 	Namespace string
-
+	clientSet kubernetes.Interface
 	Interface v1.ReplicationControllerInterface
 }
 
-func NewReplicationController(name string, namespace string) *ReplicationController {
-	clientSet := NewClientSet()
+func NewReplicationController(clientSet kubernetes.Interface, name string, namespace string) *ReplicationController {
 	return &ReplicationController{
 		Name: name,
 		Namespace: namespace,

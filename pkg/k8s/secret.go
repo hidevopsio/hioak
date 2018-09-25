@@ -21,6 +21,7 @@ import (
 	"github.com/hidevopsio/hiboot/pkg/log"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"strings"
+	"k8s.io/client-go/kubernetes"
 )
 
 type Secret struct {
@@ -28,16 +29,15 @@ type Secret struct {
 	Username  string
 	Password  string
 	Namespace string
-
+	clientSet kubernetes.Interface
 	secrets *corev1.Secret
 
 	Interface v1.SecretInterface
 }
 
 // Create new instance of type Secret
-func NewSecret(name, username, password, namespace string, isToken bool) (*Secret) {
+func NewSecret(clientSet kubernetes.Interface, name, username, password, namespace string, isToken bool) (*Secret) {
 	log.Debugf("NewSecret(%v, %v, %v)", username, strings.Repeat("*", len(password)), namespace)
-	clientSet := NewClientSet()
 	var s *Secret
 	s = &Secret{
 		Name:      name,

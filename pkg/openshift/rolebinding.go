@@ -59,12 +59,8 @@ func NewRoleBindingClientSet() (v1.AuthorizationV1Interface, error) {
 	return clientSet, err
 }
 
-func NewRoleBinding(name, namespace string) (*RoleBinding, error) {
+func NewRoleBinding(client v1.AuthorizationV1Interface, name, namespace string) (*RoleBinding, error) {
 	log.Debug("NewPolicy()")
-	client, err := NewRoleBindingClientSet()
-	if err != nil {
-		return nil, err
-	}
 	r := &RoleBinding{
 		Name:      name,
 		Namespace: namespace,
@@ -115,10 +111,10 @@ func (rb *RoleBinding) Update(roleBinding *authorization_v1.RoleBinding) (*autho
 	return result, nil
 }
 
-func (rb *RoleBinding) InitImagePullers() error {
+func (rb *RoleBinding) InitImagePullers(client v1.AuthorizationV1Interface) error {
 	name := "system:image-pullers"
 	namespace := rb.Namespace
-	bin, err := NewRoleBinding(name, namespace)
+	bin, err := NewRoleBinding(client, name, namespace)
 	if err != nil {
 		return err
 	}
@@ -143,10 +139,10 @@ func (rb *RoleBinding) InitImagePullers() error {
 	return err
 }
 
-func (rb *RoleBinding) InitImageBuilders() error {
+func (rb *RoleBinding) InitImageBuilders(client v1.AuthorizationV1Interface) error {
 	name := "system:image-builders"
 	namespace := rb.Namespace
-	bin, err := NewRoleBinding(name, namespace)
+	bin, err := NewRoleBinding(client, name, namespace)
 	if err != nil {
 		return err
 	}
@@ -171,10 +167,10 @@ func (rb *RoleBinding) InitImageBuilders() error {
 	return err
 }
 
-func (rb *RoleBinding) InitSystemDeployers() error {
+func (rb *RoleBinding) InitSystemDeployers(client v1.AuthorizationV1Interface) error {
 	name := "system:deployers"
 	namespace := rb.Namespace
-	bin, err := NewRoleBinding(name, namespace)
+	bin, err := NewRoleBinding(client, name, namespace)
 	if err != nil {
 		return err
 	}

@@ -27,11 +27,10 @@ func NewOAuthAccessTokenClientSet() (oauthv1.OauthV1Interface, error) {
 	return clientSet, err
 }
 
-func NewOAuthAccessToken() (*OAuthAccessToken, error) {
-	clientSet, err := NewOAuthAccessTokenClientSet()
+func NewOAuthAccessToken(clientSet oauthv1.OauthV1Interface) (*OAuthAccessToken, error) {
 	return &OAuthAccessToken{
 		Interface: clientSet.OAuthAccessTokens(),
-	}, err
+	}, nil
 }
 
 func (o *OAuthAccessToken) Create() (*v1.OAuthAccessToken, error) {

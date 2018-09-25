@@ -25,10 +25,9 @@ import (
 	"github.com/hidevopsio/hiboot/pkg/system"
 	"github.com/jinzhu/copier"
 	"fmt"
-	"github.com/hidevopsio/hioak/pkg"
-	imagev1 "github.com/openshift/api/image/v1"
-	"github.com/openshift/client-go/build/clientset/versioned/fake"
-)
+		imagev1 "github.com/openshift/api/image/v1"
+	image "github.com/openshift/client-go/image/clientset/versioned/typed/image/v1"
+	)
 
 type BuildInterface interface {
 	Create() (*v1.BuildConfig, error)
@@ -60,35 +59,18 @@ type BuildConfig struct {
 	Builds       buildv1.BuildInterface
 }
 
-
-
-func NewBuildClientSet() (buildv1.BuildV1Interface, error) {
-
-	cli := orch.GetClientInstance()
-
-	// get the fake ClientSet for testing
-	if cli.IsTestRunning() {
-		return fake.NewSimpleClientset().BuildV1(), nil
-	}
-
-	// get the real ClientSet
-	clientSet, err := buildv1.NewForConfig(cli.Config())
-
-	return clientSet, err
-}
-
 // @Title NewBuildConfig
 // @Description Create new BuildConfig Instance
 // @Param namespace, appName, gitUrl, imageTag, s2iImageStream string
 // @Return *BuildConfig, error
-func NewBuildConfig(namespace, name, scmUrl, scmRef, scmSecret, version, s2iImageStream string, rebuild bool) (*BuildConfig, error) {
+func NewBuildConfig(imageClient image.ImageV1Interface, clientSet buildv1.BuildV1Interface, namespace, name, scmUrl, scmRef, scmSecret, version, s2iImageStream string, rebuild bool) (*BuildConfig, error) {
 
 	log.Debug("NewBuildConfig()")
 
 	// TODO: for the sake of decoupling, the image stream creation should be here or not?
 	// create imagestream
 	var err error
-	imageStream, err := NewImageStream(name, namespace)
+	imageStream, err := NewImageStream(imageClient, name, namespace)
 	if err != nil {
 		return nil, err
 	}
@@ -121,11 +103,6 @@ func NewBuildConfig(namespace, name, scmUrl, scmRef, scmSecret, version, s2iImag
 			Name:      name + ":" + is.Status.Tags[0].Tag,
 			Namespace: namespace,
 		}
-	}
-
-	clientSet, err := NewBuildClientSet()
-	if err != nil {
-		return nil, err
 	}
 
 	buildConfig := &BuildConfig{

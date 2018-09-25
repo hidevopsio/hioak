@@ -7,12 +7,14 @@ import (
 	authorization_v1 "github.com/openshift/api/authorization/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	corev1 "k8s.io/api/core/v1"
+	"github.com/openshift/client-go/authorization/clientset/versioned/fake"
 )
 
 func TestRoleBindingCrd(t *testing.T) {
 	name := "admin"
 	namespace := "demo-test"
-	roleBinding, err := NewRoleBinding(name, namespace)
+	clientSet := fake.NewSimpleClientset().AuthorizationV1()
+	roleBinding, err := NewRoleBinding(clientSet, name, namespace)
 	assert.Equal(t, nil, err)
 	roleBinding1 := &authorization_v1.RoleBinding{
 		ObjectMeta: metav1.ObjectMeta{
@@ -50,7 +52,8 @@ func TestRoleBindingCrd(t *testing.T) {
 func TestCreateImagePullers(t *testing.T)  {
 	name := "system:image-pullers"
 	namespace := "demo-test"
-	binding, err := NewRoleBinding(name, namespace)
+	clientSet := fake.NewSimpleClientset().AuthorizationV1()
+	binding, err := NewRoleBinding(clientSet, name, namespace)
 	assert.Equal(t, nil, err)
 	roleBinding := &authorization_v1.RoleBinding{
 		ObjectMeta: metav1.ObjectMeta{
@@ -80,7 +83,8 @@ func TestCreateImageBuilders(t *testing.T)  {
 
 	name := "system:image-builders"
 	namespace := "demo-test"
-	binding, err := NewRoleBinding(name, namespace)
+	clientSet := fake.NewSimpleClientset().AuthorizationV1()
+	binding, err := NewRoleBinding(clientSet, name, namespace)
 	assert.Equal(t, nil, err)
 	roleBinding := &authorization_v1.RoleBinding{
 		ObjectMeta: metav1.ObjectMeta{
@@ -111,7 +115,8 @@ func TestCreateImageBuilders(t *testing.T)  {
 func TestCreateSystemDeployers(t *testing.T) {
 	name := "system:deployers"
 	namespace := "demo-test"
-	binding, err := NewRoleBinding(name, namespace)
+	clientSet := fake.NewSimpleClientset().AuthorizationV1()
+	binding, err := NewRoleBinding(clientSet, name, namespace)
 	assert.Equal(t, nil, err)
 	roleBinding := &authorization_v1.RoleBinding{
 		ObjectMeta: metav1.ObjectMeta{
@@ -139,7 +144,8 @@ func TestCreateSystemDeployers(t *testing.T) {
 func TestRoleBindingUpdate(t *testing.T) {
 	name := "admin"
 	namespace := "default"
-	binding, err := NewRoleBinding(name, namespace)
+	clientSet := fake.NewSimpleClientset().AuthorizationV1()
+	binding, err := NewRoleBinding(clientSet, name, namespace)
 	assert.Equal(t, nil, err)
 	roleBinding := &authorization_v1.RoleBinding{
 		ObjectMeta: metav1.ObjectMeta{

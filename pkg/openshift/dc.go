@@ -20,14 +20,12 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	appsv1 "github.com/openshift/client-go/apps/clientset/versioned/typed/apps/v1"
-	"github.com/openshift/client-go/apps/clientset/versioned/fake"
-	"github.com/openshift/api/apps/v1"
+		"github.com/openshift/api/apps/v1"
 	"github.com/hidevopsio/hiboot/pkg/log"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"fmt"
 	"github.com/jinzhu/copier"
-	"github.com/hidevopsio/hioak/pkg"
-	"strings"
+		"strings"
 )
 
 type DeploymentConfigInterface interface {
@@ -45,30 +43,9 @@ type DeploymentConfig struct {
 	Interface appsv1.DeploymentConfigInterface
 }
 
-
-func NewDeploymentConfigsClientSet() (appsv1.AppsV1Interface, error) {
-
-	cli := orch.GetClientInstance()
-
-	// get the fake ClientSet for testing
-	if cli.IsTestRunning() {
-		return fake.NewSimpleClientset().AppsV1(), nil
-	}
-
-	// get the real ClientSet
-	clientSet, err := appsv1.NewForConfig(cli.Config())
-
-	return clientSet, err
-}
-
-func NewDeploymentConfig(name, namespace, version string) (*DeploymentConfig, error) {
+func NewDeploymentConfig(clientSet appsv1.AppsV1Interface, name, namespace, version string) (*DeploymentConfig, error) {
 	log.Debug("NewDeploymentConfig()")
-	clientSet, err := NewDeploymentConfigsClientSet()
-	if err != nil {
-		return nil, err
-	}
 	fullName := name + "-" + version
-
 	return &DeploymentConfig{
 		Name:      name,
 		Namespace: namespace,

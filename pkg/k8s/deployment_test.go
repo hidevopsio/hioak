@@ -19,20 +19,21 @@ package k8s
 import (
 	"testing"
 	"github.com/magiconair/properties/assert"
-	"github.com/hidevopsio/hiboot/pkg/log"
+	"k8s.io/client-go/kubernetes/fake"
 )
 
 
 func TestDeploy(t *testing.T)  {
+	clientSet := fake.NewSimpleClientset()
 	deploy := Deployment{
 		App: "hello-world",
 		Project: "demo-dev",
 		Profile: "master",
 		DockerRegistry: "docker.vpclub.cn",
 		ImageTag: "v1",
+		clientSet:clientSet,
 
 	}
-	d, err := deploy.ExtensionsV1beta1Deploy(nil, nil, nil, 0, false, "", "")
+	_, err := deploy.ExtensionsV1beta1Deploy(nil, nil, nil, 0, false, "", "")
 	assert.Equal(t, nil, err)
-	log.Info(d)
 }

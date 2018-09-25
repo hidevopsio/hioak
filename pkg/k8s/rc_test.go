@@ -4,6 +4,7 @@ import (
 	"testing"
 	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/stretchr/testify/assert"
+	"k8s.io/client-go/kubernetes/fake"
 )
 
 func init() {
@@ -17,8 +18,8 @@ func TestReplicationControllerWatching(t *testing.T) {
 	profile     := "dev"
 	namespace   := projectName + "-" + profile
 	app         := "hello-world"
-
-	rc := NewReplicationController(app, namespace)
+	clientSet := fake.NewSimpleClientset()
+	rc := NewReplicationController(clientSet, app, namespace)
 	go func() {
 		err := rc.Watch(func() error {
 			log.Debug("Completed!")

@@ -20,6 +20,7 @@ import (
 	"testing"
 	"github.com/stretchr/testify/assert"
 	"os"
+	"k8s.io/client-go/kubernetes/fake"
 )
 
 func init()  {
@@ -33,8 +34,8 @@ func TestSecretCreation(t *testing.T) {
 	password :=  os.Getenv("SCM_PASSWORD")
 	secretName := username + "-secret"
 	namespace := "demo-dev"
-
-	secret := NewSecret(secretName, username, password, namespace, false)
+	clientSet := fake.NewSimpleClientset()
+	secret := NewSecret(clientSet, secretName, username, password, namespace, false)
 
 	// Create secret
 	err := secret.Create()
@@ -48,8 +49,8 @@ func TestSecretCrud(t *testing.T) {
 	username := "test"
 	password := "test-pwd"
 	namespace := "demo-dev"
-
-	secret := NewSecret(secretName, username, password, namespace, false)
+	clientSet := fake.NewSimpleClientset()
+	secret := NewSecret(clientSet, secretName, username, password, namespace, false)
 
 	// Create secret
 	err := secret.Create()

@@ -53,12 +53,8 @@ func NewRouteClientSet() (routev1.RouteV1Interface, error) {
 }
 
 
-func NewRoute(name, namespace string) (*Route, error)  {
+func NewRoute(clientSet routev1.RouteV1Interface, name, namespace string) (*Route, error)  {
 	log.Debug("NewRoute()")
-	clientSet, err := NewRouteClientSet()
-	if err != nil {
-		return nil, err
-	}
 	return &Route{
 		Name:      name,
 		Namespace: namespace,

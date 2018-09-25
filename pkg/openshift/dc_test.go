@@ -20,11 +20,12 @@ import (
 	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/hidevopsio/hiboot/pkg/system"
 	"github.com/hidevopsio/hioak/pkg"
+	"github.com/openshift/client-go/apps/clientset/versioned/fake"
 )
 
 func TestDeploymentConfigCreation(t *testing.T) {
 	log.Debug("TestDeploymentConfigCreation()")
-
+	clientSet := fake.NewSimpleClientset().AppsV1()
 	projectName := "demo"
 	profile := "dev"
 	namespace := projectName + "-" + profile
@@ -58,7 +59,7 @@ func TestDeploymentConfigCreation(t *testing.T) {
 	}
 
 	// new dc instance
-	dc, err := NewDeploymentConfig(app, namespace, version)
+	dc, err := NewDeploymentConfig(clientSet, app, namespace, version)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, app, dc.Name)
 	// create dc
@@ -99,7 +100,8 @@ func TestDeploymentConfigInstantiation(t *testing.T) {
 		},
 	}
 	log.Debug("TestDeploymentConfigInstantiation()")
-	dc, err := NewDeploymentConfig(app, namespace, version)
+	clientSet := fake.NewSimpleClientset().AppsV1()
+	dc, err := NewDeploymentConfig(clientSet, app, namespace, version)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, app, dc.Name)
 	err = dc.Create(&env, map[string]string{}, &ports, 1, false, healthEndPoint,"")
@@ -139,7 +141,8 @@ func TestDeploymentConfig(t *testing.T) {
 		},
 	}
 	log.Debug("TestDeploymentConfigDeletion()")
-	dc, err := NewDeploymentConfig(app, namespace, version)
+	clientSet := fake.NewSimpleClientset().AppsV1()
+	dc, err := NewDeploymentConfig(clientSet, app, namespace, version)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, app, dc.Name)
 	err = dc.Create(&env, map[string]string{}, &ports, 1, false, healthEndPoint, "")

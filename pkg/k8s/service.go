@@ -23,16 +23,17 @@ import (
 	"fmt"
 	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/jinzhu/copier"
+	"k8s.io/client-go/kubernetes"
 )
 
 type Service struct{
 	Name      string
 	Namespace string
 	Interface  svcv1.ServiceInterface
+	clientSet kubernetes.Interface
 }
 
-func NewService(name, namespace string) *Service {
-	clientSet := NewClientSet()
+func NewService(clientSet kubernetes.Interface, name, namespace string) *Service {
 	return &Service{
 		Name: name,
 		Namespace: namespace,

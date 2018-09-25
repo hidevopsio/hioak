@@ -17,6 +17,7 @@ package openshift
 import (
 	"testing"
 	"github.com/stretchr/testify/assert"
+	"github.com/openshift/client-go/route/clientset/versioned/fake"
 )
 
 func TestRouteCrd(t *testing.T)  {
@@ -24,8 +25,8 @@ func TestRouteCrd(t *testing.T)  {
 	profile := "dev"
 	namespace := projectName + "-" + profile
 	app := "hello-world"
-
-	route, err := NewRoute(app, namespace)
+	clientSet := fake.NewSimpleClientset().RouteV1()
+	route, err := NewRoute(clientSet, app, namespace)
 	assert.Equal(t, nil, err)
 
 	url, err := route.Create(8080)

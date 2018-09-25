@@ -25,6 +25,7 @@ import (
 	"encoding/json"
 	"strings"
 	"github.com/hidevopsio/hiboot/pkg/utils/copier"
+	"k8s.io/client-go/kubernetes"
 )
 
 type Deployment struct {
@@ -33,6 +34,7 @@ type Deployment struct {
 	Profile        string
 	ImageTag       string
 	DockerRegistry string
+	clientSet kubernetes.Interface
 }
 
 func int32Ptr(i int32) *int32 { return &i }
@@ -172,8 +174,7 @@ func (d *Deployment) ExtensionsV1beta1Deploy(env interface{}, labels map[string]
 	log.Debug("json", string(j))
 	// Create Deployment
 	//Client.ClientSet.ExtensionsV1beta1().Deployments()
-	clientSet := NewClientSet()
-	deployments := clientSet.ExtensionsV1beta1().Deployments(d.Project)
+	deployments := d.clientSet.ExtensionsV1beta1().Deployments(d.Project)
 	log.Info("Update or Create Deployment...")
 	result, err := deployments.Update(deploySpec)
 	var retVal string
@@ -250,9 +251,7 @@ func (d *Deployment) DeployNode() (string, error) {
 	j, err := json.Marshal(deploySpec)
 	log.Debug("json", string(j))
 	// Create Deployment
-	//Client.ClientSet.ExtensionsV1beta1().Deployments()
-	clientSet := NewClientSet()
-	deployments := clientSet.AppsV1beta1().Deployments(d.Project)
+	deployments := d.clientSet.AppsV1beta1().Deployments(d.Project)
 	log.Info("Update or Create Deployment...")
 	result, err := deployments.Update(deploySpec)
 	var retVal string
