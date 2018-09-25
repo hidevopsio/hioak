@@ -2,32 +2,14 @@ package docker
 
 import (
 	"testing"
-		"github.com/magiconair/properties/assert"
-	"github.com/hidevopsio/hiboot/pkg/log"
-	"github.com/hidevopsio/hioak/pkg"
-)
+	"github.com/magiconair/properties/assert"
+	)
 
 
 func TestPullImages(t *testing.T) {
-	cli := orch.GetClientInstance()
-	token := cli.Config().BearerToken
 	image := &Image{
-		Username: "unused",
-		Password: token,
-		FromImage:"docker-registry-default.app.vpclub.io/ecmp-dev/major-web",
-		Tag: "v1",
-	}
-
-	err := image.PullImage()
-	assert.Equal(t, nil, err)
-}
-
-func TestPullImages1(t *testing.T) {
-	cli := orch.GetClientInstance()
-	token := cli.Config().BearerToken
-	image := &Image{
-		Username: "unused",
-		Password: token,
+		Username: "",
+		Password: "",
 		FromImage:"docker.io/library/nginx",
 		Tag: "latest",
 	}
@@ -35,6 +17,7 @@ func TestPullImages1(t *testing.T) {
 	err := image.PullImage()
 	assert.Equal(t, nil, err)
 }
+
 
 func TestImage_TagImage(t *testing.T) {
 	image := &Image{
@@ -47,13 +30,11 @@ func TestImage_TagImage(t *testing.T) {
 }
 
 func TestImage_PushImage(t *testing.T) {
-	cli := orch.GetClientInstance()
-	token := cli.Config().BearerToken
 	image := &Image{
-		Username: "unused",
-		Password: token,
-		FromImage:"docker-registry-default.app.vpclub.io/ecmp-dev/major-web",
-		Tag: "v1",
+		Username: "",
+		Password: "",
+		FromImage:"docker.io/library/nginx",
+		Tag: "latest",
 	}
 
 	err := image.PushImage()
@@ -63,10 +44,8 @@ func TestImage_PushImage(t *testing.T) {
 func TestImage_GetImage(t *testing.T) {
 
 	image := &Image{
-		FromImage:"nginx",
+		FromImage:"docker.io/library/nginx",
 	}
-	s, err := image.GetImage()
+	_, err := image.GetImage()
 	assert.Equal(t, nil, err)
-	log.Info(s.ID)
-	assert.Equal(t, s.ID, "sha256:c82521676580c4850bb8f0d72e47390a50d60c8ffe44d623ce57be521bca9869")
 }

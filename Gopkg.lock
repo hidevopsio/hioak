@@ -228,12 +228,6 @@
   revision = "a9733b5b6b83d32b479aacd51d26ef6018261963"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/kevholditch/gokong"
-  packages = ["."]
-  revision = "ab1e75d5f714d02463d0fe72f8fa4be079136ad6"
-
-[[projects]]
   name = "github.com/magiconair/properties"
   packages = [
     ".",
@@ -259,12 +253,6 @@
   packages = ["."]
   revision = "4b7aa43c6742a2c18fdef89dd197aaae7dac7ccd"
   version = "1.0.1"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/moul/http2curl"
-  packages = ["."]
-  revision = "9ac6cf4d929b2fa8fd2d2e6dec5bb0feb4f4911d"
 
 [[projects]]
   name = "github.com/opencontainers/go-digest"
@@ -330,12 +318,6 @@
   ]
   revision = "1fa528d3be060e4c7178eb69e76d37cf7e699e3c"
   version = "v3.9.0"
-
-[[projects]]
-  name = "github.com/parnurzeal/gorequest"
-  packages = ["."]
-  revision = "a578a48e8d6ca8b01a3b18314c43c6716bb5f5a3"
-  version = "v0.2.15"
 
 [[projects]]
   name = "github.com/pelletier/go-toml"
@@ -450,8 +432,7 @@
     "http2/hpack",
     "idna",
     "internal/socks",
-    "proxy",
-    "publicsuffix"
+    "proxy"
   ]
   revision = "f4c29de78a2a91c00474a2e689954305c350adf9"
 
@@ -675,6 +656,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "412d4a72e9f9ea71c8af83de044f69608b83bae4ac427a577e83cc0f7eb750f6"
+  inputs-digest = "8abf017099b94896518f9c801705da4b5dfece71090388f84edfb91073bc2b11"
   solver-name = "gps-cdcl"
   solver-version = 1
