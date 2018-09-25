@@ -54,18 +54,16 @@ func NewImageClientSet() (imagev1.ImageV1Interface, error) {
 	return clientSet, err
 }
 
-func NewImageStream(name, namespace string) (*ImageStream, error) {
-	clientSet, err := NewImageClientSet()
-
+func NewImageStream(clientSet imagev1.ImageV1Interface, name, namespace string) (*ImageStream, error) {
 	return &ImageStream{
 		Name:      name,
 		Namespace: namespace,
 		Interface: clientSet.ImageStreams(namespace),
-	}, err
+	}, nil
 }
 
-func NewImageStreamFromSource(name, namespace, source string) (*ImageStream, error) {
-	is, err := NewImageStream(name, namespace)
+func NewImageStreamFromSource(clientSet imagev1.ImageV1Interface, name, namespace, source string) (*ImageStream, error) {
+	is, err := NewImageStream(clientSet, name, namespace)
 	is.Source = source
 	return is, err
 }

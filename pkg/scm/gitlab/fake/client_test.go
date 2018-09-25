@@ -12,31 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package openshift
+package fake_test
 
 import (
 	"testing"
+	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/stretchr/testify/assert"
-	"github.com/openshift/client-go/route/clientset/versioned/fake"
+	"github.com/xanzy/go-gitlab"
+	"github.com/hidevopsio/hioak/pkg/scm/gitlab/fake"
 )
 
-func TestRouteCrd(t *testing.T)  {
-	projectName := "demo"
-	profile := "dev"
-	namespace := projectName + "-" + profile
-	app := "hello-world"
-	clientSet := fake.NewSimpleClientset().RouteV1()
-	route, err := NewRoute(clientSet, app, namespace)
-	assert.Equal(t, nil, err)
+func init()  {
+	log.SetLevel(log.DebugLevel)
+}
 
-	url, err := route.Create(8080)
-	assert.Equal(t, nil, err)
-	assert.Equal(t, "", url)
-
-	r, err := route.Get()
-	assert.Equal(t, nil, err)
-	assert.Equal(t, app, r.Name)
-
-	err = route.Delete()
-	assert.Equal(t, nil, err)
+func TestFakeClient(t *testing.T) {
+	ss := fake.NewClient("")
+	gs := new(gitlab.Session)
+	gr := new(gitlab.Response)
+	ss.On("GetSession", nil, nil).Return(gs, gr, nil)
+	s, r, e := ss.GetSession(nil, nil)
+	assert.Equal(t, nil, e)
+	assert.Equal(t, s, gs)
+	assert.Equal(t, r, gr)
 }

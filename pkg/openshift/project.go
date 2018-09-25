@@ -18,10 +18,8 @@ import (
 	"github.com/openshift/api/project/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	projectv1 "github.com/openshift/client-go/project/clientset/versioned/typed/project/v1"
-	"github.com/openshift/client-go/project/clientset/versioned/fake"
-	"github.com/hidevopsio/hiboot/pkg/log"
-	"github.com/hidevopsio/hioak/pkg"
-)
+		"github.com/hidevopsio/hiboot/pkg/log"
+	)
 
 const NodeSelector  =  "openshift.io/node-selector"
 
@@ -35,27 +33,7 @@ type Project struct {
 	Interface    projectv1.ProjectInterface
 }
 
-func NewProjectClientSet() (projectv1.ProjectV1Interface, error) {
-
-	cli := orch.GetClientInstance()
-
-	// get the fake ClientSet for testing
-	if cli.IsTestRunning() {
-		return fake.NewSimpleClientset().ProjectV1(), nil
-	}
-
-	// get the real ClientSet
-	clientSet, err := projectv1.NewForConfig(cli.Config())
-
-	return clientSet, err
-}
-
-func NewProject(name, displayName, desc, nodeSelector string) (*Project, error) {
-
-	clientSet, err := NewProjectClientSet()
-	if err != nil {
-		return nil, err
-	}
+func NewProject(clientSet projectv1.ProjectV1Interface, name, displayName, desc, nodeSelector string) (*Project, error) {
 
 	return &Project{
 		Name:         name,

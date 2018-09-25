@@ -3,6 +3,7 @@ package openshift
 import (
 	"testing"
 	"github.com/magiconair/properties/assert"
+	"github.com/openshift/client-go/image/clientset/versioned/fake"
 )
 
 const (
@@ -13,7 +14,8 @@ const (
 	fullName = name + ":" + version
 )
 func TestCrudTags(t *testing.T) {
-	ist, err := NewImageStreamTags(name, version, namespace)
+	clientSet := fake.NewSimpleClientset().ImageV1()
+	ist, err := NewImageStreamTags(clientSet, name, version, namespace)
 	assert.Equal(t, nil, err)
 
 	is, err := ist.Create(fromNamespace)

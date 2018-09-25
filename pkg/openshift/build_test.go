@@ -21,6 +21,8 @@ import (
 	"github.com/hidevopsio/hiboot/pkg/log"
 	"os"
 	"github.com/openshift/api/build/v1"
+	"github.com/openshift/client-go/build/clientset/versioned/fake"
+	imageFake "github.com/openshift/client-go/image/clientset/versioned/fake"
 )
 
 func init() {
@@ -41,25 +43,16 @@ func TestBuildCreation(t *testing.T) {
 	version := "v1"
 	s2iImageStream := "s2i-java:latest"
 	repoUrl := os.Getenv("MAVEN_MIRROR_URL")
-/*	env := []system.Env{
-		{
-			Name: "BUILD_SCRIPT",
-			Value: "mvn clean package -Dmaven.test.skip=true -Djava.net.preferIPv4Stack=true",
-		},
-		{
-			Name: "MAVEN_MIRROR_URL",
-			Value: os.Getenv("MAVEN_MIRROR_URL"),
-		},
-	}*/
+	clientSet := fake.NewSimpleClientset().BuildV1()
 	log.Debug(repoUrl)
 	log.Debug(scmUrl)
 
 	log.Debugf("workDir: %v", os.Getenv("PWD"))
 	var err error
 	var buildConfig *BuildConfig
-
+	imageClient := imageFake.NewSimpleClientset().ImageV1()
 	t.Run("should create buildConfig instance", func(t *testing.T) {
-		buildConfig, err = NewBuildConfig(namespace, appName, scmUrl, scmRef, secret, version, s2iImageStream, true)
+		buildConfig, err = NewBuildConfig(imageClient, clientSet, namespace, appName, scmUrl, scmRef, secret, version, s2iImageStream, true)
 		assert.Equal(t, nil, err)
 	})
 

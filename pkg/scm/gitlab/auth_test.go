@@ -12,27 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package gitlab
+package gitlab_test
 
 import (
 	"testing"
 	"github.com/hidevopsio/hiboot/pkg/log"
-	"github.com/stretchr/testify/assert"
-	"os"
+	gg "github.com/xanzy/go-gitlab"
+	"github.com/hidevopsio/hioak/pkg/scm/gitlab/fake"
+	"github.com/hidevopsio/hioak/pkg/scm/gitlab"
+	"github.com/magiconair/properties/assert"
 )
 
 func init()  {
 	log.SetLevel(log.DebugLevel)
 }
 
-func TestUserGet(t *testing.T)  {
-	baseUrl :=  os.Getenv("SCM_URL")
-	username := os.Getenv("SCM_USERNAME")
-	password := os.Getenv("SCM_PASSWORD")
-	log.Debugf("url: %v, username: %v", baseUrl, username)
-	gs := new(Session)
-	err := gs.GetSession(baseUrl, username, password)
-	assert.Equal(t, nil, err)
-	assert.Equal(t, username, gs.Username)
-	log.Info(gs)
+func TestSession(t *testing.T) {
+	ss := fake.NewClient("")
+	gs := &gg.Session{
+		Username: "chulei",
+	}
+	gr := new(gg.Response)
+	ss.On("SetBaseURL", nil).Return(nil)
+	ss.On("GetSession", nil, nil).Return(gs, gr, nil)
+
+	s := gitlab.NewSession(ss)
+	e := s.GetSession("", "", "")
+	assert.Equal(t, nil, e)
 }

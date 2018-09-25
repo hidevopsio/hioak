@@ -5,13 +5,15 @@ import (
 	core "k8s.io/api/core/v1"
 	"github.com/magiconair/properties/assert"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes/fake"
 )
 
 func TestConfigMapsCurd(t *testing.T) {
 	name := "test"
 	namespace := "demo-dev"
 	data := map[string]string{}
-	configMaps := NewConfigMaps(name, namespace, data)
+	clientSet := fake.NewSimpleClientset()
+	configMaps := NewConfigMaps(clientSet, name, namespace, data)
 	configMaps.Data = map[string]string{
 	}
 	result, err := configMaps.Create()

@@ -2,22 +2,28 @@ package gitlab
 
 import (
 	"github.com/xanzy/go-gitlab"
-	"net/http"
-	"github.com/hidevopsio/hiboot/pkg/log"
+		"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/jinzhu/copier"
 	"github.com/hidevopsio/hioak/pkg/scm"
 )
 
 type Project struct {
 	scm.Project
+	client ClientInterface
+}
+
+
+func NewProject(c ClientInterface) scm.ProjectInterface {
+	return &Project{
+		client: c,
+	}
 }
 
 func (p *Project) GetProject(baseUrl, id, token string) (int, int, error) {
 	log.Debug("project.GetProject()")
-	c := gitlab.NewClient(&http.Client{}, token)
-	c.SetBaseURL(baseUrl + ApiVersion)
+	p.client.SetBaseURL(baseUrl + ApiVersion)
 	log.Debug("before c.project.GetProject(so)")
-	project, _, err := c.Projects.GetProject(id)
+	project, _, err := p.client.GetProject(id)
 	if err != nil {
 		log.Error("Projects.GetProject err:", err)
 		return 0, 0, err
@@ -27,10 +33,9 @@ func (p *Project) GetProject(baseUrl, id, token string) (int, int, error) {
 
 func (p *Project) GetGroupId(url, token string, pid int) (int, error) {
 	log.Debug("project.GetProject()")
-	c := gitlab.NewClient(&http.Client{}, token)
-	c.SetBaseURL(p.BaseUrl + ApiVersion)
+	p.client.SetBaseURL(p.BaseUrl + ApiVersion)
 	log.Debug("before c.Session.GetSession(so)")
-	project, _, err := c.Projects.GetProject(pid)
+	project, _, err := p.client.GetProject(pid)
 	log.Debug("after c.project.GetProject(so)", project)
 	return project.Namespace.ID, err
 }
@@ -38,8 +43,7 @@ func (p *Project) GetGroupId(url, token string, pid int) (int, error) {
 func (p *Project) ListProjects(baseUrl, token, search string, page int) ([]scm.Project, error) {
 	log.Debug("project.ListProjects()")
 	log.Debugf("url: %v", baseUrl)
-	c := gitlab.NewClient(&http.Client{}, token)
-	c.SetBaseURL(baseUrl + ApiVersion)
+	p.client.SetBaseURL(baseUrl + ApiVersion)
 	listProjectsOptions := &gitlab.ListProjectsOptions{}
 	if search != "" {
 		listProjectsOptions = &gitlab.ListProjectsOptions{
@@ -56,9 +60,9 @@ func (p *Project) ListProjects(baseUrl, token, search string, page int) ([]scm.P
 			},
 		}
 	}
-	ps, _, err := c.Projects.ListProjects(listProjectsOptions)
+	ps, _, err := p.client.ListProjects(listProjectsOptions)
 	log.Debugf("after project: %v", len(ps))
-	projects := []scm.Project{}
+	var projects []scm.Project
 	project := &scm.Project{}
 	for _, pro := range ps {
 		copier.Copy(project, pro)
@@ -69,18 +73,17 @@ func (p *Project) ListProjects(baseUrl, token, search string, page int) ([]scm.P
 
 func (p *Project) Search(baseUrl, token, search string) ([]scm.Project, error){
 	log.Debug("Search.GetProjects()")
-	c := gitlab.NewClient(&http.Client{}, token)
-	c.SetBaseURL(baseUrl + ApiVersion)
+	p.client.SetBaseURL(baseUrl + ApiVersion)
 	log.Debug("before Search.project(so)", search)
 	listProjectsOptions := &gitlab.ListProjectsOptions{
 		Search: &search,
 	}
-	ps, _, err := c.Projects.ListProjects(listProjectsOptions)
+	ps, _, err := p.client.ListProjects(listProjectsOptions)
 	if err != nil {
 		return nil, err
 	}
 	log.Debugf("after Search.project: %v", len(ps))
-	projects := []scm.Project{}
+	var projects []scm.Project
 	project := &scm.Project{}
 	for _, pro := range ps {
 		copier.Copy(project, pro)

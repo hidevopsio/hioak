@@ -18,6 +18,7 @@ import (
 	"testing"
 	"github.com/stretchr/testify/assert"
 	"github.com/hidevopsio/hiboot/pkg/log"
+	"github.com/openshift/client-go/project/clientset/versioned/fake"
 )
 
 func init() {
@@ -26,7 +27,8 @@ func init() {
 
 func TestProjectLit(t *testing.T) {
 	projectName := "project-crud"
-	project, err := NewProject(projectName, projectName, "project for testing", "node")
+	clientSet := fake.NewSimpleClientset().ProjectV1()
+	project, err := NewProject(clientSet, projectName, projectName, "project for testing", "node")
 	assert.Equal(t, nil, err)
 
 	pl, err := project.List()
@@ -41,7 +43,9 @@ func TestProjectLit(t *testing.T) {
 
 func TestProjectCrud(t *testing.T) {
 	projectName := "project-crud"
-	project, err := NewProject(projectName, projectName, "project for testing", "")
+	fake.NewSimpleClientset().ProjectV1()
+	clientSet := fake.NewSimpleClientset().ProjectV1()
+	project, err := NewProject(clientSet, projectName, projectName, "project for testing", "")
 	assert.Equal(t, nil, err)
 
 	// create project

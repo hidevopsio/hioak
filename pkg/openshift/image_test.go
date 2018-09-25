@@ -18,12 +18,14 @@ package openshift
 import (
 	"testing"
 	"github.com/stretchr/testify/assert"
+	"github.com/openshift/client-go/image/clientset/versioned/fake"
 )
 
 func TestImageStreamCrud(t *testing.T) {
 	imageStreamName := "is-test"
 	namespace := "openshift"
-	imageStream, err := NewImageStream(imageStreamName, namespace)
+	clientSet := fake.NewSimpleClientset().ImageV1()
+	imageStream, err := NewImageStream(clientSet, imageStreamName, namespace)
 	assert.Equal(t, nil, err)
 
 	version := "v1"
@@ -47,7 +49,8 @@ func TestImageStreamCreation(t *testing.T) {
 	name := "s2i-java-test"
 	namespace := "openshift"
 	source := "docker.io/hidevops/s2i-java:latest"
-	imageStream, err := NewImageStreamFromSource(name, namespace, source)
+	clientSet := fake.NewSimpleClientset().ImageV1()
+	imageStream, err := NewImageStreamFromSource(clientSet, name, namespace, source)
 	// create imagestream
 	is, err := imageStream.Create("v1")
 	assert.Equal(t, nil, err)

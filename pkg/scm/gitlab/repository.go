@@ -1,8 +1,7 @@
 package gitlab
 
 import (
-	"net/http"
-	"github.com/hidevopsio/hiboot/pkg/log"
+		"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/xanzy/go-gitlab"
 	"github.com/jinzhu/copier"
 	"github.com/hidevopsio/hioak/pkg/scm"
@@ -10,6 +9,7 @@ import (
 
 type Repository struct {
 	scm.TreeNode
+	client ClientInterface
 }
 
 type TreeNode struct {
@@ -17,16 +17,21 @@ type TreeNode struct {
 }
 
 
+func NewRepository(c ClientInterface) scm.RepositoryInterface {
+	return &Repository{
+		client: c,
+	}
+}
+
 func (r *Repository) GetRepository(baseUrl, token, filePath, ref string, pid int) (string, error) {
 	log.Debug("Repository.Repository()")
 	log.Debugf("url: %v", baseUrl)
-	c := gitlab.NewClient(&http.Client{}, token)
-	c.SetBaseURL(baseUrl + ApiVersion)
+	r.client.SetBaseURL(baseUrl + ApiVersion)
 	opt := &gitlab.GetFileOptions{
 		Ref: &ref,
 		FilePath: &filePath,
 	}
-	file, _, err := c.RepositoryFiles.GetFile(pid, opt)
+	file, _, err := r.client.GetFile(pid, opt)
 	if err != nil {
 		return "", err
 	}
@@ -36,12 +41,11 @@ func (r *Repository) GetRepository(baseUrl, token, filePath, ref string, pid int
 func (r *Repository) ListTree(baseUrl, token, ref string, pid int)  ([]scm.TreeNode, error){
 	log.Debug("Repository.ListTree()")
 	log.Debugf("url: %v", baseUrl)
-	c := gitlab.NewClient(&http.Client{}, token)
-	c.SetBaseURL(baseUrl + ApiVersion)
+	r.client.SetBaseURL(baseUrl + ApiVersion)
 	opt := &gitlab.ListTreeOptions{
 		RefName: &ref,
 	}
-	tree, _, err := c.Repositories.ListTree(pid, opt)
+	tree, _, err := r.client.ListTree(pid, opt)
 	if err != nil {
 		return nil, err
 	}

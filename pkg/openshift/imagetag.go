@@ -29,15 +29,14 @@ type ImageStreamTag struct {
 	Interface imagev1.ImageStreamTagInterface
 }
 
-func NewImageStreamTags(name, version, namespace string) (*ImageStreamTag, error) {
-	clientSet, err := NewImageClientSet()
+func NewImageStreamTags(clientSet imagev1.ImageV1Interface, name, version, namespace string) (*ImageStreamTag, error) {
 	return &ImageStreamTag{
 		Name:      name,
 		Namespace: namespace,
 		Version:   version,
 		FullName:  name + ":" + version,
 		Interface: clientSet.ImageStreamTags(namespace),
-	}, err
+	}, nil
 }
 
 func (ist *ImageStreamTag) Create(fromNamespace string) (*v1.ImageStreamTag, error) {

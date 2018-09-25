@@ -27,7 +27,7 @@ import (
 	log "github.com/kataras/golog"
 	"github.com/hidevopsio/hiboot/pkg/utils/gotest"
 	"sync"
-)
+	)
 
 
 type Client struct {
@@ -46,15 +46,13 @@ var (
 func GetClientInstance() *Client {
 
 	once.Do(func() {
-		client = &Client{}
+		client = NewClient()
 	})
 	return client
 }
 
-func init() {
-
-	cli := GetClientInstance()
-
+func NewClient() *Client {
+	cli := new(Client)
 	cli.isTestRunning = gotest.IsRunning()
 
 	var err error
@@ -68,17 +66,20 @@ func init() {
 		}
 		cli.config, err = clientcmd.BuildConfigFromFlags("", *cli.kubeconfig)
 		if err != nil {
-			panic(err.Error())
+			log.Error("clientcmd.BuildConfigFromFlags", err)
+			return nil
 		}
 	} else {
 		log.Info("Kubernetes Internal Client Mode")
 		cli.config, err = rest.InClusterConfig()
 		if err != nil {
-			panic(err.Error())
+			log.Error("rest.InClusterConfig()", err)
+			return nil
 		}
 		kubecfg := ""
 		cli.kubeconfig = &kubecfg
 	}
+	return cli
 }
 
 func (c *Client) Config() *rest.Config  {

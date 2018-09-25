@@ -5,6 +5,7 @@ import (
 	core_v1 "k8s.io/api/core/v1"
 	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"github.com/hidevopsio/hiboot/pkg/log"
+	"k8s.io/client-go/kubernetes"
 )
 
 type ConfigMaps struct {
@@ -12,10 +13,10 @@ type ConfigMaps struct {
 	Namespace string            `json:"namespace"`
 	Data      map[string]string `json:"data"`
 	Interface v1.ConfigMapInterface
+	clientSet kubernetes.Interface
 }
 
-func NewConfigMaps(name, namespace string, data map[string]string) *ConfigMaps {
-	clientSet := NewClientSet()
+func NewConfigMaps(clientSet kubernetes.Interface, name, namespace string, data map[string]string) *ConfigMaps {
 	return &ConfigMaps{
 		Name:      name,
 		Namespace: namespace,
@@ -23,6 +24,7 @@ func NewConfigMaps(name, namespace string, data map[string]string) *ConfigMaps {
 		Interface: clientSet.CoreV1().ConfigMaps(namespace),
 	}
 }
+
 
 func (c *ConfigMaps) Create() (*core_v1.ConfigMap, error) {
 	log.Debug("config map create :", c)

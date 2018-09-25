@@ -3,39 +3,38 @@ package gitlab
 import (
 	"testing"
 	"os"
-	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/magiconair/properties/assert"
+	"github.com/xanzy/go-gitlab"
+	"github.com/hidevopsio/hioak/pkg/scm/gitlab/fake"
 )
 
-func TestGetRepositoty(t *testing.T){
+func TestGetRepositoty(t *testing.T) {
 	baseUrl := os.Getenv("SCM_URL")
-	username := os.Getenv("SCM_USERNAME")
-	password := os.Getenv("SCM_PASSWORD")
-	query := "pom.xml"
-	ref := "master"
-	pid := 905
-	log.Debugf("url: %v, username: %v", baseUrl, username)
-	gs := new(Session)
-	err := gs.GetSession(baseUrl, username, password)
-	repository := new(Repository)
-	context, err := repository.GetRepository(baseUrl, gs.PrivateToken, query, ref, pid)
+	s := fake.NewClient("")
+	s.On("SetBaseURL", nil).Return(nil)
+	file := &gitlab.File{
+		FileName: "chulei",
+	}
+	resp := new(gitlab.Response)
+	s.On("GetFile", nil, nil, nil).Return(file, resp, nil)
+	repository := NewRepository(s)
+	_, err := repository.GetRepository(baseUrl, os.Getenv("Token"), "pom.xml", "master", 1)
 	assert.Equal(t, nil, err)
-	assert.Equal(t, username, gs.Username)
-	log.Info(context)
 }
 
-func TestListTree(t *testing.T){
+func TestListTree(t *testing.T) {
 	baseUrl := os.Getenv("SCM_URL")
-	username := os.Getenv("SCM_USERNAME")
-	password := os.Getenv("SCM_PASSWORD")
-	ref := "master"
-	pid := 905
-	log.Debugf("url: %v, username: %v", baseUrl, username)
-	gs := new(Session)
-	err := gs.GetSession(baseUrl, username, password)
-	repository := new(Repository)
-	tr , err := repository.ListTree(baseUrl, gs.PrivateToken, ref, pid)
+	s := fake.NewClient("")
+	s.On("SetBaseURL", nil).Return(nil)
+	file := &gitlab.TreeNode{
+		ID:   "chulei",
+		Name: "aaaa",
+	}
+	var tree []*gitlab.TreeNode
+	tree = append(tree, file)
+	resp := new(gitlab.Response)
+	s.On("ListTree", nil, nil, nil).Return(tree, resp, nil)
+	repository := NewRepository(s)
+	_, err := repository.ListTree(baseUrl, os.Getenv("Token"), "pom.xml", 1)
 	assert.Equal(t, nil, err)
-	assert.Equal(t, username, gs.Username)
-	log.Info(tr)
 }
