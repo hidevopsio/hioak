@@ -2,17 +2,22 @@ package gitlab
 
 import (
 	"testing"
-	"github.com/hidevopsio/hiboot/pkg/log"
-	"github.com/stretchr/testify/assert"
+		"github.com/stretchr/testify/assert"
 	"os"
+	"github.com/xanzy/go-gitlab"
+	"github.com/hidevopsio/hioak/pkg/scm/gitlab/fake"
 )
 
 func TestUser_GetUser(t *testing.T) {
-	token := os.Getenv("SCM_TOKEN")
 	baseUrl := os.Getenv("SCM_URL")
-	log.Debugf("accessToken: %v", token)
-	user := new(User)
-	u, err := user.GetUser(baseUrl, token)
+	s := fake.NewClient("")
+	s.On("SetBaseURL", nil).Return(nil)
+	user := &gitlab.User{
+		Name: "chulei",
+	}
+	resp := new(gitlab.Response)
+	s.On("CurrentUser", nil).Return(user, resp, nil)
+	u := NewUser(s)
+	_, err := u.GetUser(baseUrl, os.Getenv("Token"))
 	assert.Equal(t, nil, err)
-	assert.Equal(t, "chulei", u.Username)
 }

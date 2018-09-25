@@ -3,52 +3,87 @@ package gitlab
 import (
 	"testing"
 	"os"
-	"github.com/hidevopsio/hiboot/pkg/log"
-	"github.com/magiconair/properties/assert"
+		"github.com/magiconair/properties/assert"
+	"github.com/xanzy/go-gitlab"
+	"github.com/hidevopsio/hioak/pkg/scm/gitlab/fake"
 )
 
 func TestGetProject(t *testing.T) {
-	baseUrl := "http://gitlab.vpclub.cn:8022"
-	username := os.Getenv("SCM_USERNAME")
-	password := os.Getenv("SCM_PASSWORD")
-	log.Debugf("url: %v, username: %v", baseUrl, username)
-	gs := new(Session)
-	err := gs.GetSession(baseUrl, username, password)
-	project := new(Project)
-	id := "demo/hello-world"
-	pid, gid, err := project.GetProject(baseUrl, id, gs.PrivateToken)
+	baseUrl := os.Getenv("SCM_URL")
+	s := fake.NewClient("")
+	s.On("SetBaseURL", nil).Return(nil)
+	gra := &gitlab.Project{
+		ID: 100,
+		Name: "chulei",
+		Namespace: &gitlab.ProjectNamespace{
+			ID:30,
+	},
+	}
+	pid := "4"
+	resp := new(gitlab.Response)
+	s.On("GetProject", pid, nil).Return(gra, resp, nil)
+	project := NewProject(s)
+	_, _, err := project.GetProject(baseUrl, pid, os.Getenv("Token"))
 	assert.Equal(t, nil, err)
-	assert.Equal(t, 905, pid)
-	assert.Equal(t, 4, gid)
+}
+
+func TestGetGroupId(t *testing.T) {
+	baseUrl := os.Getenv("SCM_URL")
+	s := fake.NewClient("")
+	s.On("SetBaseURL", nil).Return(nil)
+	gra := &gitlab.Project{
+		ID: 100,
+		Name: "chulei",
+		Namespace: &gitlab.ProjectNamespace{
+			ID:30,
+		},
+	}
+	pid := 4
+	resp := new(gitlab.Response)
+	s.On("GetProject", pid, nil).Return(gra, resp, nil)
+	project := NewProject(s)
+	_, err := project.GetGroupId(baseUrl, os.Getenv("Token"), pid)
+	assert.Equal(t, nil, err)
 }
 
 func TestListProjects(t *testing.T) {
 	baseUrl := os.Getenv("SCM_URL")
-	username := os.Getenv("SCM_USERNAME")
-	password := os.Getenv("SCM_PASSWORD")
-	page := 1
-	log.Debugf("url: %v, username: %v", baseUrl, username)
-	gs := new(Session)
-	err := gs.GetSession(baseUrl, username, password)
-	project := new(Project)
-	projects, err := project.ListProjects(baseUrl, gs.PrivateToken, "demo",page)
+	s := fake.NewClient("")
+	s.On("SetBaseURL", nil).Return(nil)
+	gra := &gitlab.Project{
+		ID: 100,
+		Name: "chulei",
+		Namespace: &gitlab.ProjectNamespace{
+			ID:30,
+		},
+	}
+	var pro []*gitlab.Project
+	pro = append(pro, gra)
+	resp := new(gitlab.Response)
+	s.On("ListProjects", nil, nil).Return(pro, resp, nil)
+	project := NewProject(s)
+	_, err := project.ListProjects(baseUrl, os.Getenv("Token"), "1", 1)
+	_, err = project.ListProjects(baseUrl, os.Getenv("Token"), "", 1)
 	assert.Equal(t, nil, err)
-	assert.Equal(t, username, gs.Username)
-	log.Debug("project size:", len(projects))
-	log.Debug("project size:", projects)
+
 }
 
 func TestSearch(t *testing.T) {
 	baseUrl := os.Getenv("SCM_URL")
-	username := os.Getenv("SCM_USERNAME")
-	password := os.Getenv("SCM_PASSWORD")
-	query := "hello-world"
-	log.Debugf("url: %v, username: %v", baseUrl, username)
-	gs := new(Session)
-	err := gs.GetSession(baseUrl, username, password)
-	project := new(Project)
-	p, err := project.Search(baseUrl, gs.PrivateToken, query)
+	s := fake.NewClient("")
+	s.On("SetBaseURL", nil).Return(nil)
+	gra := &gitlab.Project{
+		ID: 100,
+		Name: "chulei",
+		Namespace: &gitlab.ProjectNamespace{
+			ID:30,
+		},
+	}
+	var pro []*gitlab.Project
+	pro = append(pro, gra)
+	resp := new(gitlab.Response)
+	s.On("ListProjects", nil, nil).Return(pro, resp, nil)
+	project := NewProject(s)
+	_, err := project.Search(baseUrl, os.Getenv("Token"), "")
 	assert.Equal(t, nil, err)
-	assert.Equal(t, username, gs.Username)
-	log.Debug(p)
 }
