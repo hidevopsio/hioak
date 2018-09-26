@@ -12,7 +12,7 @@ import (
 )
 
 type properties struct {
-	ExternalClient bool `json:"external_client" default:"false"`
+	KubeServiceHost string `json:"external_client" default:"${KUBERNETES_SERVICE_HOST}"`
 }
 
 // define type configuration
@@ -46,8 +46,8 @@ func init() {
 func (c *configuration) KubeRestConfig(kubeConfig *Config) *RestConfig {
 	retVal := new(RestConfig)
 	var err error
-	if c.Properties.ExternalClient {
-		retVal.Config, err = clientcmd.BuildConfigFromFlags("", string(*kubeConfig))
+	if c.Properties.KubeServiceHost == "" {
+		retVal.Config, err = clientcmd.BuildConfigFromFlags("", *kubeConfig.string)
 	} else {
 		retVal.Config, err = rest.InClusterConfig()
 	}
@@ -59,7 +59,7 @@ func (c *configuration) KubeRestConfig(kubeConfig *Config) *RestConfig {
 
 func (c *configuration) KubeConfig() *Config {
 	kc := new(Config)
-	if c.Properties.ExternalClient {
+	if c.Properties.KubeServiceHost == "" {
 		log.Info("Kubernetes External Client Mode")
 		if home := homedir.HomeDir(); home != "" {
 			kc.string = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
