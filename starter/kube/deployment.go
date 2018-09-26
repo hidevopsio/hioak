@@ -29,21 +29,21 @@ import (
 )
 
 type Deployment struct {
-	App            string
-	Project        string
-	Profile        string
-	ImageTag       string
-	DockerRegistry string
 	clientSet kubernetes.Interface
 }
 
 func int32Ptr(i int32) *int32 { return &i }
 
+func newDeployment(clientSet kubernetes.Interface) *Deployment {
+	return &Deployment{
+		clientSet: clientSet,
+	}
+}
 // @Title Deploy
 // @Description deploy application
 // @Param pipeline
 // @Return error
-func (d *Deployment) Deploy(env interface{}, labels map[string]string, ports interface{}, replicas int32, force bool, healthEndPoint, nodeSelector string) (string, error) {
+func (d *Deployment) Deploy(app, project, profile, imageTag, dockerRegistry string, env interface{}, labels map[string]string, ports interface{}, replicas int32, force bool, healthEndPoint, nodeSelector string) (string, error) {
 
 	log.Debug("Deployment.Deploy()")
 	e := make([]corev1.EnvVar, 0)
@@ -56,8 +56,8 @@ func (d *Deployment) Deploy(env interface{}, labels map[string]string, ports int
 	copier.Copy(&p, ports)
 	deploySpec := &v1beta1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      d.App,
-			Namespace: d.Project,
+			Name:      app,
+			Namespace: project,
 		},
 		Spec: v1beta1.DeploymentSpec{
 			Replicas: int32Ptr(1),
@@ -77,14 +77,14 @@ func (d *Deployment) Deploy(env interface{}, labels map[string]string, ports int
 			RevisionHistoryLimit: int32Ptr(10),
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:   d.App,
+					Name:   app,
 					Labels: labels,
 				},
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{
 						{
-							Name:            d.App,
-							Image:           d.DockerRegistry + "/" + d.Project + "/" + d.App + ":" + d.ImageTag,
+							Name:            app,
+							Image:           dockerRegistry + "/" + project + "/" + app + ":" + imageTag,
 							Ports:           p,
 							Env:             e,
 							ImagePullPolicy: corev1.PullAlways,
@@ -99,8 +99,7 @@ func (d *Deployment) Deploy(env interface{}, labels map[string]string, ports int
 	log.Debug("json", string(j))
 	// Create Deployment
 	//Client.ClientSet.ExtensionsV1beta1().Deployments()
-	clientSet := NewClientSet()
-	deployments := clientSet.AppsV1beta1().Deployments(d.Project)
+	deployments := d.clientSet.AppsV1beta1().Deployments(project)
 	log.Info("Update or Create Deployment...")
 	result, err := deployments.Update(deploySpec)
 	var retVal string
@@ -118,7 +117,7 @@ func (d *Deployment) Deploy(env interface{}, labels map[string]string, ports int
 	return retVal, err
 }
 
-func (d *Deployment) ExtensionsV1beta1Deploy(env interface{}, labels map[string]string, ports interface{}, replicas int32, force bool, healthEndPoint, nodeSelector string) (string, error) {
+func (d *Deployment) ExtensionsV1beta1Deploy(app, project, profile, imageTag, dockerRegistry string, env interface{}, labels map[string]string, ports interface{}, replicas int32, force bool, healthEndPoint, nodeSelector string) (string, error) {
 
 	log.Debug("Deployment.Deploy()")
 	e := make([]corev1.EnvVar, 0)
@@ -131,8 +130,8 @@ func (d *Deployment) ExtensionsV1beta1Deploy(env interface{}, labels map[string]
 	copier.Copy(&p, ports)
 	deploySpec := &extensionsV1beta1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      d.App,
-			Namespace: d.Project,
+			Name:      app,
+			Namespace: project,
 		},
 		Spec: extensionsV1beta1.DeploymentSpec{
 			Replicas: int32Ptr(1),
@@ -152,14 +151,14 @@ func (d *Deployment) ExtensionsV1beta1Deploy(env interface{}, labels map[string]
 			RevisionHistoryLimit: int32Ptr(10),
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:   d.App,
+					Name:   app,
 					Labels: labels,
 				},
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{
 						{
-							Name:            d.App,
-							Image:           d.DockerRegistry + "/" + d.Project + "/" + d.App + ":" + d.ImageTag,
+							Name:            app,
+							Image:           dockerRegistry + "/" + project + "/" + app + ":" + imageTag,
 							Ports:           p,
 							Env:             e,
 							ImagePullPolicy: corev1.PullAlways,
@@ -174,7 +173,7 @@ func (d *Deployment) ExtensionsV1beta1Deploy(env interface{}, labels map[string]
 	log.Debug("json", string(j))
 	// Create Deployment
 	//Client.ClientSet.ExtensionsV1beta1().Deployments()
-	deployments := d.clientSet.ExtensionsV1beta1().Deployments(d.Project)
+	deployments := d.clientSet.ExtensionsV1beta1().Deployments(project)
 	log.Info("Update or Create Deployment...")
 	result, err := deployments.Update(deploySpec)
 	var retVal string
@@ -192,12 +191,12 @@ func (d *Deployment) ExtensionsV1beta1Deploy(env interface{}, labels map[string]
 	return retVal, err
 }
 
-func (d *Deployment) DeployNode() (string, error) {
+func (d *Deployment) DeployNode(app ,project, dockerRegistry, imageTag, profile string) (string, error) {
 	log.Debug("Deployment.Deploy()")
 	deploySpec := &v1beta1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      d.App,
-			Namespace: d.Project,
+			Name:      app,
+			Namespace: project,
 		},
 		Spec: v1beta1.DeploymentSpec{
 			Replicas: int32Ptr(1),
@@ -217,16 +216,16 @@ func (d *Deployment) DeployNode() (string, error) {
 			RevisionHistoryLimit: int32Ptr(10),
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:   d.App,
+					Name:   app,
 					Labels: map[string]string{
-						"app": d.App,
+						"app": app,
 					},
 				},
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{
 						{
-							Name:            d.App,
-							Image:           d.DockerRegistry + "/" + d.Project + "/" + d.App + ":" + d.ImageTag,
+							Name:            app,
+							Image:           dockerRegistry + "/" + project + "/" + app + ":" + imageTag,
 							Ports: []corev1.ContainerPort{
 								{
 									Name:          "http",
@@ -237,7 +236,7 @@ func (d *Deployment) DeployNode() (string, error) {
 							Env: []corev1.EnvVar{
 								{
 									Name:  "APP_PROFILES_ACTIVE",
-									Value: d.Profile,
+									Value: profile,
 								},
 							},
 							ImagePullPolicy: corev1.PullIfNotPresent,
@@ -251,7 +250,7 @@ func (d *Deployment) DeployNode() (string, error) {
 	j, err := json.Marshal(deploySpec)
 	log.Debug("json", string(j))
 	// Create Deployment
-	deployments := d.clientSet.AppsV1beta1().Deployments(d.Project)
+	deployments := d.clientSet.AppsV1beta1().Deployments(project)
 	log.Info("Update or Create Deployment...")
 	result, err := deployments.Update(deploySpec)
 	var retVal string

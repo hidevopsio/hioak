@@ -13,18 +13,16 @@ func TestConfigMapsCurd(t *testing.T) {
 	namespace := "demo-dev"
 	data := map[string]string{}
 	clientSet := fake.NewSimpleClientset()
-	configMaps := newConfigMaps(clientSet, name, namespace, data)
-	configMaps.Data = map[string]string{
-	}
-	result, err := configMaps.Create()
+	configMaps := newConfigMaps(clientSet)
+	result, err := configMaps.Create(name, namespace, data)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, name, result.Name)
 
-	result, err = configMaps.Create()
+	result, err = configMaps.Create(name, namespace, data)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, name, result.Name)
 
-	result, err = configMaps.Get()
+	result, err = configMaps.Get(name, namespace)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, name, result.Name)
 
@@ -36,11 +34,11 @@ func TestConfigMapsCurd(t *testing.T) {
 			"default":"{a}",
 		},
 	}
-	result, err = configMaps.Update(configMap)
+	result, err = configMaps.Update(name, namespace, configMap)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, name, result.Name)
 
-	err = configMaps.Delete()
+	err = configMaps.Delete(name, namespace)
 	assert.Equal(t, nil, err)
 
 

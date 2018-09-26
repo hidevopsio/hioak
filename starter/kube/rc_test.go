@@ -13,13 +13,12 @@ func init() {
 
 func TestReplicationControllerWatching(t *testing.T) {
 	log.Debug("TestServiceDeletion()")
-
 	projectName := "demo"
 	profile     := "dev"
 	namespace   := projectName + "-" + profile
 	app         := "hello-world"
 	clientSet := fake.NewSimpleClientset()
-	rc := NewReplicationController(clientSet, app, namespace)
-	_, err := rc.Create(1)
+	rc := NewReplicationController(clientSet)
+	_, err := rc.Create(app, namespace, 1)
 	assert.Equal(t, nil, err)
 }

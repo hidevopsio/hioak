@@ -35,10 +35,10 @@ func TestSecretCreation(t *testing.T) {
 	secretName := username + "-secret"
 	namespace := "demo-dev"
 	clientSet := fake.NewSimpleClientset()
-	secret := NewSecret(clientSet, secretName, username, password, namespace, false)
+	secret := NewSecret(clientSet)
 
 	// Create secret
-	err := secret.Create()
+	err := secret.Create(username, password, secretName, namespace)
 	assert.Equal(t, nil, err)
 }
 
@@ -50,19 +50,19 @@ func TestSecretCrud(t *testing.T) {
 	password := "test-pwd"
 	namespace := "demo-dev"
 	clientSet := fake.NewSimpleClientset()
-	secret := NewSecret(clientSet, secretName, username, password, namespace, false)
+	secret := NewSecret(clientSet)
 
 	// Create secret
-	err := secret.Create()
+	err := secret.Create(username, password, secretName, namespace)
 	assert.Equal(t, nil, err)
 
 	// Get secret
-	s, err := secret.Get()
+	s, err := secret.Get(secretName, namespace)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, s.Name, secretName)
 
 	// Delete secret
-	err = secret.Delete()
+	err = secret.Delete(secretName, namespace)
 	assert.Equal(t, nil, err)
 
 }

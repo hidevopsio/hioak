@@ -20,86 +20,70 @@ import (
 	"k8s.io/client-go/kubernetes/typed/core/v1"
 	"github.com/hidevopsio/hiboot/pkg/log"
 	"k8s.io/apimachinery/pkg/api/errors"
-	"strings"
-	"k8s.io/client-go/kubernetes"
+		"k8s.io/client-go/kubernetes"
 )
 
 type Secret struct {
-	Name      string
-	Username  string
-	Password  string
-	Namespace string
 	clientSet kubernetes.Interface
-	secrets *corev1.Secret
-
 	Interface v1.SecretInterface
 }
 
 // Create new instance of type Secret
-func NewSecret(clientSet kubernetes.Interface, name, username, password, namespace string, isToken bool) (*Secret) {
-	log.Debugf("NewSecret(%v, %v, %v)", username, strings.Repeat("*", len(password)), namespace)
-	var s *Secret
-	s = &Secret{
-		Name:      name,
-		Password:  password,
-		Namespace: namespace,
-		Interface: clientSet.CoreV1().Secrets(namespace),
+func NewSecret(clientSet kubernetes.Interface) (*Secret) {
+	s := &Secret{
+		clientSet:clientSet,
 	}
-	if !isToken {
-		s.Username = username
-	}
-
 	return s
 }
 
 // Create takes the representation of a secret and creates it.  Returns the server's representation of the secret, and an error, if there is any.
-func (s *Secret) Create() error {
+func (s *Secret) Create(username, password, name, namespace string) error {
 	log.Debug("Secret.Create()")
 	var data map[string][]byte
-	if s.Username != "" {
+	if username != "" {
 		data = map[string][]byte{
-			corev1.BasicAuthUsernameKey: []byte(s.Username),
-			corev1.BasicAuthPasswordKey: []byte(s.Password),
+			corev1.BasicAuthUsernameKey: []byte(username),
+			corev1.BasicAuthPasswordKey: []byte(password),
 		}
 	} else {
 		data = map[string][]byte{
-			corev1.BasicAuthPasswordKey: []byte(s.Password),
+			corev1.BasicAuthPasswordKey: []byte(password),
 		}
 	}
 	// k8s.io/api/core/v1/types.go
 	coreSecret := &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: s.Name,
+			Name: name,
 		},
 		Data: data,
 		Type: corev1.SecretTypeBasicAuth,
 	}
 	var err error
 
-	_, err = s.Get()
+	_, err = s.Get(name, namespace)
 	if errors.IsNotFound(err) {
-		s.secrets, err = s.Interface.Create(coreSecret)
+		_, err = s.clientSet.CoreV1().Secrets(namespace).Create(coreSecret)
 	} else {
-		s.secrets, err = s.Interface.Update(coreSecret)
+		_, err = s.clientSet.CoreV1().Secrets(namespace).Update(coreSecret)
 	}
 
 	return err
 }
 
 // Get takes name of the secret, and returns the corresponding secret object, and an error if there is any.
-func (s *Secret) Get() (*corev1.Secret, error) {
+func (s *Secret) Get(name, namespace string) (*corev1.Secret, error) {
 	log.Debug("Secret.Get()")
 	var err error
-	s.secrets, err = s.Interface.Get(s.Name, metav1.GetOptions{})
+	secret, err := s.clientSet.CoreV1().Secrets(namespace).Get(name, metav1.GetOptions{})
 
-	return s.secrets, err
+	return secret, err
 }
 
 // Delete takes name of the secret and deletes it. Returns an error if one occurs.
-func (s *Secret) Delete() error {
+func (s *Secret) Delete(name, namespace string) error {
 	log.Debug("Secret.Delete()")
 	var err error
-	err = s.Interface.Delete(s.Name, &metav1.DeleteOptions{})
+	err = s.clientSet.CoreV1().Secrets(namespace).Delete(name, &metav1.DeleteOptions{})
 
 	return err
 }

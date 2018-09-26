@@ -11,6 +11,7 @@ import (
 
 type OAuthAccessToken struct {
 	Interface oauthv1.OAuthAccessTokenInterface
+
 }
 
 func NewOAuthAccessTokenClientSet() (oauthv1.OauthV1Interface, error) {

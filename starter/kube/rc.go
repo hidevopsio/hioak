@@ -4,34 +4,28 @@ import (
 	"github.com/hidevopsio/hiboot/pkg/log"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes/typed/core/v1"
-	"k8s.io/apimachinery/pkg/watch"
+		"k8s.io/apimachinery/pkg/watch"
 	"fmt"
 	"k8s.io/client-go/kubernetes"
 )
 
 type ReplicationController struct{
-	Name string
-	Namespace string
 	clientSet kubernetes.Interface
-	Interface v1.ReplicationControllerInterface
 }
 
-func NewReplicationController(clientSet kubernetes.Interface, name string, namespace string) *ReplicationController {
+func NewReplicationController(clientSet kubernetes.Interface) *ReplicationController {
 	return &ReplicationController{
-		Name: name,
-		Namespace: namespace,
-		Interface: clientSet.CoreV1().ReplicationControllers(namespace),
+		clientSet: clientSet,
 	}
 }
 
 
-func (rc *ReplicationController) Create(replicas int32) (*corev1.ReplicationController, error) {
+func (rc *ReplicationController) Create(name, namespace string, replicas int32) (*corev1.ReplicationController, error) {
 	crc := &corev1.ReplicationController{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: rc.Name,
+			Name: name,
 			Labels: map[string]string{
-				"app": rc.Name,
+				"app": name,
 			},
 		},
 		Spec: corev1.ReplicationControllerSpec{
@@ -44,12 +38,12 @@ func (rc *ReplicationController) Create(replicas int32) (*corev1.ReplicationCont
 		},
 	}
 
-	return rc.Interface.Create(crc)
+	return rc.clientSet.CoreV1().ReplicationControllers(namespace).Create(crc)
 }
 
-func (rc *ReplicationController) Watch(completedHandler func() error) error {
-	w, err := rc.Interface.Watch(metav1.ListOptions{
-		LabelSelector: "app=" + rc.Name,
+func (rc *ReplicationController) Watch(name, namespace string, completedHandler func() error) error {
+	w, err := rc.clientSet.CoreV1().ReplicationControllers(namespace).Watch(metav1.ListOptions{
+		LabelSelector: "app=" + name,
 		Watch: true,
 	})
 
