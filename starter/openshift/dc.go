@@ -12,20 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 package openshift
 
-
 import (
-	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	appsv1 "github.com/openshift/client-go/apps/clientset/versioned/typed/apps/v1"
-		"github.com/openshift/api/apps/v1"
-	"github.com/hidevopsio/hiboot/pkg/log"
-	"k8s.io/apimachinery/pkg/api/errors"
 	"fmt"
+	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/jinzhu/copier"
-		"strings"
+	"github.com/openshift/api/apps/v1"
+	appsv1 "github.com/openshift/client-go/apps/clientset/versioned/typed/apps/v1"
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"strings"
 )
 
 type DeploymentConfigInterface interface {
@@ -34,28 +32,18 @@ type DeploymentConfigInterface interface {
 	Delete() error
 }
 
-
 type DeploymentConfig struct {
-	Name      string
-	Namespace string
-	FullName  string
-	Version   string
-	Interface appsv1.DeploymentConfigInterface
+	clientSet appsv1.AppsV1Interface
 }
 
-func NewDeploymentConfig(clientSet appsv1.AppsV1Interface, name, namespace, version string) (*DeploymentConfig, error) {
+func newDeploymentConfig(clientSet appsv1.AppsV1Interface) *DeploymentConfig {
 	log.Debug("NewDeploymentConfig()")
-	fullName := name + "-" + version
 	return &DeploymentConfig{
-		Name:      name,
-		Namespace: namespace,
-		FullName:  fullName,
-		Version: version,
-		Interface: clientSet.DeploymentConfigs(namespace),
-	}, nil
+		clientSet: clientSet,
+	}
 }
 
-func (dc *DeploymentConfig) Create(env interface{}, labels map[string]string, ports interface{}, replicas int32, force bool, healthEndPoint, nodeSelector string) error {
+func (dc *DeploymentConfig) Create(name, namespace, fullName, version string, env interface{}, labels map[string]string, ports interface{}, replicas int32, force bool, healthEndPoint, nodeSelector string) error {
 	log.Debug("DeploymentConfig.Create()", force)
 	// env
 	e := make([]corev1.EnvVar, 0)
@@ -69,18 +57,18 @@ func (dc *DeploymentConfig) Create(env interface{}, labels map[string]string, po
 	cfg := &v1.DeploymentConfig{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "apps.openshift.io/v1",
-			Kind: "DeploymentConfig",
+			Kind:       "DeploymentConfig",
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Name: dc.FullName,
+			Name:   fullName,
 			Labels: labels,
 		},
 		Spec: v1.DeploymentConfigSpec{
 			Replicas: replicas,
 
 			Selector: map[string]string{
-				"app": dc.Name,
-				"version": dc.Version,
+				"app":     name,
+				"version": version,
 			},
 
 			Strategy: v1.DeploymentStrategy{
@@ -89,7 +77,7 @@ func (dc *DeploymentConfig) Create(env interface{}, labels map[string]string, po
 
 			Template: &corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
-					Name: dc.Name,
+					Name:   name,
 					Labels: labels,
 				},
 				Spec: corev1.PodSpec{
@@ -98,12 +86,12 @@ func (dc *DeploymentConfig) Create(env interface{}, labels map[string]string, po
 							Env:             e,
 							Image:           " ",
 							ImagePullPolicy: corev1.PullAlways,
-							Name:            dc.Name,
+							Name:            name,
 							Ports:           p,
 							ReadinessProbe: &corev1.Probe{
 								Handler: corev1.Handler{
 									Exec: &corev1.ExecAction{
-										Command : []string{
+										Command: []string{
 											"curl",
 											"--silent",
 											"--show-error",
@@ -119,7 +107,7 @@ func (dc *DeploymentConfig) Create(env interface{}, labels map[string]string, po
 							LivenessProbe: &corev1.Probe{
 								Handler: corev1.Handler{
 									Exec: &corev1.ExecAction{
-										Command : []string{
+										Command: []string{
 											"curl",
 											"--silent",
 											"--show-error",
@@ -137,7 +125,7 @@ func (dc *DeploymentConfig) Create(env interface{}, labels map[string]string, po
 					DNSPolicy:     corev1.DNSClusterFirst,
 					RestartPolicy: corev1.RestartPolicyAlways,
 					SchedulerName: "default-scheduler",
-					NodeSelector: selector,
+					NodeSelector:  selector,
 				},
 			},
 			Test: false,
@@ -147,12 +135,12 @@ func (dc *DeploymentConfig) Create(env interface{}, labels map[string]string, po
 					ImageChangeParams: &v1.DeploymentTriggerImageChangeParams{
 						Automatic: true,
 						ContainerNames: []string{
-							dc.Name,
+							name,
 						},
 						From: corev1.ObjectReference{
 							Kind:      "ImageStreamTag",
-							Name:      dc.Name + ":" + dc.Version,
-							Namespace: dc.Namespace,
+							Name:      name + ":" + version,
+							Namespace: namespace,
 						},
 					},
 				},
@@ -160,16 +148,16 @@ func (dc *DeploymentConfig) Create(env interface{}, labels map[string]string, po
 		},
 	}
 
-	result, err := dc.Interface.Get(dc.FullName, metav1.GetOptions{})
+	result, err := dc.clientSet.DeploymentConfigs(namespace).Get(fullName, metav1.GetOptions{})
 	switch {
 	case err == nil:
 		// select update or patch according to the user's request
 		if force {
 			cfg.ObjectMeta.ResourceVersion = result.ResourceVersion
-			result, err = dc.Interface.Update(cfg)
+			result, err = dc.clientSet.DeploymentConfigs(namespace).Update(cfg)
 			if err == nil {
 				log.Infof("Updated DeploymentConfig %v.", result.Name)
-				_, err := dc.Instantiate()
+				_, err := dc.Instantiate(name, namespace, fullName)
 				if err != nil {
 					log.Error(err.Error())
 				}
@@ -178,12 +166,12 @@ func (dc *DeploymentConfig) Create(env interface{}, labels map[string]string, po
 				return err
 			}
 		}
-	case errors.IsNotFound(err) :
-		d, err := dc.Interface.Create(cfg)
+	case errors.IsNotFound(err):
+		_, err := dc.clientSet.DeploymentConfigs(namespace).Create(cfg)
 		if err != nil {
 			return err
 		}
-		log.Infof("Created DeploymentConfig %v.\n", d.Name)
+		log.Infof("Created DeploymentConfig %v.\n", name)
 	default:
 		return fmt.Errorf("failed to create DeploymentConfig: %s", err)
 	}
@@ -191,33 +179,32 @@ func (dc *DeploymentConfig) Create(env interface{}, labels map[string]string, po
 	return nil
 }
 
-
-func (dc *DeploymentConfig) Get() (*v1.DeploymentConfig, error) {
+func (dc *DeploymentConfig) Get(namespace, fullName string) (*v1.DeploymentConfig, error) {
 	log.Debug("DeploymentConfig.Get()")
-	return dc.Interface.Get(dc.FullName, metav1.GetOptions{})
+	return dc.clientSet.DeploymentConfigs(namespace).Get(fullName, metav1.GetOptions{})
 }
 
-func (dc *DeploymentConfig) Delete() error {
+func (dc *DeploymentConfig) Delete(namespace, fullName string) error {
 	log.Debug("DeploymentConfig.Delete()")
-	return dc.Interface.Delete(dc.FullName, &metav1.DeleteOptions{})
+	return dc.clientSet.DeploymentConfigs(namespace).Delete(fullName, &metav1.DeleteOptions{})
 }
 
-func (dc *DeploymentConfig) Instantiate() (*v1.DeploymentConfig, error)  {
+func (dc *DeploymentConfig) Instantiate(name, namespace, fullName string) (*v1.DeploymentConfig, error) {
 	log.Debug("DeploymentConfig.Instantiate()")
 
 	request := &v1.DeploymentRequest{
 		TypeMeta: metav1.TypeMeta{
-			Kind: "DeploymentRequest",
+			Kind:       "DeploymentRequest",
 			APIVersion: "v1",
 		},
-		Name: dc.FullName,
-		Force: true,
+		Name:   fullName,
+		Force:  true,
 		Latest: true,
 	}
 
-	d, err := dc.Interface.Instantiate(dc.FullName, request)
+	d, err := dc.clientSet.DeploymentConfigs(namespace).Instantiate(fullName, request)
 	if nil == err {
-		log.Infof("Instantiated Build %v", d.Name)
+		log.Infof("Instantiated Build %v", name)
 	}
 
 	return d, err

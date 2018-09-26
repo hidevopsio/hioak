@@ -1,14 +1,14 @@
 package factories
 
 import (
+	"errors"
 	"fmt"
 	"github.com/hidevopsio/hiboot/pkg/log"
-	"errors"
 	"github.com/hidevopsio/hioak/starter/scm"
 	"github.com/hidevopsio/hioak/starter/scm/gitlab"
 )
 
-func (s *ScmFactory) NewProject(provider int) (scm.ProjectInterface, error)  {
+func (s *ScmFactory) NewProject(provider int) (scm.ProjectInterface, error) {
 	log.Debug("scm.NewSession()")
 	switch provider {
 	case GithubScmType:

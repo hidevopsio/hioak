@@ -1,15 +1,15 @@
 package kube
 
 import (
-		"k8s.io/api/core/v1"
+	"fmt"
+	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
-	"fmt"
-	)
+)
 
 type KubernetesAPI struct {
 	Suffix string
-	Client  kubernetes.Interface
+	Client kubernetes.Interface
 }
 
 // NewNamespaceWithPostfix creates a new namespace with a stable postfix

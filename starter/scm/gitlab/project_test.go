@@ -1,11 +1,11 @@
 package gitlab
 
 import (
-	"testing"
-	"os"
-		"github.com/magiconair/properties/assert"
-	"github.com/xanzy/go-gitlab"
 	"github.com/hidevopsio/hioak/starter/scm/gitlab/fake"
+	"github.com/magiconair/properties/assert"
+	"github.com/xanzy/go-gitlab"
+	"os"
+	"testing"
 )
 
 func TestGetProject(t *testing.T) {
@@ -13,11 +13,11 @@ func TestGetProject(t *testing.T) {
 	s := fake.NewClient("")
 	s.On("SetBaseURL", nil).Return(nil)
 	gra := &gitlab.Project{
-		ID: 100,
+		ID:   100,
 		Name: "chulei",
 		Namespace: &gitlab.ProjectNamespace{
-			ID:30,
-	},
+			ID: 30,
+		},
 	}
 	pid := "4"
 	resp := new(gitlab.Response)
@@ -32,10 +32,10 @@ func TestGetGroupId(t *testing.T) {
 	s := fake.NewClient("")
 	s.On("SetBaseURL", nil).Return(nil)
 	gra := &gitlab.Project{
-		ID: 100,
+		ID:   100,
 		Name: "chulei",
 		Namespace: &gitlab.ProjectNamespace{
-			ID:30,
+			ID: 30,
 		},
 	}
 	pid := 4
@@ -51,10 +51,10 @@ func TestListProjects(t *testing.T) {
 	s := fake.NewClient("")
 	s.On("SetBaseURL", nil).Return(nil)
 	gra := &gitlab.Project{
-		ID: 100,
+		ID:   100,
 		Name: "chulei",
 		Namespace: &gitlab.ProjectNamespace{
-			ID:30,
+			ID: 30,
 		},
 	}
 	var pro []*gitlab.Project
@@ -73,10 +73,10 @@ func TestSearch(t *testing.T) {
 	s := fake.NewClient("")
 	s.On("SetBaseURL", nil).Return(nil)
 	gra := &gitlab.Project{
-		ID: 100,
+		ID:   100,
 		Name: "chulei",
 		Namespace: &gitlab.ProjectNamespace{
-			ID:30,
+			ID: 30,
 		},
 	}
 	var pro []*gitlab.Project

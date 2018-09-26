@@ -15,17 +15,17 @@
 package kube
 
 import (
-	"k8s.io/api/apps/v1beta1"
-	extensionsV1beta1 "k8s.io/api/extensions/v1beta1"
-	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"fmt"
-	"k8s.io/apimachinery/pkg/util/intstr"
-	"github.com/hidevopsio/hiboot/pkg/log"
 	"encoding/json"
-	"strings"
+	"fmt"
+	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/hidevopsio/hiboot/pkg/utils/copier"
+	"k8s.io/api/apps/v1beta1"
+	corev1 "k8s.io/api/core/v1"
+	extensionsV1beta1 "k8s.io/api/extensions/v1beta1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/client-go/kubernetes"
+	"strings"
 )
 
 type Deployment struct {
@@ -39,6 +39,7 @@ func newDeployment(clientSet kubernetes.Interface) *Deployment {
 		clientSet: clientSet,
 	}
 }
+
 // @Title Deploy
 // @Description deploy application
 // @Param pipeline
@@ -191,7 +192,7 @@ func (d *Deployment) ExtensionsV1beta1Deploy(app, project, profile, imageTag, do
 	return retVal, err
 }
 
-func (d *Deployment) DeployNode(app ,project, dockerRegistry, imageTag, profile string) (string, error) {
+func (d *Deployment) DeployNode(app, project, dockerRegistry, imageTag, profile string) (string, error) {
 	log.Debug("Deployment.Deploy()")
 	deploySpec := &v1beta1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
@@ -216,7 +217,7 @@ func (d *Deployment) DeployNode(app ,project, dockerRegistry, imageTag, profile 
 			RevisionHistoryLimit: int32Ptr(10),
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:   app,
+					Name: app,
 					Labels: map[string]string{
 						"app": app,
 					},
@@ -224,8 +225,8 @@ func (d *Deployment) DeployNode(app ,project, dockerRegistry, imageTag, profile 
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{
 						{
-							Name:            app,
-							Image:           dockerRegistry + "/" + project + "/" + app + ":" + imageTag,
+							Name:  app,
+							Image: dockerRegistry + "/" + project + "/" + app + ":" + imageTag,
 							Ports: []corev1.ContainerPort{
 								{
 									Name:          "http",

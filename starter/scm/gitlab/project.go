@@ -1,17 +1,16 @@
 package gitlab
 
 import (
-	"github.com/xanzy/go-gitlab"
-		"github.com/hidevopsio/hiboot/pkg/log"
-	"github.com/jinzhu/copier"
+	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/hidevopsio/hioak/starter/scm"
+	"github.com/jinzhu/copier"
+	"github.com/xanzy/go-gitlab"
 )
 
 type Project struct {
 	scm.Project
 	client ClientInterface
 }
-
 
 func NewProject(c ClientInterface) scm.ProjectInterface {
 	return &Project{
@@ -48,12 +47,12 @@ func (p *Project) ListProjects(baseUrl, token, search string, page int) ([]scm.P
 	if search != "" {
 		listProjectsOptions = &gitlab.ListProjectsOptions{
 			ListOptions: gitlab.ListOptions{
-				Page: page,
+				Page:    page,
 				PerPage: 200,
 			},
 			Search: &search,
 		}
-	}else{
+	} else {
 		listProjectsOptions = &gitlab.ListProjectsOptions{
 			ListOptions: gitlab.ListOptions{
 				Page: page,
@@ -71,7 +70,7 @@ func (p *Project) ListProjects(baseUrl, token, search string, page int) ([]scm.P
 	return projects, err
 }
 
-func (p *Project) Search(baseUrl, token, search string) ([]scm.Project, error){
+func (p *Project) Search(baseUrl, token, search string) ([]scm.Project, error) {
 	log.Debug("Search.GetProjects()")
 	p.client.SetBaseURL(baseUrl + ApiVersion)
 	log.Debug("before Search.project(so)", search)

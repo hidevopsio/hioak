@@ -5,7 +5,7 @@ import (
 )
 
 type GroupMemberInterface interface {
-	ListGroupMembers(token, baseUrl string, gid, uid int) (int,  error)
+	ListGroupMembers(token, baseUrl string, gid, uid int) (int, error)
 	GetGroupMember(token, baseUrl string, gid, uid int) (*GroupMember, error)
 }
 

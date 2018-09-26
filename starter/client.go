@@ -12,36 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 package orch
-
 
 import (
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
 
+	"flag"
+	"github.com/hidevopsio/hiboot/pkg/utils/gotest"
+	log "github.com/kataras/golog"
 	"k8s.io/client-go/rest"
 	"os"
-	"flag"
 	"path/filepath"
-	log "github.com/kataras/golog"
-	"github.com/hidevopsio/hiboot/pkg/utils/gotest"
 	"sync"
-	)
-
+)
 
 type Client struct {
 	isTestRunning bool
-	config     *rest.Config
-	kubeconfig *string
+	config        *rest.Config
+	kubeconfig    *string
 }
 
 var (
 	client *Client
-	once sync.Once
-
+	once   sync.Once
 )
-
 
 func GetClientInstance() *Client {
 
@@ -82,14 +77,14 @@ func NewClient() *Client {
 	return cli
 }
 
-func (c *Client) Config() *rest.Config  {
+func (c *Client) Config() *rest.Config {
 	return c.config
 }
 
-func (c *Client) IsTestRunning() bool  {
+func (c *Client) IsTestRunning() bool {
 	return c.isTestRunning
 }
 
-func (c *Client) Kubeconfig() *string  {
+func (c *Client) Kubeconfig() *string {
 	return c.kubeconfig
 }

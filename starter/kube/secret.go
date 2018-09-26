@@ -15,12 +15,12 @@
 package kube
 
 import (
-	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes/typed/core/v1"
 	"github.com/hidevopsio/hiboot/pkg/log"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
-		"k8s.io/client-go/kubernetes"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/kubernetes/typed/core/v1"
 )
 
 type Secret struct {
@@ -29,9 +29,9 @@ type Secret struct {
 }
 
 // Create new instance of type Secret
-func NewSecret(clientSet kubernetes.Interface) (*Secret) {
+func NewSecret(clientSet kubernetes.Interface) *Secret {
 	s := &Secret{
-		clientSet:clientSet,
+		clientSet: clientSet,
 	}
 	return s
 }

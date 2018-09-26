@@ -14,11 +14,10 @@
 
 package factories
 
-
 import (
-	"github.com/hidevopsio/hiboot/pkg/log"
 	"errors"
 	"fmt"
+	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/hidevopsio/hioak/starter/scm"
 	"github.com/hidevopsio/hioak/starter/scm/gitlab"
 )
@@ -30,8 +29,7 @@ const (
 
 type ScmFactory struct{}
 
-
-func (s *ScmFactory) New(provider int) (scm.SessionInterface, error)  {
+func (s *ScmFactory) New(provider int) (scm.SessionInterface, error) {
 	log.Debug("scm.NewSession()")
 	switch provider {
 	case GithubScmType:

@@ -1,20 +1,19 @@
 package gitlab
 
 import (
-	"testing"
-	"github.com/magiconair/properties/assert"
-		"os"
 	"github.com/hidevopsio/hioak/starter/scm/gitlab/fake"
+	"github.com/magiconair/properties/assert"
 	"github.com/xanzy/go-gitlab"
+	"os"
+	"testing"
 )
-
 
 func TestListGroups(t *testing.T) {
 	baseUrl := os.Getenv("SCM_URL")
 	s := fake.NewClient("")
 	s.On("SetBaseURL", nil).Return(nil)
 	gra := &gitlab.Group{
-		ID: 100,
+		ID:   100,
 		Name: "chulei",
 	}
 	var gro []*gitlab.Group
@@ -32,7 +31,7 @@ func TestGetGroup(t *testing.T) {
 	s := fake.NewClient("")
 	s.On("SetBaseURL", nil).Return(nil)
 	gra := &gitlab.Group{
-		ID: 100,
+		ID:   100,
 		Name: "chulei",
 	}
 	gr := new(gitlab.Response)
@@ -42,12 +41,12 @@ func TestGetGroup(t *testing.T) {
 	assert.Equal(t, nil, err)
 }
 
-func TestListGroupProjects1(t *testing.T)   {
+func TestListGroupProjects1(t *testing.T) {
 	baseUrl := os.Getenv("SCM_URL")
 	s := fake.NewClient("")
 	s.On("SetBaseURL", nil).Return(nil)
 	gra := &gitlab.Project{
-		ID: 100,
+		ID:   100,
 		Name: "chulei",
 	}
 	var projects []*gitlab.Project
@@ -58,4 +57,3 @@ func TestListGroupProjects1(t *testing.T)   {
 	_, err := group.ListGroupProjects(os.Getenv("SCM_TOKEN"), baseUrl, 1, 1)
 	assert.Equal(t, nil, err)
 }
-
