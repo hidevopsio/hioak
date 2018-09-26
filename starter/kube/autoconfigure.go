@@ -19,7 +19,7 @@ type properties struct {
 type configuration struct{
 	app.Configuration
 
-	Properties properties `json:"properties" mapstruct:"k8s"`
+	Properties properties `json:"properties" mapstructure:"k8s"`
 }
 
 func newConfiguration() *configuration {
