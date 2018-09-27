@@ -8,19 +8,6 @@ import (
 	"testing"
 )
 
-func TestGetRepositoty(t *testing.T) {
-	baseUrl := os.Getenv("SCM_URL")
-	s := fake.NewClient("")
-	s.On("SetBaseURL", nil).Return(nil)
-	file := &gitlab.File{
-		FileName: "chulei",
-	}
-	resp := new(gitlab.Response)
-	s.On("GetFile", nil, nil, nil).Return(file, resp, nil)
-	repository := NewRepository(s)
-	_, err := repository.GetRepository(baseUrl, os.Getenv("Token"), "pom.xml", "master", 1)
-	assert.Equal(t, nil, err)
-}
 
 func TestListTree(t *testing.T) {
 	baseUrl := os.Getenv("SCM_URL")

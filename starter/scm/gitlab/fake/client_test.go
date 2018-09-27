@@ -20,7 +20,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/xanzy/go-gitlab"
 	"testing"
-)
+	)
 
 func init() {
 	log.SetLevel(log.DebugLevel)

@@ -9,38 +9,23 @@ import (
 
 type Repository struct {
 	scm.TreeNode
-	client ClientInterface
+	client RepositoryInterface
 }
 
 type TreeNode struct {
 	scm.TreeNode
 }
 
-func NewRepository(c ClientInterface) scm.RepositoryInterface {
+func NewRepository(c RepositoryInterface) *Repository {
 	return &Repository{
 		client: c,
 	}
 }
 
-func (r *Repository) GetRepository(baseUrl, token, filePath, ref string, pid int) (string, error) {
-	log.Debug("Repository.Repository()")
-	log.Debugf("url: %v", baseUrl)
-	r.client.SetBaseURL(baseUrl + ApiVersion)
-	opt := &gitlab.GetFileOptions{
-		Ref:      &ref,
-		FilePath: &filePath,
-	}
-	file, _, err := r.client.GetFile(pid, opt)
-	if err != nil {
-		return "", err
-	}
-	return file.Content, nil
-}
 
 func (r *Repository) ListTree(baseUrl, token, ref string, pid int) ([]scm.TreeNode, error) {
 	log.Debug("Repository.ListTree()")
 	log.Debugf("url: %v", baseUrl)
-	r.client.SetBaseURL(baseUrl + ApiVersion)
 	opt := &gitlab.ListTreeOptions{
 		RefName: &ref,
 	}

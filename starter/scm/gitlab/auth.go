@@ -23,14 +23,14 @@ import (
 
 type Session struct {
 	scm.Session
-	client ClientInterface
+	client SessionInterface
 }
 
 const (
 	ApiVersion = "/api/v3"
 )
 
-func NewSession(c ClientInterface) scm.SessionInterface {
+func NewSession(c SessionInterface) *Session {
 	return &Session{
 		client: c,
 	}
@@ -43,9 +43,6 @@ func (s *Session) GetSession(baseUrl, username, password string) error {
 		Login:    &username,
 		Password: &password,
 	}
-	s.client.SetBaseURL(baseUrl + ApiVersion)
-	log.Debug("before c.Session.GetSession(so)")
-
 	session, _, err := s.client.GetSession(so)
 	log.Debug("after c.Session.GetSession(so)", err)
 

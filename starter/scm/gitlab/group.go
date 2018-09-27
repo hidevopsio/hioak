@@ -9,27 +9,26 @@ import (
 
 type Group struct {
 	scm.Group
-	client ClientInterface
+	group GroupInterface
 }
 
-func NewGroup(c ClientInterface) scm.GroupInterface {
+func NewGroup(g GroupInterface) *Group {
 	return &Group{
-		client: c,
+		group: g,
 	}
 }
 
 func (g *Group) ListGroups(token, baseUrl string, page int) ([]scm.Group, error) {
 	log.Debug("group.ListGroups()")
-	scmGroups := []scm.Group{}
+	var scmGroups []scm.Group
 	scmGroup := &scm.Group{}
-	g.client.SetBaseURL(baseUrl + ApiVersion)
 	log.Debug("before c.group.ListGroups(so)")
 	opt := &gitlab.ListGroupsOptions{
 		ListOptions: gitlab.ListOptions{
 			Page: page,
 		},
 	}
-	groups, _, err := g.client.ListGroups(opt)
+	groups, _, err := g.group.ListGroups(opt)
 	if err != nil {
 		return nil, err
 	}
@@ -44,9 +43,8 @@ func (g *Group) ListGroups(token, baseUrl string, page int) ([]scm.Group, error)
 func (g *Group) GetGroup(token, baseUrl string, gid int) (*scm.Group, error) {
 	log.Debug("group.GetGroup()")
 	scmGroup := &scm.Group{}
-	g.client.SetBaseURL(baseUrl + ApiVersion)
 	log.Debug("before c.group.ListGroups(so)")
-	group, _, err := g.client.GetGroup(gid)
+	group, _, err := g.group.GetGroup(gid)
 	log.Debug("after c.Session.GetSession(so)")
 	if err != nil {
 		return nil, err
@@ -59,14 +57,13 @@ func (g *Group) ListGroupProjects(token, baseUrl string, gid, page int) ([]scm.P
 	log.Debug("group.ListGroups()")
 	var scmProjects []scm.Project
 	scmProject := &scm.Project{}
-	g.client.SetBaseURL(baseUrl + ApiVersion)
 	log.Debug("before c.group.ListGroups")
 	opt := &gitlab.ListGroupProjectsOptions{
 		ListOptions: gitlab.ListOptions{
 			Page: page,
 		},
 	}
-	projects, _, err := g.client.ListGroupProjects(gid, opt)
+	projects, _, err := g.group.ListGroupProjects(gid, opt)
 	log.Debug("ListGroupProjects : ", len(projects))
 	if err != nil {
 		log.Error("Group ListGroupProjects : ", err)

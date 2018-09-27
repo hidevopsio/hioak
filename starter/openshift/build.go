@@ -231,7 +231,7 @@ func (b *BuildConfig) Watch(name, namespace string, build *v1.Build, completedHa
 			}
 		}
 	}
-	log.Info("build.watch", err)
+	log.Infof("build.watch :%v", err)
 	return err
 }
 
