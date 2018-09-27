@@ -1,11 +1,11 @@
 package gitlab
 
 import (
-	"testing"
-	"os"
-		"github.com/magiconair/properties/assert"
-	"github.com/xanzy/go-gitlab"
 	"github.com/hidevopsio/hioak/starter/scm/gitlab/fake"
+	"github.com/magiconair/properties/assert"
+	"github.com/xanzy/go-gitlab"
+	"os"
+	"testing"
 )
 
 func TestListProjectMembers(t *testing.T) {
@@ -13,8 +13,8 @@ func TestListProjectMembers(t *testing.T) {
 	s := fake.NewClient("")
 	s.On("SetBaseURL", nil).Return(nil)
 	gra := &gitlab.GroupMember{
-		ID: 100,
-		Name: "chulei",
+		ID:          100,
+		Name:        "chulei",
 		AccessLevel: gitlab.DeveloperPermissions,
 	}
 	var gro []*gitlab.GroupMember
@@ -23,8 +23,8 @@ func TestListProjectMembers(t *testing.T) {
 	gid := 4
 	s.On("ListGroupMembers", gid, nil, nil).Return(gro, resp, nil)
 	projectMembers := &gitlab.ProjectMember{
-		ID: 100,
-		Name: "chulei",
+		ID:          100,
+		Name:        "chulei",
 		AccessLevel: gitlab.DeveloperPermissions,
 	}
 	s.On("GetProjectMember", nil, nil).Return(projectMembers, resp, nil)

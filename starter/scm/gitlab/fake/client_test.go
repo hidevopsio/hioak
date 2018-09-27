@@ -15,14 +15,14 @@
 package fake_test
 
 import (
-	"testing"
 	"github.com/hidevopsio/hiboot/pkg/log"
+	"github.com/hidevopsio/hioak/starter/scm/gitlab/fake"
 	"github.com/stretchr/testify/assert"
 	"github.com/xanzy/go-gitlab"
-	"github.com/hidevopsio/hioak/starter/scm/gitlab/fake"
+	"testing"
 )
 
-func init()  {
+func init() {
 	log.SetLevel(log.DebugLevel)
 }
 

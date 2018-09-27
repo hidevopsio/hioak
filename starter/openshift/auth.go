@@ -2,16 +2,15 @@ package openshift
 
 import (
 	"github.com/hidevopsio/hioak/starter"
+	"github.com/openshift/api/oauth/v1"
 	"github.com/openshift/client-go/oauth/clientset/versioned/fake"
 	oauthv1 "github.com/openshift/client-go/oauth/clientset/versioned/typed/oauth/v1"
 	"github.com/prometheus/common/log"
 	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"github.com/openshift/api/oauth/v1"
 )
 
 type OAuthAccessToken struct {
 	Interface oauthv1.OAuthAccessTokenInterface
-
 }
 
 func NewOAuthAccessTokenClientSet() (oauthv1.OauthV1Interface, error) {
@@ -28,17 +27,15 @@ func NewOAuthAccessTokenClientSet() (oauthv1.OauthV1Interface, error) {
 	return clientSet, err
 }
 
-func NewOAuthAccessToken(clientSet oauthv1.OauthV1Interface) (*OAuthAccessToken, error) {
+func NewOAuthAccessToken(clientSet oauthv1.OauthV1Interface) *OAuthAccessToken {
 	return &OAuthAccessToken{
 		Interface: clientSet.OAuthAccessTokens(),
-	}, nil
+	}
 }
 
 func (o *OAuthAccessToken) Create() (*v1.OAuthAccessToken, error) {
 	log.Debug("openshift get OAuthAccessToken")
-	token := &v1.OAuthAccessToken{
-
-	}
+	token := &v1.OAuthAccessToken{}
 	token, err := o.Interface.Create(token)
 	return token, err
 }
@@ -57,7 +54,7 @@ func (o *OAuthAccessToken) List() (*v1.OAuthAccessTokenList, error) {
 	return tokens, err
 }
 
-func GetToken()  {
+func GetToken() {
 	clientSet, err := NewOAuthAccessTokenClientSet()
 	log.Info(err)
 	clientSet.RESTClient()

@@ -12,26 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 package kube
 
 import (
 	"github.com/hidevopsio/hiboot/pkg/log"
-	"testing"
 	"github.com/stretchr/testify/assert"
-	"os"
 	"k8s.io/client-go/kubernetes/fake"
+	"os"
+	"testing"
 )
 
-func init()  {
+func init() {
 	log.SetLevel(log.DebugLevel)
 }
-
 
 func TestSecretCreation(t *testing.T) {
 	log.Debug("TestSecretCrud()")
 	username := os.Getenv("SCM_USERNAME")
-	password :=  os.Getenv("SCM_PASSWORD")
+	password := os.Getenv("SCM_PASSWORD")
 	secretName := username + "-secret"
 	namespace := "demo-dev"
 	clientSet := fake.NewSimpleClientset()

@@ -14,68 +14,41 @@
 
 package openshift
 
-
 import (
-	routev1 "github.com/openshift/client-go/route/clientset/versioned/typed/route/v1"
-	"github.com/openshift/client-go/route/clientset/versioned/fake"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"github.com/openshift/api/route/v1"
-	"github.com/hidevopsio/hiboot/pkg/log"
-	"k8s.io/apimachinery/pkg/util/intstr"
-	"k8s.io/apimachinery/pkg/api/errors"
 	"fmt"
-	"github.com/hidevopsio/hioak/starter"
+	"github.com/hidevopsio/hiboot/pkg/log"
+	"github.com/openshift/api/route/v1"
+	routev1 "github.com/openshift/client-go/route/clientset/versioned/typed/route/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
-
-
-type Route struct{
-	Name string
-	Namespace string
-
-	Interface routev1.RouteInterface
+type Route struct {
+	clientSet routev1.RouteV1Interface
 }
 
-
-func NewRouteClientSet() (routev1.RouteV1Interface, error) {
-
-	cli := orch.GetClientInstance()
-
-	// get the fake ClientSet for testing
-	if cli.IsTestRunning() {
-		return fake.NewSimpleClientset().RouteV1(), nil
-	}
-
-	// get the real ClientSet
-	clientSet, err := routev1.NewForConfig(cli.Config())
-
-	return clientSet, err
-}
-
-
-func NewRoute(clientSet routev1.RouteV1Interface, name, namespace string) (*Route, error)  {
+func newRoute(clientSet routev1.RouteV1Interface) *Route {
 	log.Debug("NewRoute()")
 	return &Route{
-		Name:      name,
-		Namespace: namespace,
-		Interface: clientSet.Routes(namespace),
-	}, nil
+		clientSet: clientSet,
+	}
 }
 
-func (r *Route) Create(port int32) (string, error) {
+func (r *Route) Create(name, namespace string, port int32) (string, error) {
 	log.Debug("Route.Create()")
 	upstreamUrl := ""
 	cfg := &v1.Route{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: r.Name,
+			Name: name,
 			Labels: map[string]string{
-				"app": r.Name,
+				"app": name,
 			},
 		},
 		Spec: v1.RouteSpec{
 			To: v1.RouteTargetReference{
 				Kind: "Service",
-				Name: r.Name,
+				Name: name,
 			},
 			Port: &v1.RoutePort{
 				TargetPort: intstr.IntOrString{
@@ -85,11 +58,11 @@ func (r *Route) Create(port int32) (string, error) {
 		},
 	}
 
-	result, err := r.Interface.Get(r.Name, metav1.GetOptions{})
+	result, err := r.clientSet.Routes(namespace).Get(name, metav1.GetOptions{})
 	switch {
 	case err == nil:
 		cfg.ObjectMeta.ResourceVersion = result.ResourceVersion
-		result, err = r.Interface.Update(cfg)
+		result, err = r.clientSet.Routes(namespace).Update(cfg)
 		if err == nil {
 			upstreamUrl = result.Spec.Host
 			log.Infof("Updated Route %v", result.Name)
@@ -98,7 +71,7 @@ func (r *Route) Create(port int32) (string, error) {
 		}
 		break
 	case errors.IsNotFound(err):
-		route, err := r.Interface.Create(cfg)
+		route, err := r.clientSet.Routes(namespace).Create(cfg)
 		if err != nil {
 			return upstreamUrl, err
 		}
@@ -111,15 +84,14 @@ func (r *Route) Create(port int32) (string, error) {
 	return upstreamUrl, nil
 }
 
-func (r *Route) Get() (*v1.Route, error) {
-	log.Debug("Route.Delete()")
+func (r *Route) Get(name, namespace string) (*v1.Route, error) {
+	log.Debug("Route.get()")
 
-	return r.Interface.Get(r.Name, metav1.GetOptions{})
+	return r.clientSet.Routes(namespace).Get(name, metav1.GetOptions{})
 }
 
-func (r *Route) Delete() error {
+func (r *Route) Delete(name, namespace string) error {
 	log.Debug("Route.Delete()")
 
-	return r.Interface.Delete(r.Name, &metav1.DeleteOptions{})
+	return r.clientSet.Routes(namespace).Delete(name, &metav1.DeleteOptions{})
 }
-

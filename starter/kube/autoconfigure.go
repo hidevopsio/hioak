@@ -1,22 +1,22 @@
 package kube
 
 import (
-	"github.com/hidevopsio/hiboot/pkg/app"
-	"k8s.io/client-go/util/homedir"
 	"flag"
-	"path/filepath"
-	"k8s.io/client-go/tools/clientcmd"
-	"k8s.io/client-go/rest"
+	"github.com/hidevopsio/hiboot/pkg/app"
 	"github.com/hidevopsio/hiboot/pkg/log"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/clientcmd"
+	"k8s.io/client-go/util/homedir"
+	"path/filepath"
 )
 
 type properties struct {
-	KubeServiceHost string `json:"external_client" default:"${KUBERNETES_SERVICE_HOST}"`
+	KubeServiceHost string `json:"kube_service_host" default:"${KUBERNETES_SERVICE_HOST}"`
 }
 
 // define type configuration
-type configuration struct{
+type configuration struct {
 	app.Configuration
 
 	Properties properties `json:"properties" mapstructure:"kube"`
@@ -37,7 +37,6 @@ type RestConfig struct {
 type ClientSet interface {
 	kubernetes.Interface
 }
-
 
 func init() {
 	app.AutoConfiguration(newConfiguration)
@@ -84,3 +83,18 @@ func (c *configuration) KubeConfigMaps(clientSet ClientSet) *ConfigMaps {
 	return newConfigMaps(clientSet)
 }
 
+func (c *configuration) KubeDeployment(clientSet ClientSet) *Deployment {
+	return newDeployment(clientSet)
+}
+
+func (c *configuration) KubeReplicationController(clientSet ClientSet) *ReplicationController {
+	return NewReplicationController(clientSet)
+}
+
+func (c *configuration) KubeSecret(clientSet ClientSet) *Secret {
+	return NewSecret(clientSet)
+}
+
+func (c *configuration) KubeService(clientSet ClientSet) *Service {
+	return NewService(clientSet)
+}

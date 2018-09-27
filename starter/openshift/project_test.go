@@ -15,22 +15,15 @@
 package openshift
 
 import (
-	"testing"
-	"github.com/stretchr/testify/assert"
 	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/openshift/client-go/project/clientset/versioned/fake"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
-func init() {
-	log.SetLevel(log.DebugLevel)
-}
-
 func TestProjectLit(t *testing.T) {
-	projectName := "project-crud"
 	clientSet := fake.NewSimpleClientset().ProjectV1()
-	project, err := NewProject(clientSet, projectName, projectName, "project for testing", "node")
-	assert.Equal(t, nil, err)
-
+	project := newProject(clientSet)
 	pl, err := project.List()
 	assert.Equal(t, nil, err)
 	assert.Equal(t, 0, len(pl.Items))
@@ -45,22 +38,19 @@ func TestProjectCrud(t *testing.T) {
 	projectName := "project-crud"
 	fake.NewSimpleClientset().ProjectV1()
 	clientSet := fake.NewSimpleClientset().ProjectV1()
-	project, err := NewProject(clientSet, projectName, projectName, "project for testing", "")
-	assert.Equal(t, nil, err)
-
+	project := newProject(clientSet)
 	// create project
-	p, err := project.Create()
+	p, err := project.Create(projectName, projectName)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, projectName, p.Name)
 
 	// read project
-	p, err = project.Get()
+	p, err = project.Get(projectName)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, projectName, p.Name)
 
 	// delete project
-	err = project.Delete()
+	err = project.Delete(projectName)
 	assert.Equal(t, nil, err)
 
 }
-
