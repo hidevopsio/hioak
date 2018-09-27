@@ -12,17 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 package openshift
 
 import (
-	"testing"
-	"github.com/stretchr/testify/assert"
 	"github.com/hidevopsio/hiboot/pkg/log"
-	"os"
 	"github.com/openshift/api/build/v1"
 	"github.com/openshift/client-go/build/clientset/versioned/fake"
 	imageFake "github.com/openshift/client-go/image/clientset/versioned/fake"
+	"github.com/stretchr/testify/assert"
+	"os"
+	"testing"
 )
 
 func init() {
@@ -51,20 +50,21 @@ func TestBuildCreation(t *testing.T) {
 	var err error
 	var buildConfig *BuildConfig
 	imageClient := imageFake.NewSimpleClientset().ImageV1()
+	imageStream := newImageStream(imageClient)
+	from, err := imageStream.CreateImageStream(namespace, appName, scmRef, s2iImageStream, true)
 	t.Run("should create buildConfig instance", func(t *testing.T) {
-		buildConfig, err = NewBuildConfig(imageClient, clientSet, namespace, appName, scmUrl, scmRef, secret, version, s2iImageStream, true)
-		assert.Equal(t, nil, err)
+		buildConfig = newBuildConfig(clientSet)
 	})
 
 	var bc *v1.BuildConfig
 	t.Run("should create buildConfig", func(t *testing.T) {
-		bc, err = buildConfig.Create()
+		bc, err = buildConfig.Create(appName, namespace, scmUrl, scmRef, version, secret, from)
 		assert.Equal(t, nil, err)
 		assert.Equal(t, appName, bc.Name)
 	})
 
 	// Get build config
-	bc, err = buildConfig.Get()
+	bc, err = buildConfig.Get(appName, namespace)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, appName, bc.Name)
 
@@ -73,5 +73,3 @@ func TestBuildCreation(t *testing.T) {
 	assert.Equal(t, nil, err)
 
 }
-
-

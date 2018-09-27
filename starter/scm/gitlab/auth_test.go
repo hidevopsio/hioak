@@ -15,15 +15,15 @@
 package gitlab_test
 
 import (
-	"testing"
 	"github.com/hidevopsio/hiboot/pkg/log"
-	gg "github.com/xanzy/go-gitlab"
-	"github.com/hidevopsio/hioak/starter/scm/gitlab/fake"
 	"github.com/hidevopsio/hioak/starter/scm/gitlab"
+	"github.com/hidevopsio/hioak/starter/scm/gitlab/fake"
 	"github.com/magiconair/properties/assert"
+	gg "github.com/xanzy/go-gitlab"
+	"testing"
 )
 
-func init()  {
+func init() {
 	log.SetLevel(log.DebugLevel)
 }
 

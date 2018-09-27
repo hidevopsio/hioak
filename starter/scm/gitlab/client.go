@@ -21,9 +21,8 @@ type ClientInterface interface {
 	CurrentUser(options ...gitlab.OptionFunc) (*gitlab.User, *gitlab.Response, error)
 }
 
-
 func NewClient(token string) *gitlab.Client {
-	len := strings.Count(token,"") - 1
+	len := strings.Count(token, "") - 1
 	if len <= 20 {
 		return gitlab.NewClient(&http.Client{}, token)
 	}

@@ -1,15 +1,15 @@
 package gitlab
 
 import (
-	"github.com/xanzy/go-gitlab"
-		"github.com/hidevopsio/hiboot/pkg/log"
+	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/hidevopsio/hioak/starter/scm"
+	"github.com/xanzy/go-gitlab"
 )
+
 type ProjectMember struct {
 	scm.ProjectMember
 	client ClientInterface
 }
-
 
 func NewProjectMember(c ClientInterface) scm.ProjectMemberInterface {
 	return &ProjectMember{
@@ -35,7 +35,7 @@ func (p *ProjectMember) GetProjectMember(token, baseUrl string, pid, uid, gid in
 	log.Debug("Groups.ListGroupMembers ")
 	for _, groupMember := range groupMembers {
 		if groupMember.ID == uid {
-			for id, permissions := range scm.Permissions  {
+			for id, permissions := range scm.Permissions {
 				if groupMember.AccessLevel == id {
 					scmProjectMember.ProjectPermissions = permissions
 					return scmProjectMember, nil
@@ -49,7 +49,7 @@ func (p *ProjectMember) GetProjectMember(token, baseUrl string, pid, uid, gid in
 		return scmProjectMember, err
 	}
 	log.Debug("after c.Session.GetSession(so)")
-	for id, permissions := range scm.Permissions  {
+	for id, permissions := range scm.Permissions {
 		if projectMember.AccessLevel == id {
 			scmProjectMember.ProjectPermissions = permissions
 			return scmProjectMember, nil

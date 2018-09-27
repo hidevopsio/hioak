@@ -12,28 +12,38 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 package kube
 
-
 import (
-	"testing"
 	"github.com/magiconair/properties/assert"
 	"k8s.io/client-go/kubernetes/fake"
+	"testing"
 )
 
-
-func TestDeploy(t *testing.T)  {
+func TestExtensionsV1beta1Deploy(t *testing.T) {
 	clientSet := fake.NewSimpleClientset()
+	app := "hello-world"
+	project := "demo-dev"
+	profile := "master"
+	dockerRegistry := "docker.vpclub.cn"
+	imageTag := "v1"
 	deploy := Deployment{
-		App: "hello-world",
-		Project: "demo-dev",
-		Profile: "master",
-		DockerRegistry: "docker.vpclub.cn",
-		ImageTag: "v1",
-		clientSet:clientSet,
-
+		clientSet: clientSet,
 	}
-	_, err := deploy.ExtensionsV1beta1Deploy(nil, nil, nil, 0, false, "", "")
+	_, err := deploy.ExtensionsV1beta1Deploy(app, project, profile, imageTag, dockerRegistry, nil, nil, nil, 0, false, "", "")
+	assert.Equal(t, nil, err)
+}
+
+func TestDeploy(t *testing.T) {
+	clientSet := fake.NewSimpleClientset()
+	app := "hello-world"
+	project := "demo-dev"
+	profile := "master"
+	dockerRegistry := "docker.vpclub.cn"
+	imageTag := "v1"
+	deploy := Deployment{
+		clientSet: clientSet,
+	}
+	_, err := deploy.Deploy(app, project, profile, imageTag, dockerRegistry, nil, nil, nil, 0, false, "", "")
 	assert.Equal(t, nil, err)
 }

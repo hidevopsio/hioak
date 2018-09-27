@@ -12,36 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 package kube
 
 import (
-	"k8s.io/apimachinery/pkg/api/errors"
-	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	svcv1 "k8s.io/client-go/kubernetes/typed/core/v1"
 	"fmt"
 	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/jinzhu/copier"
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
 
-type Service struct{
-	Name      string
-	Namespace string
-	Interface  svcv1.ServiceInterface
+type Service struct {
 	clientSet kubernetes.Interface
 }
 
-func NewService(clientSet kubernetes.Interface, name, namespace string) *Service {
+func NewService(clientSet kubernetes.Interface) *Service {
 	return &Service{
-		Name: name,
-		Namespace: namespace,
-		Interface: clientSet.CoreV1().Services(namespace),
+		clientSet: clientSet,
 	}
 }
 
-func (s *Service) Create(ports interface{}) error {
+func (s *Service) Create(name, namespace string, ports interface{}) error {
 
 	p := make([]corev1.ServicePort, 0)
 	copier.Copy(&p, ports)
@@ -49,32 +42,32 @@ func (s *Service) Create(ports interface{}) error {
 	// create service
 	serviceSpec := &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: s.Name,
+			Name: name,
 			Labels: map[string]string{
-				"app": s.Name,
+				"app": name,
 			},
 		},
 		Spec: corev1.ServiceSpec{
-			Type: corev1.ServiceTypeClusterIP,
+			Type:  corev1.ServiceTypeClusterIP,
 			Ports: p,
 			Selector: map[string]string{
-				"app": s.Name,
+				"app": name,
 			},
 		},
 	}
 
-	svc, err := s.Interface.Get(s.Name, metav1.GetOptions{})
+	svc, err := s.clientSet.CoreV1().Services(namespace).Get(name, metav1.GetOptions{})
 	switch {
 	case err == nil:
 		serviceSpec.ObjectMeta.ResourceVersion = svc.ObjectMeta.ResourceVersion
 		serviceSpec.Spec.ClusterIP = svc.Spec.ClusterIP
-		_, err = s.Interface.Update(serviceSpec)
+		_, err = s.clientSet.CoreV1().Services(namespace).Update(serviceSpec)
 		if err != nil {
 			return fmt.Errorf("failed to update service: %s", err)
 		}
 		log.Info("service updated")
 	case errors.IsNotFound(err):
-		_, err = s.Interface.Create(serviceSpec)
+		_, err = s.clientSet.CoreV1().Services(namespace).Create(serviceSpec)
 		if err != nil {
 			return fmt.Errorf("failed to create service")
 		}
@@ -85,10 +78,10 @@ func (s *Service) Create(ports interface{}) error {
 	return nil
 }
 
-func (s *Service) Delete() error {
-	return s.Interface.Delete(s.Name, &metav1.DeleteOptions{})
+func (s *Service) Delete(name, namespace string) error {
+	return s.clientSet.CoreV1().Services(namespace).Delete(name, &metav1.DeleteOptions{})
 }
 
-func (s *Service) Get() (*corev1.Service, error) {
-	return s.Interface.Get(s.Name, metav1.GetOptions{})
+func (s *Service) Get(name, namespace string) (*corev1.Service, error) {
+	return s.clientSet.CoreV1().Services(namespace).Get(name, metav1.GetOptions{})
 }

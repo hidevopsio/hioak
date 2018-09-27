@@ -1,11 +1,11 @@
 package gitlab
 
 import (
-	"testing"
-		"github.com/stretchr/testify/assert"
-	"os"
-	"github.com/xanzy/go-gitlab"
 	"github.com/hidevopsio/hioak/starter/scm/gitlab/fake"
+	"github.com/stretchr/testify/assert"
+	"github.com/xanzy/go-gitlab"
+	"os"
+	"testing"
 )
 
 func TestUser_GetUser(t *testing.T) {

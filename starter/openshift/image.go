@@ -15,14 +15,12 @@
 package openshift
 
 import (
-	"github.com/openshift/api/image/v1"
-	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	imagev1 "github.com/openshift/client-go/image/clientset/versioned/typed/image/v1"
-	"github.com/openshift/client-go/image/clientset/versioned/fake"
 	"github.com/hidevopsio/hiboot/pkg/log"
+	"github.com/openshift/api/image/v1"
+	imagev1 "github.com/openshift/client-go/image/clientset/versioned/typed/image/v1"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
-	"github.com/hidevopsio/hioak/starter"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type ImageStreamInterface interface {
@@ -31,85 +29,88 @@ type ImageStreamInterface interface {
 	Delete() error
 }
 
-type ImageStream struct{
-	Name string
-	Namespace string
-	Source string
-
-	Interface imagev1.ImageStreamInterface
+type ImageStream struct {
+	clientSet imagev1.ImageV1Interface
 }
 
-func NewImageClientSet() (imagev1.ImageV1Interface, error) {
-
-	cli := orch.GetClientInstance()
-
-	// get the fake ClientSet for testing
-	if cli.IsTestRunning() {
-		return fake.NewSimpleClientset().ImageV1(), nil
-	}
-
-	// get the real ClientSet
-	clientSet, err := imagev1.NewForConfig(cli.Config())
-
-	return clientSet, err
-}
-
-func NewImageStream(clientSet imagev1.ImageV1Interface, name, namespace string) (*ImageStream, error) {
+func newImageStream(clientSet imagev1.ImageV1Interface) *ImageStream {
 	return &ImageStream{
-		Name:      name,
-		Namespace: namespace,
-		Interface: clientSet.ImageStreams(namespace),
-	}, nil
+		clientSet: clientSet,
+	}
 }
 
-func NewImageStreamFromSource(clientSet imagev1.ImageV1Interface, name, namespace, source string) (*ImageStream, error) {
-	is, err := NewImageStream(clientSet, name, namespace)
-	is.Source = source
-	return is, err
+// @Title NewBuildConfig
+// @Description Create new BuildConfig Instance
+// @Param namespace, appName, gitUrl, imageTag, s2iImageStream string
+// @Return *BuildConfig, error
+func (is *ImageStream) CreateImageStream(namespace, name, scmRef, s2iImageStream string, rebuild bool) (*corev1.ObjectReference, error) {
+
+	log.Debug("NewBuildConfig()")
+
+	// TODO: for the sake of decoupling, the image stream creation should be here or not?
+	var err error
+	var from corev1.ObjectReference
+	if !rebuild {
+		image, err := is.Get(name, namespace)
+		if err != nil {
+			return nil, err
+		}
+		// the images stream is exist with 0 tags, then delete it
+		if len(image.Status.Tags) == 0 {
+			is.Delete(name, namespace)
+			_, err = is.Get(name, namespace)
+		}
+	}
+	from = corev1.ObjectReference{
+		Kind:      "ImageStreamTag",
+		Name:      s2iImageStream,
+		Namespace: "openshift",
+	}
+	return &from, err
 }
 
 // @Title Create
 // @Description create imagestream
 // @Param
 // @Return v1.ImageStream, error
-func (is *ImageStream) Create(version string) (*v1.ImageStream, error) {
+func (is *ImageStream) Create(name, namespace, source, version string) (*v1.ImageStream, error) {
 	log.Debug("ImageStream.Create()")
 
 	imageStream := &v1.ImageStream{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: is.Name,
-			Namespace: is.Namespace,
+			Name:      name,
+			Namespace: namespace,
 			Labels: map[string]string{
-				"app": is.Name,
+				"app":     name,
 				"version": version,
 			},
 		},
 	}
 
-	if is.Source != "" {
+	if source != "" {
 		imageStream.Spec = v1.ImageStreamSpec{
 			Tags: []v1.TagReference{
 				{
 					Name: version,
 					From: &corev1.ObjectReference{
 						Kind: "DockerImage",
-						Name: is.Source,
+						Name: source,
 					},
 				},
 			},
 		}
 	}
 
-	result, err := is.Get()
+	result, err := is.Get(name, namespace)
 	message := "create ImageStream"
 	switch {
 	case err == nil:
 		imageStream.ObjectMeta.ResourceVersion = result.ResourceVersion
-		result, err = is.Interface.Update(imageStream)
+		result, err = is.clientSet.ImageStreams(namespace).Update(imageStream)
 		message = "update ImageStream"
 
 	case errors.IsNotFound(err):
-		result, err = is.Interface.Create(imageStream)
+		result, err = is.clientSet.ImageStreams(namespace).Create(imageStream)
 	}
 
 	if err != nil {
@@ -124,17 +125,16 @@ func (is *ImageStream) Create(version string) (*v1.ImageStream, error) {
 // @Description get imagestream
 // @Param
 // @Return v1.ImageStream, error
-func (is *ImageStream) Get() (*v1.ImageStream, error) {
+func (is *ImageStream) Get(name, namespace string) (*v1.ImageStream, error) {
 	log.Debug("ImageStream.Get()")
-	return is.Interface.Get(is.Name, metav1.GetOptions{})
+	return is.clientSet.ImageStreams(namespace).Get(name, metav1.GetOptions{})
 }
-
 
 // @Title Delete
 // @Description delete imagestream
 // @Param
 // @Return error
-func (is *ImageStream) Delete() error {
+func (is *ImageStream) Delete(name, namespace string) error {
 	log.Debug("ImageStream.Delete()")
-	return is.Interface.Delete(is.Name, &metav1.DeleteOptions{})
+	return is.clientSet.ImageStreams(namespace).Delete(name, &metav1.DeleteOptions{})
 }
