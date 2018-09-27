@@ -9,10 +9,10 @@ import (
 
 type Project struct {
 	scm.Project
-	client ClientInterface
+	client ProjectInterface
 }
 
-func NewProject(c ClientInterface) scm.ProjectInterface {
+func NewProject(c ProjectInterface) *Project {
 	return &Project{
 		client: c,
 	}
@@ -20,7 +20,6 @@ func NewProject(c ClientInterface) scm.ProjectInterface {
 
 func (p *Project) GetProject(baseUrl, id, token string) (int, int, error) {
 	log.Debug("project.GetProject()")
-	p.client.SetBaseURL(baseUrl + ApiVersion)
 	log.Debug("before c.project.GetProject(so)")
 	project, _, err := p.client.GetProject(id)
 	if err != nil {
@@ -32,7 +31,6 @@ func (p *Project) GetProject(baseUrl, id, token string) (int, int, error) {
 
 func (p *Project) GetGroupId(url, token string, pid int) (int, error) {
 	log.Debug("project.GetProject()")
-	p.client.SetBaseURL(p.BaseUrl + ApiVersion)
 	log.Debug("before c.Session.GetSession(so)")
 	project, _, err := p.client.GetProject(pid)
 	log.Debug("after c.project.GetProject(so)", project)
@@ -42,7 +40,6 @@ func (p *Project) GetGroupId(url, token string, pid int) (int, error) {
 func (p *Project) ListProjects(baseUrl, token, search string, page int) ([]scm.Project, error) {
 	log.Debug("project.ListProjects()")
 	log.Debugf("url: %v", baseUrl)
-	p.client.SetBaseURL(baseUrl + ApiVersion)
 	listProjectsOptions := &gitlab.ListProjectsOptions{}
 	if search != "" {
 		listProjectsOptions = &gitlab.ListProjectsOptions{
@@ -72,7 +69,6 @@ func (p *Project) ListProjects(baseUrl, token, search string, page int) ([]scm.P
 
 func (p *Project) Search(baseUrl, token, search string) ([]scm.Project, error) {
 	log.Debug("Search.GetProjects()")
-	p.client.SetBaseURL(baseUrl + ApiVersion)
 	log.Debug("before Search.project(so)", search)
 	listProjectsOptions := &gitlab.ListProjectsOptions{
 		Search: &search,

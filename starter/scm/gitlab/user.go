@@ -8,10 +8,10 @@ import (
 
 type User struct {
 	scm.User
-	client ClientInterface
+	client UserInterface
 }
 
-func NewUser(c ClientInterface) scm.UserInterface {
+func NewUser(c UserInterface) *User {
 	return &User{
 		client: c,
 	}
@@ -19,7 +19,6 @@ func NewUser(c ClientInterface) scm.UserInterface {
 
 func (s *User) GetUser(baseUrl, accessToken string) (*scm.User, error) {
 	log.Debug("Session get user")
-	s.client.SetBaseURL(baseUrl + ApiVersion)
 	user, _, err := s.client.CurrentUser()
 	if err != nil {
 		return nil, err

@@ -29,6 +29,12 @@ type ImageInterface interface {
 	PullImage() error
 }
 
+func NewImage(c ClientInterface) *Image {
+	return &Image{
+		client: c,
+	}
+}
+
 func (i *Image) PullImage() error {
 	log.Info("image pull :")
 	ctx := context.Background()
