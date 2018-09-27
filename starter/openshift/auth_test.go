@@ -1,16 +1,15 @@
 package openshift
 
 import (
-	"testing"
 	"github.com/magiconair/properties/assert"
-	"github.com/prometheus/common/log"
 	"github.com/openshift/client-go/oauth/clientset/versioned/fake"
+	"github.com/prometheus/common/log"
+	"testing"
 )
 
 func TestOAuthAccessToken_Get(t *testing.T) {
 	clientSet := fake.NewSimpleClientset().OauthV1()
-	token, err := NewOAuthAccessToken(clientSet)
-	assert.Equal(t, nil, err)
+	token := NewOAuthAccessToken(clientSet)
 	to, err := token.Create()
 	to, err = token.Get(to.Name)
 	assert.Equal(t, nil, err)
@@ -19,8 +18,7 @@ func TestOAuthAccessToken_Get(t *testing.T) {
 
 func TestOAuthAccessToken_List(t *testing.T) {
 	clientSet := fake.NewSimpleClientset().OauthV1()
-	token, err := NewOAuthAccessToken(clientSet)
-	assert.Equal(t, nil, err)
+	token := NewOAuthAccessToken(clientSet)
 	to, err := token.List()
 	assert.Equal(t, nil, err)
 	log.Info(to)

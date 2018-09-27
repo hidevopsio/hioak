@@ -2,8 +2,8 @@ package kube
 
 import "testing"
 import (
-	core "k8s.io/api/core/v1"
 	"github.com/magiconair/properties/assert"
+	core "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/fake"
 )
@@ -31,7 +31,7 @@ func TestConfigMapsCurd(t *testing.T) {
 			Name: name,
 		},
 		Data: map[string]string{
-			"default":"{a}",
+			"default": "{a}",
 		},
 	}
 	result, err = configMaps.Update(name, namespace, configMap)
@@ -40,6 +40,5 @@ func TestConfigMapsCurd(t *testing.T) {
 
 	err = configMaps.Delete(name, namespace)
 	assert.Equal(t, nil, err)
-
 
 }

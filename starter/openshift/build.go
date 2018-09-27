@@ -15,19 +15,17 @@
 package openshift
 
 import (
-	"github.com/openshift/api/build/v1"
-	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	buildv1 "github.com/openshift/client-go/build/clientset/versioned/typed/build/v1"
+	"fmt"
 	"github.com/hidevopsio/hiboot/pkg/log"
-	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/watch"
 	"github.com/hidevopsio/hiboot/pkg/system"
 	"github.com/jinzhu/copier"
-	"fmt"
-		imagev1 "github.com/openshift/api/image/v1"
-	image "github.com/openshift/client-go/image/clientset/versioned/typed/image/v1"
-	)
+	"github.com/openshift/api/build/v1"
+	buildv1 "github.com/openshift/client-go/build/clientset/versioned/typed/build/v1"
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/watch"
+)
 
 type BuildInterface interface {
 	Create() (*v1.BuildConfig, error)
@@ -39,8 +37,6 @@ type BuildInterface interface {
 	GetBuildStatus() (v1.BuildPhase, error)
 }
 
-
-
 type Scm struct {
 	Url    string
 	Ref    string
@@ -48,94 +44,27 @@ type Scm struct {
 }
 
 type BuildConfig struct {
-	Name      string
-	Namespace string
-	Scm       Scm
-	Version   string
-	// use NewFrom when creating new buildConfig
-	From corev1.ObjectReference
-
-	BuildConfigs buildv1.BuildConfigInterface
-	Builds       buildv1.BuildInterface
+	clientSet buildv1.BuildV1Interface
 }
 
-// @Title NewBuildConfig
-// @Description Create new BuildConfig Instance
-// @Param namespace, appName, gitUrl, imageTag, s2iImageStream string
-// @Return *BuildConfig, error
-func NewBuildConfig(imageClient image.ImageV1Interface, clientSet buildv1.BuildV1Interface, namespace, name, scmUrl, scmRef, scmSecret, version, s2iImageStream string, rebuild bool) (*BuildConfig, error) {
-
-	log.Debug("NewBuildConfig()")
-
-	// TODO: for the sake of decoupling, the image stream creation should be here or not?
-	// create imagestream
-	var err error
-	imageStream, err := NewImageStream(imageClient, name, namespace)
-	if err != nil {
-		return nil, err
+func newBuildConfig(clientSet buildv1.BuildV1Interface) *BuildConfig {
+	return &BuildConfig{
+		clientSet: clientSet,
 	}
-
-	var from corev1.ObjectReference
-	var is *imagev1.ImageStream
-	if !rebuild {
-		is, err = imageStream.Get()
-		// the images stream is exist with 0 tags, then delete it
-		if len(is.Status.Tags) == 0 {
-			imageStream.Delete()
-			is, err = imageStream.Get()
-		}
-	}
-
-	// create new images stream if it is not found
-	if errors.IsNotFound(err) || rebuild{
-		_, err := imageStream.Create(version)
-		if err != nil {
-			return nil, err
-		}
-		from = corev1.ObjectReference{
-			Kind:      "ImageStreamTag",
-			Name:      s2iImageStream,
-			Namespace: "openshift",
-		}
-	} else {
-		from = corev1.ObjectReference{
-			Kind:      "ImageStreamTag",
-			Name:      name + ":" + is.Status.Tags[0].Tag,
-			Namespace: namespace,
-		}
-	}
-
-	buildConfig := &BuildConfig{
-		BuildConfigs: clientSet.BuildConfigs(namespace),
-		Builds:       clientSet.Builds(namespace),
-
-		From:      from,
-		Name:      name,
-		Namespace: namespace,
-		Scm: Scm{
-			Url:    scmUrl,
-			Ref:    scmRef,
-			Secret: scmSecret,
-		},
-
-		Version: version,
-	}
-	return buildConfig, err
 }
 
 // @Title Create
 // @Description Create new BuildConfig
 // @Param
 // @Return *v1.BuildConfig, error
-func (b *BuildConfig) Create() (*v1.BuildConfig, error) {
+func (b *BuildConfig) Create(name, namespace, url, ref, version, secret string, from *corev1.ObjectReference) (*v1.BuildConfig, error) {
 	log.Debug("BuildConfig.Create()")
-
 	// buildConfig
 	buildConfig := &v1.BuildConfig{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: b.Name,
+			Name: name,
 			Labels: map[string]string{
-				"app": b.Name,
+				"app": name,
 			},
 		},
 		Spec: v1.BuildConfigSpec{
@@ -147,38 +76,38 @@ func (b *BuildConfig) Create() (*v1.BuildConfig, error) {
 				Source: v1.BuildSource{
 					Type: v1.BuildSourceType(v1.BuildSourceGit),
 					Git: &v1.GitBuildSource{
-						URI: b.Scm.Url,
-						Ref: b.Scm.Ref,
+						URI: url,
+						Ref: ref,
 					},
 					SourceSecret: &corev1.LocalObjectReference{
-						Name: b.Scm.Secret,
+						Name: secret,
 					},
 				},
 				Strategy: v1.BuildStrategy{
 					Type: v1.BuildStrategyType(v1.SourceBuildStrategyType),
 					SourceStrategy: &v1.SourceBuildStrategy{
-						From: b.From,
+						From: *from,
 					},
 				},
 				Output: v1.BuildOutput{
 					To: &corev1.ObjectReference{
 						Kind: "ImageStreamTag",
-						Name: b.Name + ":" + b.Version,
+						Name: name + ":" + version,
 					},
 				},
 			},
 		},
 	}
 
-	bc, err := b.BuildConfigs.Get(b.Name, metav1.GetOptions{})
+	bc, err := b.clientSet.BuildConfigs(namespace).Get(name, metav1.GetOptions{})
 	if errors.IsNotFound(err) {
-		bc, err = b.BuildConfigs.Create(buildConfig)
+		bc, err = b.clientSet.BuildConfigs(namespace).Create(buildConfig)
 		if nil == err {
 			log.Infof("Created BuildConfig %v", bc.Name)
 		}
 	} else {
 		buildConfig.ResourceVersion = bc.ResourceVersion
-		bc, err = b.BuildConfigs.Update(buildConfig)
+		bc, err = b.clientSet.BuildConfigs(namespace).Update(buildConfig)
 		if nil == err {
 			log.Infof("Updated BuildConfig %v", bc.Name)
 		}
@@ -191,25 +120,25 @@ func (b *BuildConfig) Create() (*v1.BuildConfig, error) {
 // @Description Get BuildConfig
 // @Param
 // @Return *v1.BuildConfig, error
-func (b *BuildConfig) Get() (*v1.BuildConfig, error) {
+func (b *BuildConfig) Get(name, namespace string) (*v1.BuildConfig, error) {
 	log.Debug("BuildConfig.Get()")
-	return b.BuildConfigs.Get(b.Name, metav1.GetOptions{})
+	return b.clientSet.BuildConfigs(namespace).Get(name, metav1.GetOptions{})
 }
 
 // @Title Delete
 // @Description Delete BuildConfig
 // @Param
 // @Return error
-func (b *BuildConfig) Delete() error {
+func (b *BuildConfig) Delete(name, namespace string) error {
 	log.Debug("BuildConfig.Delet()")
-	return b.BuildConfigs.Delete(b.Name, &metav1.DeleteOptions{})
+	return b.clientSet.BuildConfigs(namespace).Delete(name, &metav1.DeleteOptions{})
 }
 
 // @Title Build
 // @Description Start build according to previous build config settings, it will produce new image build
 // @Param repo string, buildCmd string
 // @Return *v1.Build, error
-func (b *BuildConfig) Build(env []system.Env) (*v1.Build, error) {
+func (b *BuildConfig) Build(name, namespace, version string, env []system.Env, from *corev1.ObjectReference) (*v1.Build, error) {
 	log.Debug("BuildConfig.Build()")
 
 	e := make([]corev1.EnvVar, 0)
@@ -223,10 +152,10 @@ func (b *BuildConfig) Build(env []system.Env) (*v1.Build, error) {
 			APIVersion: "build.openshift.io/v1",
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Name: b.Name,
+			Name: name,
 			Labels: map[string]string{
-				"app":     b.Name,
-				"version": b.Version,
+				"app":     name,
+				"version": version,
 			},
 		},
 		TriggeredBy: append([]v1.BuildTriggerCause{},
@@ -238,10 +167,10 @@ func (b *BuildConfig) Build(env []system.Env) (*v1.Build, error) {
 			Incremental: &incremental,
 		},
 		Env:  e,
-		From: &b.From,
+		From: from,
 	}
 
-	build, err := b.BuildConfigs.Instantiate(b.Name, &buildRequest)
+	build, err := b.clientSet.BuildConfigs(namespace).Instantiate(name, &buildRequest)
 	if nil != err {
 		log.Error("b.BuildConfigs.Instantiate err", err)
 		return nil, err
@@ -249,9 +178,9 @@ func (b *BuildConfig) Build(env []system.Env) (*v1.Build, error) {
 	return build, err
 }
 
-func (b *BuildConfig) Watch(build *v1.Build, completedHandler func() error) error {
-	w, err := b.Builds.Watch(metav1.ListOptions{
-		LabelSelector: "app=" + b.Name,
+func (b *BuildConfig) Watch(name, namespace string, build *v1.Build, completedHandler func() error) error {
+	w, err := b.clientSet.Builds(namespace).Watch(metav1.ListOptions{
+		LabelSelector: "app=" + name,
 		Watch:         true,
 	})
 
@@ -310,17 +239,17 @@ func (b *BuildConfig) Watch(build *v1.Build, completedHandler func() error) erro
 // @Description Get current build
 // @Param
 // @Return *v1.Build, error
-func (b *BuildConfig) GetBuild() (*v1.Build, error) {
+func (b *BuildConfig) GetBuild(name, namespace string) (*v1.Build, error) {
 	log.Debug("BuildConfig.GetBuild()")
-	return b.Builds.Get(b.Name, metav1.GetOptions{})
+	return b.clientSet.Builds(namespace).Get(name, metav1.GetOptions{})
 }
 
 // @Title GetBuildStatus
 // @Description Get current build status
 // @Param
 // @Return v1.BuildPhase, error
-func (b *BuildConfig) GetBuildStatus() (v1.BuildPhase, error) {
+func (b *BuildConfig) GetBuildStatus(name, namespace string) (v1.BuildPhase, error) {
 	log.Debug("BuildConfig.GetBuildStatus()")
-	build, err := b.GetBuild()
+	build, err := b.GetBuild(name, namespace)
 	return build.Status.Phase, err
 }

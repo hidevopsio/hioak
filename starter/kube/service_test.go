@@ -2,13 +2,13 @@ package kube
 
 import (
 	"github.com/hidevopsio/hiboot/pkg/log"
-	"testing"
-	"github.com/stretchr/testify/assert"
 	"github.com/hidevopsio/hioak/starter"
+	"github.com/stretchr/testify/assert"
 	"k8s.io/client-go/kubernetes/fake"
+	"testing"
 )
 
-func init()  {
+func init() {
 	log.SetLevel(log.DebugLevel)
 }
 
@@ -16,9 +16,9 @@ func TestServiceCreation(t *testing.T) {
 	log.Debug("TestServiceCreation()")
 
 	projectName := "demo"
-	profile     := "dev"
-	namespace   := projectName + "-" + profile
-	app         := "hello-world"
+	profile := "dev"
+	namespace := projectName + "-" + profile
+	app := "hello-world"
 
 	p := []orch.Ports{
 		{
@@ -42,5 +42,3 @@ func TestServiceCreation(t *testing.T) {
 	err = service.Delete(app, namespace)
 	assert.Equal(t, nil, err)
 }
-
-

@@ -16,9 +16,9 @@ package gitlab
 
 import (
 	"github.com/hidevopsio/hiboot/pkg/log"
+	"github.com/hidevopsio/hioak/starter/scm"
 	"github.com/jinzhu/copier"
 	"github.com/xanzy/go-gitlab"
-	"github.com/hidevopsio/hioak/starter/scm"
 )
 
 type Session struct {
@@ -54,7 +54,6 @@ func (s *Session) GetSession(baseUrl, username, password string) error {
 	return err
 }
 
-
 func (s *Session) GetToken() string {
 	return s.PrivateToken
 }
@@ -62,4 +61,3 @@ func (s *Session) GetToken() string {
 func (s *Session) GetId() int {
 	return s.ID
 }
-

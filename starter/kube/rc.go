@@ -1,15 +1,15 @@
 package kube
 
 import (
+	"fmt"
 	"github.com/hidevopsio/hiboot/pkg/log"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-		"k8s.io/apimachinery/pkg/watch"
-	"fmt"
+	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes"
 )
 
-type ReplicationController struct{
+type ReplicationController struct {
 	clientSet kubernetes.Interface
 }
 
@@ -18,7 +18,6 @@ func NewReplicationController(clientSet kubernetes.Interface) *ReplicationContro
 		clientSet: clientSet,
 	}
 }
-
 
 func (rc *ReplicationController) Create(name, namespace string, replicas int32) (*corev1.ReplicationController, error) {
 	crc := &corev1.ReplicationController{
@@ -31,9 +30,7 @@ func (rc *ReplicationController) Create(name, namespace string, replicas int32) 
 		Spec: corev1.ReplicationControllerSpec{
 			Replicas: &replicas,
 			Template: &corev1.PodTemplateSpec{
-				Spec: corev1.PodSpec{
-
-				},
+				Spec: corev1.PodSpec{},
 			},
 		},
 	}
@@ -44,7 +41,7 @@ func (rc *ReplicationController) Create(name, namespace string, replicas int32) 
 func (rc *ReplicationController) Watch(name, namespace string, completedHandler func() error) error {
 	w, err := rc.clientSet.CoreV1().ReplicationControllers(namespace).Watch(metav1.ListOptions{
 		LabelSelector: "app=" + name,
-		Watch: true,
+		Watch:         true,
 	})
 
 	if err != nil {
@@ -69,7 +66,7 @@ func (rc *ReplicationController) Watch(name, namespace string, completedHandler 
 				log.Debugf("RC: %s, Replicas: %d, AvailableReplicas: %d", rc.Name, rc.Status.Replicas, rc.Status.AvailableReplicas)
 				if rc.Status.Replicas != 0 && rc.Status.AvailableReplicas == rc.Status.Replicas {
 					var err error
-					if nil !=  completedHandler {
+					if nil != completedHandler {
 						err = completedHandler()
 					}
 					w.Stop()

@@ -1,9 +1,9 @@
 package gitlab
 
 import (
-			"github.com/hidevopsio/hiboot/pkg/log"
+	"github.com/hidevopsio/hiboot/pkg/log"
+	"github.com/hidevopsio/hioak/starter/scm"
 	"github.com/jinzhu/copier"
-		"github.com/hidevopsio/hioak/starter/scm"
 )
 
 type User struct {

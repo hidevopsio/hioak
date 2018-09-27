@@ -1,10 +1,10 @@
 package gitlab
 
 import (
-	"github.com/xanzy/go-gitlab"
-		"github.com/hidevopsio/hiboot/pkg/log"
-	"github.com/jinzhu/copier"
+	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/hidevopsio/hioak/starter/scm"
+	"github.com/jinzhu/copier"
+	"github.com/xanzy/go-gitlab"
 )
 
 type Group struct {
@@ -67,7 +67,7 @@ func (g *Group) ListGroupProjects(token, baseUrl string, gid, page int) ([]scm.P
 		},
 	}
 	projects, _, err := g.client.ListGroupProjects(gid, opt)
-	log.Debug("ListGroupProjects : ",len(projects))
+	log.Debug("ListGroupProjects : ", len(projects))
 	if err != nil {
 		log.Error("Group ListGroupProjects : ", err)
 		return nil, err
