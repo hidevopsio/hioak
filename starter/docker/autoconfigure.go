@@ -7,7 +7,6 @@ import (
 
 type configuration struct {
 	app.Configuration
-
 }
 
 func init() {

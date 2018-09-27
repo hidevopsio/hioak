@@ -1,11 +1,10 @@
 package gitlab
 
 import (
-	"github.com/xanzy/go-gitlab"
-	"github.com/hidevopsio/hioak/starter/scm"
 	"github.com/hidevopsio/hiboot/pkg/log"
+	"github.com/hidevopsio/hioak/starter/scm"
+	"github.com/xanzy/go-gitlab"
 )
-
 
 type RepositoryFile struct {
 	scm.TreeNode

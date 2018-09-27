@@ -3,7 +3,7 @@ package gitlab
 import (
 	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/hidevopsio/hioak/starter/scm"
-	)
+)
 
 type ProjectMember struct {
 	scm.ProjectMember

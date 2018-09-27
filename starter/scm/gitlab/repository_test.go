@@ -8,7 +8,6 @@ import (
 	"testing"
 )
 
-
 func TestListTree(t *testing.T) {
 	baseUrl := os.Getenv("SCM_URL")
 	s := fake.NewClient("")

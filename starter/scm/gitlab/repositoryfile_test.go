@@ -1,11 +1,11 @@
 package gitlab
 
 import (
-	"testing"
-	"os"
-	"github.com/xanzy/go-gitlab"
 	"github.com/hidevopsio/hioak/starter/scm/gitlab/fake"
 	"github.com/magiconair/properties/assert"
+	"github.com/xanzy/go-gitlab"
+	"os"
+	"testing"
 )
 
 func TestGetRepositoty(t *testing.T) {

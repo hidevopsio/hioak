@@ -35,7 +35,6 @@ func NewImage(c ClientInterface) *Image {
 	}
 }
 
-
 func (i *Image) PullImage() error {
 	log.Info("image pull :")
 	ctx := context.Background()

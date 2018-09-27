@@ -22,7 +22,6 @@ func NewRepository(c RepositoryInterface) *Repository {
 	}
 }
 
-
 func (r *Repository) ListTree(baseUrl, token, ref string, pid int) ([]scm.TreeNode, error) {
 	log.Debug("Repository.ListTree()")
 	log.Debugf("url: %v", baseUrl)
