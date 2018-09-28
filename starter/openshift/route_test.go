@@ -15,28 +15,27 @@
 package openshift
 
 import (
-	"testing"
-	"github.com/stretchr/testify/assert"
 	"github.com/openshift/client-go/route/clientset/versioned/fake"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
-func TestRouteCrd(t *testing.T)  {
+func TestRouteCrd(t *testing.T) {
 	projectName := "demo"
 	profile := "dev"
 	namespace := projectName + "-" + profile
 	app := "hello-world"
 	clientSet := fake.NewSimpleClientset().RouteV1()
-	route, err := NewRoute(clientSet, app, namespace)
-	assert.Equal(t, nil, err)
+	route := newRoute(clientSet)
 
-	url, err := route.Create(8080)
+	url, err := route.Create(app, namespace, 8080)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, "", url)
 
-	r, err := route.Get()
+	r, err := route.Get(app, namespace)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, app, r.Name)
 
-	err = route.Delete()
+	err = route.Delete(app, namespace)
 	assert.Equal(t, nil, err)
 }

@@ -1,17 +1,17 @@
 package gitlab
 
 import (
-			"github.com/hidevopsio/hiboot/pkg/log"
+	"github.com/hidevopsio/hiboot/pkg/log"
+	"github.com/hidevopsio/hioak/starter/scm"
 	"github.com/jinzhu/copier"
-		"github.com/hidevopsio/hioak/starter/scm"
 )
 
 type User struct {
 	scm.User
-	client ClientInterface
+	client NewClient
 }
 
-func NewUser(c ClientInterface) scm.UserInterface {
+func NewUser(c NewClient) *User {
 	return &User{
 		client: c,
 	}
@@ -19,8 +19,7 @@ func NewUser(c ClientInterface) scm.UserInterface {
 
 func (s *User) GetUser(baseUrl, accessToken string) (*scm.User, error) {
 	log.Debug("Session get user")
-	s.client.SetBaseURL(baseUrl + ApiVersion)
-	user, _, err := s.client.CurrentUser()
+	user, _, err := s.client(baseUrl, accessToken).User().CurrentUser()
 	if err != nil {
 		return nil, err
 	}

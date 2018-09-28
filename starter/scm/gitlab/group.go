@@ -1,35 +1,35 @@
 package gitlab
 
 import (
-	"github.com/xanzy/go-gitlab"
-		"github.com/hidevopsio/hiboot/pkg/log"
-	"github.com/jinzhu/copier"
+	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/hidevopsio/hioak/starter/scm"
+	"github.com/jinzhu/copier"
+	"github.com/xanzy/go-gitlab"
 )
 
 type Group struct {
 	scm.Group
-	client ClientInterface
+	group GroupInterface
+	client NewClient
 }
 
-func NewGroup(c ClientInterface) scm.GroupInterface {
+func NewGroup(client NewClient) *Group {
 	return &Group{
-		client: c,
+		client: client,
 	}
 }
 
 func (g *Group) ListGroups(token, baseUrl string, page int) ([]scm.Group, error) {
 	log.Debug("group.ListGroups()")
-	scmGroups := []scm.Group{}
+	var scmGroups []scm.Group
 	scmGroup := &scm.Group{}
-	g.client.SetBaseURL(baseUrl + ApiVersion)
 	log.Debug("before c.group.ListGroups(so)")
 	opt := &gitlab.ListGroupsOptions{
 		ListOptions: gitlab.ListOptions{
 			Page: page,
 		},
 	}
-	groups, _, err := g.client.ListGroups(opt)
+	groups, _, err := g.client(baseUrl, token).Group().ListGroups(opt)
 	if err != nil {
 		return nil, err
 	}
@@ -44,9 +44,8 @@ func (g *Group) ListGroups(token, baseUrl string, page int) ([]scm.Group, error)
 func (g *Group) GetGroup(token, baseUrl string, gid int) (*scm.Group, error) {
 	log.Debug("group.GetGroup()")
 	scmGroup := &scm.Group{}
-	g.client.SetBaseURL(baseUrl + ApiVersion)
 	log.Debug("before c.group.ListGroups(so)")
-	group, _, err := g.client.GetGroup(gid)
+	group, _, err := g.client(baseUrl, token).Group().GetGroup(gid)
 	log.Debug("after c.Session.GetSession(so)")
 	if err != nil {
 		return nil, err
@@ -59,15 +58,14 @@ func (g *Group) ListGroupProjects(token, baseUrl string, gid, page int) ([]scm.P
 	log.Debug("group.ListGroups()")
 	var scmProjects []scm.Project
 	scmProject := &scm.Project{}
-	g.client.SetBaseURL(baseUrl + ApiVersion)
 	log.Debug("before c.group.ListGroups")
 	opt := &gitlab.ListGroupProjectsOptions{
 		ListOptions: gitlab.ListOptions{
 			Page: page,
 		},
 	}
-	projects, _, err := g.client.ListGroupProjects(gid, opt)
-	log.Debug("ListGroupProjects : ",len(projects))
+	projects, _, err := g.client(baseUrl, token).Group().ListGroupProjects(gid, opt)
+	log.Debug("ListGroupProjects : ", len(projects))
 	if err != nil {
 		log.Error("Group ListGroupProjects : ", err)
 		return nil, err

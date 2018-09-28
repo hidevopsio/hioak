@@ -1,77 +1,28 @@
 package openshift
 
 import (
-	"github.com/openshift/client-go/authorization/clientset/versioned/typed/authorization/v1"
-	"github.com/openshift/client-go/authorization/clientset/versioned/fake"
-	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"github.com/hidevopsio/hioak/starter"
-	authorization_v1 "github.com/openshift/api/authorization/v1"
-	corev1 "k8s.io/api/core/v1"
 	"github.com/hidevopsio/hiboot/pkg/log"
+	authorization_v1 "github.com/openshift/api/authorization/v1"
+	"github.com/openshift/client-go/authorization/clientset/versioned/typed/authorization/v1"
+	corev1 "k8s.io/api/core/v1"
+	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type RoleBinding struct {
-	Name        string            `json:"name"`
-	Namespace   string            `json:"namespace"`
-	RoleRefName string            `json:"role_ref_name"`
-	RoleRefKind string            `json:"role_ref_kind"`
-	SubjectKind string            `json:"subject_kind"`
-	SubjectName string            `json:"subject_name"`
-	Data        map[string]string `json:"data"`
-	Interface   v1.RoleBindingInterface
+	clientSet v1.AuthorizationV1Interface
 }
 
-func (rb *RoleBinding) Init() (*authorization_v1.RoleBinding) {
-	roleBinding := &authorization_v1.RoleBinding{
-		ObjectMeta: meta_v1.ObjectMeta{
-			Name:      rb.Name,
-			Namespace: rb.Namespace,
-		},
-		RoleRef: corev1.ObjectReference{
-			Name: rb.RoleRefName,
-			Kind: rb.RoleRefKind,
-		},
-		Subjects: []corev1.ObjectReference{
-			{
-				Kind:      rb.SubjectKind,
-				Name:      rb.SubjectName,
-				Namespace: rb.Namespace,
-			},
-		},
-	}
-	return roleBinding
-}
-
-
-
-func NewRoleBindingClientSet() (v1.AuthorizationV1Interface, error) {
-
-	cli := orch.GetClientInstance()
-
-	// get the fake ClientSet for testing
-	if cli.IsTestRunning() {
-		return fake.NewSimpleClientset().AuthorizationV1(), nil
-	}
-
-	// get the real ClientSet
-	clientSet, err := v1.NewForConfig(cli.Config())
-
-	return clientSet, err
-}
-
-func NewRoleBinding(client v1.AuthorizationV1Interface, name, namespace string) (*RoleBinding, error) {
+func newRoleBinding(client v1.AuthorizationV1Interface) *RoleBinding {
 	log.Debug("NewPolicy()")
 	r := &RoleBinding{
-		Name:      name,
-		Namespace: namespace,
-		Interface: client.RoleBindings(namespace),
+		clientSet: client,
 	}
-	return r, nil
+	return r
 }
 
-func (rb *RoleBinding) Get() (*authorization_v1.RoleBinding, error) {
+func (rb *RoleBinding) Get(name, namespace string) (*authorization_v1.RoleBinding, error) {
 	log.Debug("get RoleBinding:")
-	role, err := rb.Interface.Get(rb.Name, meta_v1.GetOptions{})
+	role, err := rb.clientSet.RoleBindings(namespace).Get(name, meta_v1.GetOptions{})
 	if err != nil {
 		log.Error("get policy err :", err)
 		return nil, err
@@ -79,49 +30,78 @@ func (rb *RoleBinding) Get() (*authorization_v1.RoleBinding, error) {
 	return role, nil
 }
 
-func (rb *RoleBinding) Create(roleBinding *authorization_v1.RoleBinding) (*authorization_v1.RoleBinding, error) {
+func (rb *RoleBinding) Create(name, namespace, roleRefName, roleRefKind, subjectKind, subjectName string) (*authorization_v1.RoleBinding, error) {
 	log.Debug("create role binding")
-	_, err := rb.Interface.Get(rb.Name, meta_v1.GetOptions{})
+	roleBinding := &authorization_v1.RoleBinding{
+		ObjectMeta: meta_v1.ObjectMeta{
+			Name:      name,
+			Namespace: namespace,
+		},
+		RoleRef: corev1.ObjectReference{
+			Name: roleRefName,
+			Kind: roleRefKind,
+		},
+		Subjects: []corev1.ObjectReference{
+			{
+				Kind:      subjectKind,
+				Name:      subjectName,
+				Namespace: namespace,
+			},
+		},
+	}
+	_, err := rb.clientSet.RoleBindings(namespace).Get(name, meta_v1.GetOptions{})
 	if err == nil {
-		result, err := rb.Update(roleBinding)
+		result, err := rb.Update(name, namespace, roleRefName, roleRefKind, subjectKind, subjectName)
 		if err != nil {
 			return nil, err
 		}
 		return result, nil
 	}
-	result, err := rb.Interface.Create(roleBinding)
+	result, err := rb.clientSet.RoleBindings(namespace).Create(roleBinding)
 	if err != nil {
 		return nil, err
 	}
 	return result, nil
 }
 
-func (rb *RoleBinding) Delete() error {
+func (rb *RoleBinding) Delete(name, namespace string) error {
 	log.Debug("get RoleBinding:")
-	err := rb.Interface.Delete(rb.Name, &meta_v1.DeleteOptions{})
+	err := rb.clientSet.RoleBindings(namespace).Delete(name, &meta_v1.DeleteOptions{})
 	return err
 }
 
-func (rb *RoleBinding) Update(roleBinding *authorization_v1.RoleBinding) (*authorization_v1.RoleBinding, error) {
+func (rb *RoleBinding) Update(name, namespace, roleRefName, roleRefKind, subjectKind, subjectName string) (*authorization_v1.RoleBinding, error) {
 	log.Debug("get RoleBinding:")
-	result, err := rb.Interface.Update(roleBinding)
+	roleBinding := &authorization_v1.RoleBinding{
+		ObjectMeta: meta_v1.ObjectMeta{
+			Name:      name,
+			Namespace: namespace,
+		},
+		RoleRef: corev1.ObjectReference{
+			Name: roleRefName,
+			Kind: roleRefKind,
+		},
+		Subjects: []corev1.ObjectReference{
+			{
+				Kind:      subjectKind,
+				Name:      subjectName,
+				Namespace: namespace,
+			},
+		},
+	}
+	result, err := rb.clientSet.RoleBindings(namespace).Update(roleBinding)
 	if err != nil {
 		return nil, err
 	}
 	return result, nil
 }
 
-func (rb *RoleBinding) InitImagePullers(client v1.AuthorizationV1Interface) error {
+func (rb *RoleBinding) InitImagePullers(namespace, roleRefName, roleRefKind, subjectKind, subjectName string) error {
 	name := "system:image-pullers"
-	namespace := rb.Namespace
-	bin, err := NewRoleBinding(client, name, namespace)
-	if err != nil {
-		return err
-	}
 	roleBinding := &authorization_v1.RoleBinding{
 		ObjectMeta: meta_v1.ObjectMeta{
 			Name:      name,
-			Namespace: rb.Namespace,
+			Namespace: namespace,
 		},
 		RoleRef: corev1.ObjectReference{
 			Name: "system:image-puller",
@@ -135,17 +115,12 @@ func (rb *RoleBinding) InitImagePullers(client v1.AuthorizationV1Interface) erro
 			},
 		},
 	}
-	_, err = bin.Create(roleBinding)
+	_, err := rb.clientSet.RoleBindings(namespace).Create(roleBinding)
 	return err
 }
 
-func (rb *RoleBinding) InitImageBuilders(client v1.AuthorizationV1Interface) error {
+func (rb *RoleBinding) InitImageBuilders(namespace, roleRefName, roleRefKind, subjectKind, subjectName string) error {
 	name := "system:image-builders"
-	namespace := rb.Namespace
-	bin, err := NewRoleBinding(client, name, namespace)
-	if err != nil {
-		return err
-	}
 	roleBinding := &authorization_v1.RoleBinding{
 		ObjectMeta: meta_v1.ObjectMeta{
 			Name:      name,
@@ -163,17 +138,12 @@ func (rb *RoleBinding) InitImageBuilders(client v1.AuthorizationV1Interface) err
 			},
 		},
 	}
-	_, err = bin.Create(roleBinding)
+	_, err := rb.clientSet.RoleBindings(namespace).Create(roleBinding)
 	return err
 }
 
-func (rb *RoleBinding) InitSystemDeployers(client v1.AuthorizationV1Interface) error {
+func (rb *RoleBinding) InitSystemDeployers(namespace, roleRefName, roleRefKind, subjectKind, subjectName string) error {
 	name := "system:deployers"
-	namespace := rb.Namespace
-	bin, err := NewRoleBinding(client, name, namespace)
-	if err != nil {
-		return err
-	}
 	roleBinding := &authorization_v1.RoleBinding{
 		ObjectMeta: meta_v1.ObjectMeta{
 			Name:      name,
@@ -191,6 +161,6 @@ func (rb *RoleBinding) InitSystemDeployers(client v1.AuthorizationV1Interface) e
 			},
 		},
 	}
-	_, err = bin.Create(roleBinding)
+	_, err := rb.clientSet.RoleBindings(namespace).Create(roleBinding)
 	return err
 }

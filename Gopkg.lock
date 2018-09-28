@@ -9,6 +9,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/Shopify/goreferrer"
+  packages = ["."]
+  revision = "b9777dc9f9cc3f3e426a01d218ddd6d52153f907"
+
+[[projects]]
+  branch = "master"
   name = "github.com/alecthomas/template"
   packages = [
     ".",
@@ -75,6 +81,12 @@
   packages = ["."]
   revision = "47565b4f722fb6ceae66b95f853feed578a4a51c"
   version = "v0.3.3"
+
+[[projects]]
+  name = "github.com/fatih/structs"
+  packages = ["."]
+  revision = "a720dfa8df582c51dee1b36feabb906bde1588bd"
+  version = "v1.0"
 
 [[projects]]
   name = "github.com/fsnotify/fsnotify"
@@ -172,15 +184,25 @@
 [[projects]]
   name = "github.com/hidevopsio/hiboot"
   packages = [
+    "pkg/app",
+    "pkg/factory",
+    "pkg/factory/autoconfigure",
+    "pkg/factory/autoconfigure/depends",
+    "pkg/factory/instantiate",
+    "pkg/inject",
     "pkg/log",
     "pkg/system",
-    "pkg/utils",
+    "pkg/utils/cmap",
     "pkg/utils/copier",
     "pkg/utils/gotest",
-    "pkg/utils/reflector"
+    "pkg/utils/io",
+    "pkg/utils/mapstruct",
+    "pkg/utils/reflector",
+    "pkg/utils/replacer",
+    "pkg/utils/str"
   ]
-  revision = "6111d6666ea4c52d586648fd105370cb71efe1c1"
-  version = "v0.2.0"
+  revision = "851172a093a3d613f9ef6c207050c7a9e1690dc7"
+  version = "v0.8.0"
 
 [[projects]]
   branch = "master"
@@ -196,15 +218,27 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/iris-contrib/formBinder"
+  packages = ["."]
+  revision = "ad9fb86c356f971f30319c40ddbdcf72129a2791"
+
+[[projects]]
+  name = "github.com/iris-contrib/go.uuid"
+  packages = ["."]
+  revision = "36e9d2ebbde5e3f13ab2e25625fd453271d6522e"
+  version = "v2.0.0"
+
+[[projects]]
+  branch = "master"
   name = "github.com/jinzhu/copier"
   packages = ["."]
   revision = "7e38e58719c33e0d44d585c4ab477a30f8cb82dd"
 
 [[projects]]
+  branch = "master"
   name = "github.com/json-iterator/go"
   packages = ["."]
-  revision = "ab8a2e0c74be9d3be70b3184d9acc634935ded82"
-  version = "1.1.4"
+  revision = "2433035e513208b0f7bd5b50d0aecd889b2c1ff8"
 
 [[projects]]
   name = "github.com/juju/ratelimit"
@@ -219,6 +253,21 @@
   revision = "03be101463868edc5a81f094fc68a5f6c1b5503a"
 
 [[projects]]
+  name = "github.com/kataras/iris"
+  packages = [
+    "context",
+    "core/errors",
+    "core/memstore",
+    "core/router/macro",
+    "core/router/macro/interpreter/ast",
+    "core/router/macro/interpreter/lexer",
+    "core/router/macro/interpreter/parser",
+    "core/router/macro/interpreter/token"
+  ]
+  revision = "217d9feadc0fc5b317826a901065e0c4c27d3cad"
+  version = "10.7.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/kataras/pio"
   packages = [
@@ -228,6 +277,21 @@
   revision = "a9733b5b6b83d32b479aacd51d26ef6018261963"
 
 [[projects]]
+  name = "github.com/klauspost/compress"
+  packages = [
+    "flate",
+    "gzip"
+  ]
+  revision = "b939724e787a27c0005cabe3f78e7ed7987ac74f"
+  version = "v1.4.0"
+
+[[projects]]
+  name = "github.com/klauspost/cpuid"
+  packages = ["."]
+  revision = "ae7887de9fa5d2db4eaa8174a7eff2c1ac00f2da"
+  version = "v1.1"
+
+[[projects]]
   name = "github.com/magiconair/properties"
   packages = [
     ".",
@@ -235,6 +299,12 @@
   ]
   revision = "c2353362d570a7bfa228149c62842019201cfb71"
   version = "v1.8.0"
+
+[[projects]]
+  name = "github.com/microcosm-cc/bluemonday"
+  packages = ["."]
+  revision = "82c7118e8ccf7403d4860175d97bb635e8e28239"
+  version = "v1.0.1"
 
 [[projects]]
   branch = "master"
@@ -356,6 +426,12 @@
   revision = "c7de2306084e37d54b8be01f3541a8464345e9a5"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/shurcooL/sanitized_anchor_name"
+  packages = ["."]
+  revision = "86672fcb3f950f35f2e675df2240550f2a50762f"
+
+[[projects]]
   name = "github.com/sirupsen/logrus"
   packages = ["."]
   revision = "3e01752db0189b9157070a0e1668a620f9a85da2"
@@ -427,12 +503,15 @@
   packages = [
     "context",
     "context/ctxhttp",
+    "html",
+    "html/atom",
     "http/httpguts",
     "http2",
     "http2/hpack",
     "idna",
     "internal/socks",
-    "proxy"
+    "proxy",
+    "publicsuffix"
   ]
   revision = "f4c29de78a2a91c00474a2e689954305c350adf9"
 
@@ -475,16 +554,16 @@
   version = "v2.2.6"
 
 [[projects]]
-  name = "gopkg.in/go-playground/validator.v8"
-  packages = ["."]
-  revision = "5f1438d3fca68893a817e4a66806cea46a9e4ebf"
-  version = "v8.18.2"
-
-[[projects]]
   name = "gopkg.in/inf.v0"
   packages = ["."]
   revision = "d2d2541c53f18d2a059457998ce2876cc8e67cbf"
   version = "v0.9.1"
+
+[[projects]]
+  name = "gopkg.in/russross/blackfriday.v2"
+  packages = ["."]
+  revision = "d3b5b032dc8e8927d31a5071b56e14c89f045135"
+  version = "v2.0.1"
 
 [[projects]]
   name = "gopkg.in/yaml.v2"
@@ -656,6 +735,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8abf017099b94896518f9c801705da4b5dfece71090388f84edfb91073bc2b11"
+  inputs-digest = "50deb49daf9396cdc3c6e42af21f920e754f90f4e8e02eb3d79e479380b1033c"
   solver-name = "gps-cdcl"
   solver-version = 1

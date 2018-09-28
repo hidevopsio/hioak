@@ -14,25 +14,3 @@
 
 package fake_test
 
-import (
-	"testing"
-	"github.com/hidevopsio/hiboot/pkg/log"
-	"github.com/stretchr/testify/assert"
-	"github.com/xanzy/go-gitlab"
-	"github.com/hidevopsio/hioak/starter/scm/gitlab/fake"
-)
-
-func init()  {
-	log.SetLevel(log.DebugLevel)
-}
-
-func TestFakeClient(t *testing.T) {
-	ss := fake.NewClient("")
-	gs := new(gitlab.Session)
-	gr := new(gitlab.Response)
-	ss.On("GetSession", nil, nil).Return(gs, gr, nil)
-	s, r, e := ss.GetSession(nil, nil)
-	assert.Equal(t, nil, e)
-	assert.Equal(t, s, gs)
-	assert.Equal(t, r, gr)
-}

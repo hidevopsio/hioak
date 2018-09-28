@@ -12,47 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 package openshift
 
 import (
-	"testing"
-	"github.com/stretchr/testify/assert"
 	"github.com/openshift/client-go/image/clientset/versioned/fake"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestImageStreamCrud(t *testing.T) {
 	imageStreamName := "is-test"
 	namespace := "openshift"
 	clientSet := fake.NewSimpleClientset().ImageV1()
-	imageStream, err := NewImageStream(clientSet, imageStreamName, namespace)
-	assert.Equal(t, nil, err)
-
+	imageStream := newImageStream(clientSet)
 	version := "v1"
+	source := "docker.io/hidevops/s2i-java:latest"
 	// create imagestream
-	is, err := imageStream.Create(version)
+	is, err := imageStream.Create(imageStreamName, namespace, source, version)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, imageStreamName, is.ObjectMeta.Name)
 
 	// get imagestream
-	is, err = imageStream.Get()
+
+	is, err = imageStream.Get(imageStreamName, namespace)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, imageStreamName, is.ObjectMeta.Name)
 
 	// delete imagestream
-	err = imageStream.Delete()
+	err = imageStream.Delete(imageStreamName, namespace)
 	assert.Equal(t, nil, err)
-}
-
-
-func TestImageStreamCreation(t *testing.T) {
-	name := "s2i-java-test"
-	namespace := "openshift"
-	source := "docker.io/hidevops/s2i-java:latest"
-	clientSet := fake.NewSimpleClientset().ImageV1()
-	imageStream, err := NewImageStreamFromSource(clientSet, name, namespace, source)
-	// create imagestream
-	is, err := imageStream.Create("v1")
-	assert.Equal(t, nil, err)
-	assert.Equal(t, name, is.ObjectMeta.Name)
 }

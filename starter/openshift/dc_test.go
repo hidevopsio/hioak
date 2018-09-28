@@ -15,12 +15,12 @@
 package openshift
 
 import (
-	"testing"
-	"github.com/stretchr/testify/assert"
 	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/hidevopsio/hiboot/pkg/system"
 	"github.com/hidevopsio/hioak/starter"
 	"github.com/openshift/client-go/apps/clientset/versioned/fake"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestDeploymentConfigCreation(t *testing.T) {
@@ -59,11 +59,10 @@ func TestDeploymentConfigCreation(t *testing.T) {
 	}
 
 	// new dc instance
-	dc, err := NewDeploymentConfig(clientSet, app, namespace, version)
-	assert.Equal(t, nil, err)
-	assert.Equal(t, app, dc.Name)
+	dc := newDeploymentConfig(clientSet)
 	// create dc
-	err = dc.Create(&env, map[string]string{}, &ports, 1, false, healthEndPoint, "")
+	fullName := app + "-" + version
+	err := dc.Create(app, namespace, fullName, version, &env, map[string]string{}, &ports, 1, false, healthEndPoint, "")
 	assert.Equal(t, nil, err)
 }
 
@@ -101,10 +100,8 @@ func TestDeploymentConfigInstantiation(t *testing.T) {
 	}
 	log.Debug("TestDeploymentConfigInstantiation()")
 	clientSet := fake.NewSimpleClientset().AppsV1()
-	dc, err := NewDeploymentConfig(clientSet, app, namespace, version)
-	assert.Equal(t, nil, err)
-	assert.Equal(t, app, dc.Name)
-	err = dc.Create(&env, map[string]string{}, &ports, 1, false, healthEndPoint,"")
+	dc := newDeploymentConfig(clientSet)
+	err := dc.Create(app, namespace, fullName, version, &env, map[string]string{}, &ports, 1, false, healthEndPoint, "")
 	assert.Equal(t, nil, err)
 }
 
@@ -142,11 +139,9 @@ func TestDeploymentConfig(t *testing.T) {
 	}
 	log.Debug("TestDeploymentConfigDeletion()")
 	clientSet := fake.NewSimpleClientset().AppsV1()
-	dc, err := NewDeploymentConfig(clientSet, app, namespace, version)
+	dc := newDeploymentConfig(clientSet)
+	err := dc.Create(app, namespace, fullName, version, &env, map[string]string{}, &ports, 1, false, healthEndPoint, "")
 	assert.Equal(t, nil, err)
-	assert.Equal(t, app, dc.Name)
-	err = dc.Create(&env, map[string]string{}, &ports, 1, false, healthEndPoint, "")
-	assert.Equal(t, nil, err)
-	err = dc.Delete()
+	err = dc.Delete(namespace, fullName)
 	assert.Equal(t, nil, err)
 }

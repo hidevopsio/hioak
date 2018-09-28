@@ -1,36 +1,34 @@
 package openshift
 
 import (
-	"testing"
 	"github.com/magiconair/properties/assert"
 	"github.com/openshift/client-go/image/clientset/versioned/fake"
+	"testing"
 )
 
 const (
-	name = "hiweb"
-	namespace = "hidevopsio"
+	name          = "hiweb"
+	namespace     = "hidevopsio"
 	fromNamespace = "hidevopsio-dev"
-	version = "v1"
-	fullName = name + ":" + version
+	version       = "v1"
+	fullName      = name + ":" + version
 )
+
 func TestCrudTags(t *testing.T) {
 	clientSet := fake.NewSimpleClientset().ImageV1()
-	ist, err := NewImageStreamTags(clientSet, name, version, namespace)
-	assert.Equal(t, nil, err)
-
-	is, err := ist.Create(fromNamespace)
+	ist := newImageStreamTags(clientSet)
+	is, err := ist.Create(fullName, namespace, fromNamespace)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, fullName, is.Name)
 
-	is, err = ist.Get()
+	is, err = ist.Get(fullName, namespace)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, fullName, is.Name)
 
-	_, err = ist.Update(fromNamespace)
+	_, err = ist.Update(fullName, namespace, fromNamespace)
 	assert.Equal(t, nil, err)
 
-	err = ist.Delete()
+	err = ist.Delete(fullName, namespace)
 	assert.Equal(t, nil, err)
-
 
 }

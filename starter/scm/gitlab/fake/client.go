@@ -2,18 +2,22 @@ package fake
 
 import (
 	"github.com/stretchr/testify/mock"
-	"github.com/xanzy/go-gitlab"
-)
+	"github.com/hidevopsio/hioak/starter/scm/gitlab"
+		)
 
 type Client struct {
 	mock.Mock
-
+	GroupsService          *GroupsService
+	ProjectsService        *ProjectsService
+	RepositoriesService    *RepositoriesService
+	RepositoryFilesService *RepositoryFilesService
+	SessionService         *SessionService
+	UsersService           *UsersService
 }
 
-func NewClient(token string) *Client {
-	return &Client{
-
-	}
+func NewClient(url, token string) (client gitlab.ClientInterface) {
+	cli := new(Client)
+	return cli
 }
 
 func (c *Client) SetBaseURL(urlStr string) error {
@@ -22,56 +26,34 @@ func (c *Client) SetBaseURL(urlStr string) error {
 	return args.Error(0)
 }
 
-func (c *Client) GetSession(opt *gitlab.GetSessionOptions, options ...gitlab.OptionFunc) (*gitlab.Session, *gitlab.Response, error)   {
-	args := c.Called(nil, nil)
-	return args[0].(*gitlab.Session), args[1].(*gitlab.Response), args.Error(2)
+func (c *Client) Session() gitlab.SessionInterface {
+	return c.SessionService
 }
 
-func (c *Client) ListGroups(opt *gitlab.ListGroupsOptions, options ...gitlab.OptionFunc) ([]*gitlab.Group, *gitlab.Response, error)  {
-	args := c.Called(nil, nil)
-	return args[0].([]*gitlab.Group), args[1].(*gitlab.Response), args.Error(2)
+func (c *Client) Group() gitlab.GroupInterface {
+	return c.GroupsService
 }
 
-func (c *Client) GetGroup(gid interface{}, options ...gitlab.OptionFunc) (*gitlab.Group, *gitlab.Response, error) {
-	args := c.Called(gid, nil)
-	return args[0].(*gitlab.Group), args[1].(*gitlab.Response), args.Error(2)
+func (c *Client) GroupMember() gitlab.GroupMemberInterface {
+	return c.GroupsService
 }
 
-func (c *Client) ListGroupProjects(gid interface{}, opt *gitlab.ListGroupProjectsOptions, options ...gitlab.OptionFunc) ([]*gitlab.Project, *gitlab.Response, error) {
-	args := c.Called(gid, nil)
-	return args[0].([]*gitlab.Project), args[1].(*gitlab.Response), args.Error(2)
+func (c *Client) ProjectMember() gitlab.ProjectMemberInterface {
+	return c.ProjectsService
 }
 
-func (c *Client) ListGroupMembers(gid interface{}, opt *gitlab.ListGroupMembersOptions, options ...gitlab.OptionFunc) ([]*gitlab.GroupMember, *gitlab.Response, error) {
-	args := c.Called(gid, nil, nil)
-	return args[0].([]*gitlab.GroupMember), args[1].(*gitlab.Response), args.Error(2)
+func (c *Client) Project() gitlab.ProjectInterface {
+	return c.ProjectsService
 }
 
-func (c * Client) GetProject(pid interface{}, options ...gitlab.OptionFunc) (*gitlab.Project, *gitlab.Response, error) {
-	args := c.Called(pid, nil)
-	return args[0].(*gitlab.Project), args[1].(*gitlab.Response), args.Error(2)
+func (c *Client) Repository() gitlab.RepositoryInterface {
+	return c.RepositoriesService
 }
 
-func (c *Client) ListProjects(opt *gitlab.ListProjectsOptions, options ...gitlab.OptionFunc) ([]*gitlab.Project, *gitlab.Response, error)  {
-	args := c.Called(nil, nil)
-	return args[0].([]*gitlab.Project), args[1].(*gitlab.Response), args.Error(2)
+func (c *Client) RepositoryFile() gitlab.RepositoryFileInterface {
+	return c.RepositoryFilesService
 }
 
-func (c *Client) ListTree(pid interface{}, opt *gitlab.ListTreeOptions, options ...gitlab.OptionFunc) ([]*gitlab.TreeNode, *gitlab.Response, error) {
-	args := c.Called(nil, nil, nil)
-	return args[0].([]*gitlab.TreeNode), args[1].(*gitlab.Response), args.Error(2)
-}
-
-func (c *Client) GetProjectMember(pid interface{}, user int, options ...gitlab.OptionFunc) (*gitlab.ProjectMember, *gitlab.Response, error) {
-	args := c.Called(nil, nil)
-	return args[0].(*gitlab.ProjectMember), args[1].(*gitlab.Response), args.Error(2)
-}
-func (c *Client) GetFile(pid interface{}, opt *gitlab.GetFileOptions, options ...gitlab.OptionFunc) (*gitlab.File, *gitlab.Response, error)  {
-	args := c.Called(nil, nil, nil)
-	return args[0].(*gitlab.File), args[1].(*gitlab.Response), args.Error(2)
-}
-
-func (c *Client) CurrentUser(options ...gitlab.OptionFunc) (*gitlab.User, *gitlab.Response, error) {
-	args := c.Called(nil)
-	return args[0].(*gitlab.User), args[1].(*gitlab.Response), args.Error(2)
+func (c *Client) User() gitlab.UserInterface {
+	return c.UsersService
 }

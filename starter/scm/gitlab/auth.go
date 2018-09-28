@@ -16,21 +16,21 @@ package gitlab
 
 import (
 	"github.com/hidevopsio/hiboot/pkg/log"
+	"github.com/hidevopsio/hioak/starter/scm"
 	"github.com/jinzhu/copier"
 	"github.com/xanzy/go-gitlab"
-	"github.com/hidevopsio/hioak/starter/scm"
 )
 
 type Session struct {
 	scm.Session
-	client ClientInterface
+	client NewClient
 }
 
 const (
 	ApiVersion = "/api/v3"
 )
 
-func NewSession(c ClientInterface) scm.SessionInterface {
+func NewSession(c NewClient) *Session {
 	return &Session{
 		client: c,
 	}
@@ -43,17 +43,13 @@ func (s *Session) GetSession(baseUrl, username, password string) error {
 		Login:    &username,
 		Password: &password,
 	}
-	s.client.SetBaseURL(baseUrl + ApiVersion)
-	log.Debug("before c.Session.GetSession(so)")
-
-	session, _, err := s.client.GetSession(so)
+	session, _, err := s.client(baseUrl, "").Session().GetSession(so)
 	log.Debug("after c.Session.GetSession(so)", err)
 
 	copier.Copy(s, session)
 
 	return err
 }
-
 
 func (s *Session) GetToken() string {
 	return s.PrivateToken
@@ -62,4 +58,3 @@ func (s *Session) GetToken() string {
 func (s *Session) GetId() int {
 	return s.ID
 }
-

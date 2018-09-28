@@ -1,56 +1,47 @@
 package kube
 
 import (
+	"fmt"
 	"github.com/hidevopsio/hiboot/pkg/log"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes/typed/core/v1"
 	"k8s.io/apimachinery/pkg/watch"
-	"fmt"
 	"k8s.io/client-go/kubernetes"
 )
 
-type ReplicationController struct{
-	Name string
-	Namespace string
+type ReplicationController struct {
 	clientSet kubernetes.Interface
-	Interface v1.ReplicationControllerInterface
 }
 
-func NewReplicationController(clientSet kubernetes.Interface, name string, namespace string) *ReplicationController {
+func NewReplicationController(clientSet kubernetes.Interface) *ReplicationController {
 	return &ReplicationController{
-		Name: name,
-		Namespace: namespace,
-		Interface: clientSet.CoreV1().ReplicationControllers(namespace),
+		clientSet: clientSet,
 	}
 }
 
-
-func (rc *ReplicationController) Create(replicas int32) (*corev1.ReplicationController, error) {
+func (rc *ReplicationController) Create(name, namespace string, replicas int32) (*corev1.ReplicationController, error) {
 	crc := &corev1.ReplicationController{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: rc.Name,
+			Name: name,
 			Labels: map[string]string{
-				"app": rc.Name,
+				"app": name,
 			},
 		},
 		Spec: corev1.ReplicationControllerSpec{
 			Replicas: &replicas,
 			Template: &corev1.PodTemplateSpec{
-				Spec: corev1.PodSpec{
-
-				},
+				Spec: corev1.PodSpec{},
 			},
 		},
 	}
 
-	return rc.Interface.Create(crc)
+	return rc.clientSet.CoreV1().ReplicationControllers(namespace).Create(crc)
 }
 
-func (rc *ReplicationController) Watch(completedHandler func() error) error {
-	w, err := rc.Interface.Watch(metav1.ListOptions{
-		LabelSelector: "app=" + rc.Name,
-		Watch: true,
+func (rc *ReplicationController) Watch(name, namespace string, completedHandler func() error) error {
+	w, err := rc.clientSet.CoreV1().ReplicationControllers(namespace).Watch(metav1.ListOptions{
+		LabelSelector: "app=" + name,
+		Watch:         true,
 	})
 
 	if err != nil {
@@ -75,7 +66,7 @@ func (rc *ReplicationController) Watch(completedHandler func() error) error {
 				log.Debugf("RC: %s, Replicas: %d, AvailableReplicas: %d", rc.Name, rc.Status.Replicas, rc.Status.AvailableReplicas)
 				if rc.Status.Replicas != 0 && rc.Status.AvailableReplicas == rc.Status.Replicas {
 					var err error
-					if nil !=  completedHandler {
+					if nil != completedHandler {
 						err = completedHandler()
 					}
 					w.Stop()

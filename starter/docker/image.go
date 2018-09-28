@@ -3,15 +3,15 @@ package docker
 import (
 	"encoding/base64"
 	"encoding/json"
+	"github.com/docker/docker/api/types"
+	"github.com/hidevopsio/hiboot/pkg/log"
+	"golang.org/x/net/context"
 	"io"
 	"os"
-	"github.com/docker/docker/api/types"
-	"golang.org/x/net/context"
-	"github.com/hidevopsio/hiboot/pkg/log"
-		)
+)
 
 type Image struct {
-	client ClientInterface
+	client        ClientInterface
 	FromImage     string            `json:"from_image"`
 	Tag           string            `json:"tag"`
 	Username      string            `json:"username"`
@@ -27,6 +27,12 @@ type Image struct {
 
 type ImageInterface interface {
 	PullImage() error
+}
+
+func NewImage(c ClientInterface) *Image {
+	return &Image{
+		client: c,
+	}
 }
 
 func (i *Image) PullImage() error {
