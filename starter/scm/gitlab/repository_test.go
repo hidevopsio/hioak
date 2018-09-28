@@ -1,26 +1,30 @@
-package gitlab
+package gitlab_test
 
 import (
 	"github.com/hidevopsio/hioak/starter/scm/gitlab/fake"
 	"github.com/magiconair/properties/assert"
-	"github.com/xanzy/go-gitlab"
+	gogitlab "github.com/xanzy/go-gitlab"
+	"github.com/hidevopsio/hioak/starter/scm/gitlab"
 	"os"
 	"testing"
 )
 
 func TestListTree(t *testing.T) {
-	baseUrl := os.Getenv("SCM_URL")
-	s := fake.NewClient("")
-	s.On("SetBaseURL", nil).Return(nil)
-	file := &gitlab.TreeNode{
+	fs := new(fake.RepositoriesService)
+	cli := &fake.Client{
+		RepositoriesService: fs,
+	}
+	s := gitlab.NewRepository(func (url, token string) (client gitlab.ClientInterface) {
+		return cli
+	})
+	file := &gogitlab.TreeNode{
 		ID:   "chulei",
 		Name: "aaaa",
 	}
-	var tree []*gitlab.TreeNode
+	var tree []*gogitlab.TreeNode
 	tree = append(tree, file)
-	resp := new(gitlab.Response)
-	s.On("ListTree", nil, nil, nil).Return(tree, resp, nil)
-	repository := NewRepository(s)
-	_, err := repository.ListTree(baseUrl, os.Getenv("Token"), "pom.xml", 1)
+	resp := new(gogitlab.Response)
+	fs.On("ListTree", nil, nil, nil).Return(tree, resp, nil)
+	_, err := s.ListTree("", os.Getenv("Token"), "pom.xml", 1)
 	assert.Equal(t, nil, err)
 }

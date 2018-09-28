@@ -10,11 +10,12 @@ import (
 type Group struct {
 	scm.Group
 	group GroupInterface
+	client NewClient
 }
 
-func NewGroup(g GroupInterface) *Group {
+func NewGroup(client NewClient) *Group {
 	return &Group{
-		group: g,
+		client: client,
 	}
 }
 
@@ -28,7 +29,7 @@ func (g *Group) ListGroups(token, baseUrl string, page int) ([]scm.Group, error)
 			Page: page,
 		},
 	}
-	groups, _, err := g.group.ListGroups(opt)
+	groups, _, err := g.client(baseUrl, token).Group().ListGroups(opt)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +45,7 @@ func (g *Group) GetGroup(token, baseUrl string, gid int) (*scm.Group, error) {
 	log.Debug("group.GetGroup()")
 	scmGroup := &scm.Group{}
 	log.Debug("before c.group.ListGroups(so)")
-	group, _, err := g.group.GetGroup(gid)
+	group, _, err := g.client(baseUrl, token).Group().GetGroup(gid)
 	log.Debug("after c.Session.GetSession(so)")
 	if err != nil {
 		return nil, err
@@ -63,7 +64,7 @@ func (g *Group) ListGroupProjects(token, baseUrl string, gid, page int) ([]scm.P
 			Page: page,
 		},
 	}
-	projects, _, err := g.group.ListGroupProjects(gid, opt)
+	projects, _, err := g.client(baseUrl, token).Group().ListGroupProjects(gid, opt)
 	log.Debug("ListGroupProjects : ", len(projects))
 	if err != nil {
 		log.Error("Group ListGroupProjects : ", err)

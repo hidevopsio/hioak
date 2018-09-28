@@ -1,48 +1,54 @@
-package gitlab
+package gitlab_test
 
 import (
 	"github.com/hidevopsio/hioak/starter/scm/gitlab/fake"
 	"github.com/magiconair/properties/assert"
-	"github.com/xanzy/go-gitlab"
+	gogitlab "github.com/xanzy/go-gitlab"
 	"os"
 	"testing"
+	"github.com/hidevopsio/hioak/starter/scm/gitlab"
 )
 
 func TestListGroupMembers(t *testing.T) {
-	baseUrl := os.Getenv("SCM_URL")
-	s := fake.NewClient("")
-	s.On("SetBaseURL", nil).Return(nil)
-	gra := &gitlab.GroupMember{
+	fs := new(fake.GroupsService)
+	cli := &fake.Client{
+		GroupsService: fs,
+	}
+	s := gitlab.NewGroupMember(func (url, token string) (client gitlab.ClientInterface) {
+		return cli
+	})
+	gra := &gogitlab.GroupMember{
 		ID:          100,
 		Name:        "chulei",
-		AccessLevel: gitlab.DeveloperPermissions,
+		AccessLevel: gogitlab.DeveloperPermissions,
 	}
-	var gro []*gitlab.GroupMember
+	var gro []*gogitlab.GroupMember
 	gro = append(gro, gra)
-	gr := new(gitlab.Response)
+	gr := new(gogitlab.Response)
 	gid := 4
-	s.On("ListGroupMembers", gid, nil, nil).Return(gro, gr, nil)
+	fs.On("ListGroupMembers", gid, nil, nil).Return(gro, gr, nil)
 
-	groupMember := NewGroupMember(s)
-	_, err := groupMember.ListGroupMembers(os.Getenv(""), baseUrl, gid, 100)
+	_, err := s.ListGroupMembers(os.Getenv(""), "", gid, 100)
 	assert.Equal(t, nil, err)
 }
 
 func TestGetGroupMember(t *testing.T) {
-	baseUrl := os.Getenv("SCM_URL")
-	s := fake.NewClient("")
-	s.On("SetBaseURL", nil).Return(nil)
-	gra := &gitlab.GroupMember{
+	fs := new(fake.GroupsService)
+	cli := &fake.Client{
+		GroupsService: fs,
+	}
+	s := gitlab.NewGroupMember(func (url, token string) (client gitlab.ClientInterface) {
+		return cli
+	})
+	gra := &gogitlab.GroupMember{
 		ID:   100,
 		Name: "chulei",
 	}
-	var gro []*gitlab.GroupMember
+	var gro []*gogitlab.GroupMember
 	gro = append(gro, gra)
-	gr := new(gitlab.Response)
+	gr := new(gogitlab.Response)
 	gid := 4
-	s.On("ListGroupMembers", gid, nil, nil).Return(gro, gr, nil)
-
-	groupMember := NewGroupMember(s)
-	_, err := groupMember.GetGroupMember(os.Getenv(""), baseUrl, gid, 100)
+	fs.On("ListGroupMembers", gid, nil, nil).Return(gro, gr, nil)
+	_, err := s.GetGroupMember(os.Getenv(""), "", gid, 100)
 	assert.Equal(t, nil, err)
 }

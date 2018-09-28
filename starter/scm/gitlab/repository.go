@@ -9,14 +9,14 @@ import (
 
 type Repository struct {
 	scm.TreeNode
-	client RepositoryInterface
+	client NewClient
 }
 
 type TreeNode struct {
 	scm.TreeNode
 }
 
-func NewRepository(c RepositoryInterface) *Repository {
+func NewRepository(c NewClient) *Repository {
 	return &Repository{
 		client: c,
 	}
@@ -28,7 +28,7 @@ func (r *Repository) ListTree(baseUrl, token, ref string, pid int) ([]scm.TreeNo
 	opt := &gitlab.ListTreeOptions{
 		RefName: &ref,
 	}
-	tree, _, err := r.client.ListTree(pid, opt)
+	tree, _, err := r.client(baseUrl, token).Repository().ListTree(pid, opt)
 	if err != nil {
 		return nil, err
 	}
