@@ -12,6 +12,7 @@ type ClientInterface interface {
 	ImageTag(ctx context.Context, imageID, ref string) error
 	ImagePush(ctx context.Context, ref string, options types.ImagePushOptions) (io.ReadCloser, error)
 	ImageList(ctx context.Context, options types.ImageListOptions) ([]types.ImageSummary, error)
+	ImageBuild(ctx context.Context, buildContext io.Reader, options types.ImageBuildOptions) (types.ImageBuildResponse, error)
 }
 
 func NewClient() (*client.Client, error) {
