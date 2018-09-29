@@ -27,16 +27,16 @@
 
 [[constraint]]
   name = "k8s.io/client-go"
-  version = "v6.0.0"
+  version = "v7.0.0"
 
 [[constraint]]
-  version = "kubernetes-1.9.6"
+  version = "kubernetes-1.10。4"
   name = "k8s.io/apimachinery"
 
 [[constraint]]
-  version = "kubernetes-1.9.6"
+  version = "kubernetes-1.10。4"
   name = "k8s.io/apiextensions-apiserver"
 
 [[constraint]]
-  version = "kubernetes-1.9.6"
+  version = "kubernetes-1.10。4"
   name = "k8s.io/api"
