@@ -1,13 +1,17 @@
 package docker
 
 import (
+	"archive/tar"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"github.com/docker/docker/api/types"
 	"github.com/hidevopsio/hiboot/pkg/log"
 	"golang.org/x/net/context"
 	"io"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 type Image struct {
@@ -23,6 +27,8 @@ type Image struct {
 	IdentityToken string            `json:"identitytoken,omitempty"`
 	RegistryToken string            `json:"registrytoken,omitempty"`
 	ServerAddress string            `json:"server_address"`
+	DockerFile string            `json:"docker_file"`
+	Tags []string			`json:"tags"`
 }
 
 type ImageInterface interface {
@@ -117,4 +123,83 @@ func GetTag(tag, name string) string {
 		ref = name + ":" + tag
 	}
 	return ref
+}
+
+
+func (i *Image) BuildImage() ([]string,error) {
+	tarGet,err:= tarIt(i.DockerFile, ".")
+	defer os.RemoveAll(tarGet)
+	if err != nil {
+		log.Debugf("Error %v",err)
+		return i.Tags,err
+	}
+	dockerBuildContext, err := os.Open(tarGet)
+	defer dockerBuildContext.Close()
+	options := types.ImageBuildOptions{
+		Dockerfile:    "" ,
+		Tags: i.Tags,
+		NoCache:     true,
+		PullParent:true,
+		SuppressOutput:true,
+		ForceRemove: true,}
+
+	if _, err := i.client.ImageBuild(context.Background(), dockerBuildContext, options);err != nil {
+		log.Debugf("Error %v",err)
+		return i.Tags,err
+	}
+	return i.Tags,nil
+}
+
+
+func tarIt(source, tarGet string) (string,error) {
+	filename := filepath.Base(source)
+	tarGet = filepath.Join(tarGet, fmt.Sprintf("%s.tar", filename))
+	tarFile, err := os.Create(tarGet)
+	if err != nil {
+		return tarGet,err
+	}
+	defer tarFile.Close()
+
+	tarball := tar.NewWriter(tarFile)
+	defer tarball.Close()
+
+	info, err := os.Stat(source)
+	if err != nil {
+		return tarGet,err
+	}
+
+	var baseDir string
+	if info.IsDir() {
+		baseDir = filepath.Base(source)
+	}
+
+	return tarGet,filepath.Walk(source,
+		func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			header, err := tar.FileInfoHeader(info, info.Name())
+			if err != nil {
+				return err
+			}
+			if baseDir != "" {
+				header.Name = filepath.Join(baseDir, strings.TrimPrefix(path, source))
+			}
+
+			if err := tarball.WriteHeader(header); err != nil {
+				return err
+			}
+
+			if info.IsDir() {
+				return nil
+			}
+
+			file, err := os.Open(path)
+			if err != nil {
+				return err
+			}
+			defer file.Close()
+			_, err = io.Copy(tarball, file)
+			return err
+		})
 }

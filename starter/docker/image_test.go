@@ -4,8 +4,9 @@ import (
 	"errors"
 	"github.com/docker/docker/api/types"
 	"github.com/hidevopsio/hioak/starter/docker/fake"
-	"github.com/magiconair/properties/assert"
+	"github.com/stretchr/testify/assert"
 	"io"
+	"os"
 	"testing"
 )
 
@@ -65,4 +66,33 @@ func TestImage_GetImage(t *testing.T) {
 	c.On("ImageList", nil, nil).Return(s, nil)
 	_, err = image.GetImage()
 	assert.Equal(t, nil, err)
+}
+
+func TestImage_BuildImage(t *testing.T) {
+	c, err := fake.NewClient()
+	assert.Equal(t, nil, err)
+	file,err:=os.Create("Dockerfile")
+	assert.Equal(t, nil, err)
+	file.Write([]byte("FROM k8s.gcr.io/pause:3.1"))
+	file.Close()
+	defer os.RemoveAll("./Dockerfile")
+	image := &Image{
+		DockerFile:   "./Dockerfile",
+		Tags:[]string{"pause:latest"},
+		client:    c,
+	}
+
+	t.Run("should err is nil", func(t *testing.T) {
+		c.On("ImageBuild", nil, nil, nil).Return(types.ImageBuildResponse{}, nil)
+		_,err = image.BuildImage()
+		assert.Equal(t, nil, err)
+	})
+
+
+	t.Run("shoud file not found" , func(t *testing.T) {
+		image.DockerFile = "notfile"
+		c.On("ImageBuild", nil, nil, nil).Return(types.ImageBuildResponse{}, nil)
+		_,err = image.BuildImage()
+		assert.NotEqual(t, nil, err)
+	})
 }
