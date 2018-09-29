@@ -2,6 +2,9 @@ package gitlab
 
 import (
 	"github.com/hidevopsio/hiboot/pkg/app"
+	"strings"
+	"net/http"
+	"github.com/xanzy/go-gitlab"
 )
 
 type configuration struct {
@@ -16,42 +19,49 @@ func newConfiguration() *configuration {
 	return &configuration{}
 }
 
-func (c *configuration) GitlabGroup(token string) *Group {
-	clientSet := NewClient(token)
-	return NewGroup(clientSet.Groups)
+type NewClient func(url, token string) ClientInterface
+
+func (c *configuration) GitlabNewClient() NewClient {
+	return func(url, token string) (client ClientInterface) {
+		length := strings.Count(token, "") - 1
+		cli := new(Client)
+		if length <= 20 {
+			cli.Client = gitlab.NewClient(&http.Client{}, token)
+		}
+		cli.Client = gitlab.NewOAuthClient(&http.Client{}, token)
+		cli.Client.SetBaseURL(url)
+		return cli
+	}
 }
 
-func (c *configuration) GitlabGroupMember(token string) *GroupMember {
-	clientSet := NewClient(token)
-	return NewGroupMember(clientSet.Groups)
+func (c *configuration) GitlabGroup(newCli NewClient) *Group {
+	return NewGroup(newCli)
 }
 
-func (c *configuration) GitlabProject(token string) *Project {
-	clientSet := NewClient(token)
-	return NewProject(clientSet.Projects)
+func (c *configuration) GitlabGroupMember(newCli NewClient) *GroupMember {
+	return NewGroupMember(newCli)
 }
 
-func (c *configuration) GitlabProjectMember(token string) *ProjectMember {
-	clientSet := NewClient(token)
-	return NewProjectMember(clientSet.Projects)
+func (c *configuration) GitlabProject(newCli NewClient) *Project {
+	return NewProject(newCli)
 }
 
-func (c *configuration) GitlabRepository(token string) *Repository {
-	clientSet := NewClient(token)
-	return NewRepository(clientSet.Repositories)
+func (c *configuration) GitlabProjectMember(newCli NewClient) *ProjectMember {
+	return NewProjectMember(newCli)
 }
 
-func (c *configuration) GitlabUser(token string) *User {
-	clientSet := NewClient(token)
-	return NewUser(clientSet.Users)
+func (c *configuration) GitlabRepository(newCli NewClient) *Repository {
+	return NewRepository(newCli)
 }
 
-func (c *configuration) GitlabSession(token string) *Session {
-	clientSet := NewClient(token)
-	return NewSession(clientSet.Session)
+func (c *configuration) GitlabUser(newCli NewClient) *User {
+	return NewUser(newCli)
 }
 
-func (c *configuration) GitlabRepositoryFile(token string) *RepositoryFile {
-	clientSet := NewClient(token)
-	return NewRepositoryFile(clientSet.RepositoryFiles)
+func (c *configuration) GitlabSession(newCli NewClient) *Session {
+	return NewSession(newCli)
+}
+
+func (c *configuration) GitlabRepositoryFile(newCli NewClient) *RepositoryFile {
+	return NewRepositoryFile(newCli)
 }

@@ -7,10 +7,10 @@ import (
 
 type ProjectMember struct {
 	scm.ProjectMember
-	client ProjectMemberInterface
+	client NewClient
 }
 
-func NewProjectMember(c ProjectMemberInterface) *ProjectMember {
+func NewProjectMember(c NewClient) *ProjectMember {
 	return &ProjectMember{
 		client: c,
 	}
@@ -20,7 +20,7 @@ func (p *ProjectMember) GetProjectMember(token, baseUrl string, pid, uid, gid in
 	log.Debug("Product.GetProject()")
 	scmProjectMember := scm.ProjectMember{}
 	log.Debug("before p.project.GetProjectMember(so)", pid)
-	projectMember, _, err := p.client.GetProjectMember(pid, uid)
+	projectMember, _, err := p.client(baseUrl, token).ProjectMember().GetProjectMember(pid, uid)
 	if err != nil {
 		log.Error("ProjectMembers.GetProjectMember ", err)
 		return scmProjectMember, err

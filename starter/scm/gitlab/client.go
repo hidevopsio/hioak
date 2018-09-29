@@ -2,12 +2,18 @@ package gitlab
 
 import (
 	"github.com/xanzy/go-gitlab"
-	"net/http"
-	"strings"
 )
 
 type ClientInterface interface {
 	SetBaseURL(baseUrl string) error
+	Session() SessionInterface
+	Group() GroupInterface
+	GroupMember() GroupMemberInterface
+	Project() ProjectInterface
+	ProjectMember() ProjectMemberInterface
+	RepositoryFile() RepositoryFileInterface
+	Repository() RepositoryInterface
+	User() UserInterface
 }
 
 type SessionInterface interface {
@@ -45,10 +51,38 @@ type UserInterface interface {
 	CurrentUser(options ...gitlab.OptionFunc) (*gitlab.User, *gitlab.Response, error)
 }
 
-func NewClient(token string) *gitlab.Client {
-	length := strings.Count(token, "") - 1
-	if length <= 20 {
-		return gitlab.NewClient(&http.Client{}, token)
-	}
-	return gitlab.NewOAuthClient(&http.Client{}, token)
+type Client struct {
+	*gitlab.Client
+}
+
+func (c *Client) Session() SessionInterface {
+	return c.Client.Session
+}
+
+func (c *Client) Group() GroupInterface {
+	return c.Client.Groups
+}
+
+func (c *Client) GroupMember() GroupMemberInterface {
+	return c.Client.Groups
+}
+
+func (c *Client) ProjectMember() ProjectMemberInterface {
+	return c.Client.Projects
+}
+
+func (c *Client) Project() ProjectInterface {
+	return c.Client.Projects
+}
+
+func (c *Client) Repository() RepositoryInterface {
+	return c.Client.Repositories
+}
+
+func (c *Client) RepositoryFile() RepositoryFileInterface {
+	return c.Client.RepositoryFiles
+}
+
+func (c *Client) User() UserInterface {
+	return c.Client.Users
 }
