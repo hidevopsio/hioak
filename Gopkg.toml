@@ -40,3 +40,7 @@
 [[constraint]]
   version = "kubernetes-1.10.4"
   name = "k8s.io/api"
+
+[[constraint]]
+  version = "v0.8.1"
+  name = "github.com/hidevopsio/hiboot"
