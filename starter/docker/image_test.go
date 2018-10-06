@@ -71,28 +71,27 @@ func TestImage_GetImage(t *testing.T) {
 func TestImage_BuildImage(t *testing.T) {
 	c, err := fake.NewClient()
 	assert.Equal(t, nil, err)
-	file,err:=os.Create("Dockerfile")
+	file, err := os.Create("Dockerfile")
 	assert.Equal(t, nil, err)
 	file.Write([]byte("FROM k8s.gcr.io/pause:3.1"))
 	file.Close()
 	defer os.RemoveAll("./Dockerfile")
 	image := &Image{
-		DockerFile: "./Dockerfile",
+		BuildFiles: []string{"./Dockerfile"},
 		Tags:       []string{"pause:latest"},
 		Client:     c,
 	}
 
 	t.Run("should err is nil", func(t *testing.T) {
 		c.On("ImageBuild", nil, nil, nil).Return(types.ImageBuildResponse{}, nil)
-		_,err = image.BuildImage()
+		_, err = image.BuildImage()
 		assert.Equal(t, nil, err)
 	})
 
-
-	t.Run("shoud file not found" , func(t *testing.T) {
-		image.DockerFile = "notfile"
+	t.Run("shoud file not found", func(t *testing.T) {
+		image.BuildFiles = []string{"notfile"}
 		c.On("ImageBuild", nil, nil, nil).Return(types.ImageBuildResponse{}, nil)
-		_,err = image.BuildImage()
+		_, err = image.BuildImage()
 		assert.NotEqual(t, nil, err)
 	})
 }

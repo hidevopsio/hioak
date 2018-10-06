@@ -2,9 +2,9 @@ package gitlab
 
 import (
 	"github.com/hidevopsio/hiboot/pkg/app"
-	"strings"
-	"net/http"
 	"github.com/xanzy/go-gitlab"
+	"net/http"
+	"strings"
 )
 
 type configuration struct {

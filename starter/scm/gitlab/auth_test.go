@@ -16,11 +16,11 @@ package gitlab_test
 
 import (
 	"github.com/hidevopsio/hiboot/pkg/log"
+	"github.com/hidevopsio/hioak/starter/scm/gitlab"
 	"github.com/hidevopsio/hioak/starter/scm/gitlab/fake"
 	"github.com/magiconair/properties/assert"
 	gg "github.com/xanzy/go-gitlab"
 	"testing"
-	"github.com/hidevopsio/hioak/starter/scm/gitlab"
 )
 
 func init() {
@@ -36,7 +36,7 @@ func TestSession(t *testing.T) {
 	cli := &fake.Client{
 		SessionService: fs,
 	}
-	s := gitlab.NewSession(func (url, token string) (client gitlab.ClientInterface) {
+	s := gitlab.NewSession(func(url, token string) (client gitlab.ClientInterface) {
 		return cli
 	})
 	cli.On("Session", nil, nil).Return(fs)

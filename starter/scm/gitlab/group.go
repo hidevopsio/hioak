@@ -9,7 +9,7 @@ import (
 
 type Group struct {
 	scm.Group
-	group GroupInterface
+	group  GroupInterface
 	client NewClient
 }
 

@@ -36,6 +36,6 @@ func (c *Client) ImageList(ctx context.Context, options types.ImageListOptions) 
 }
 
 func (c *Client) ImageBuild(ctx context.Context, buildContext io.Reader, options types.ImageBuildOptions) (types.ImageBuildResponse, error) {
-	args := c.Called(nil, nil,nil)
+	args := c.Called(nil, nil, nil)
 	return args[0].(types.ImageBuildResponse), args.Error(1)
 }

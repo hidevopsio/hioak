@@ -2,6 +2,7 @@ package docker
 
 import (
 	"archive/tar"
+	"compress/gzip"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -10,8 +11,7 @@ import (
 	"golang.org/x/net/context"
 	"io"
 	"os"
-	"path/filepath"
-	"strings"
+	"time"
 )
 
 type Image struct {
@@ -27,8 +27,8 @@ type Image struct {
 	IdentityToken string            `json:"identitytoken,omitempty"`
 	RegistryToken string            `json:"registrytoken,omitempty"`
 	ServerAddress string            `json:"server_address"`
-	DockerFile    string            `json:"docker_file"`
-	Tags          []string			`json:"tags"`
+	BuildFiles    []string          `json:"build_file"`
+	Tags          []string          `json:"tags"`
 }
 
 type ImageInterface interface {
@@ -125,82 +125,97 @@ func GetTag(tag, name string) string {
 	return ref
 }
 
-
-func (i *Image) BuildImage() (*types.ImageBuildResponse,error) {
-	tarGet,err:= tarIt(i.DockerFile, ".")
-	defer os.RemoveAll(tarGet)
-	if err != nil {
-		log.Debugf("Error %v",err)
-		return nil,err
+func (i *Image) BuildImage() (*types.ImageBuildResponse, error) {
+	var files []*os.File
+	for _, fileName := range i.BuildFiles {
+		f, err := os.Open(fileName)
+		if err != nil {
+			return nil, err
+		}
+		files = append(files, f)
 	}
-	dockerBuildContext, err := os.Open(tarGet)
+	defer func() {
+		for _, f := range files {
+			f.Close()
+		}
+	}()
+	tarName := fmt.Sprintf("%s-build.tar", time.Now())
+	if err := Compress(files, tarName); err != nil {
+		return nil, err
+	}
+	defer os.RemoveAll(tarName)
+
+	dockerBuildContext, err := os.Open(tarName)
+	if err != nil {
+		return nil, err
+	}
 	defer dockerBuildContext.Close()
-	options := types.ImageBuildOptions{
-		Dockerfile:    "" ,
-		Tags: i.Tags,
-		NoCache:     true,
-		PullParent:true,
-		SuppressOutput:true,
-		ForceRemove: true,}
 
-	imageBuildResponse, err := i.Client.ImageBuild(context.Background(), dockerBuildContext, options)
+	options := types.ImageBuildOptions{
+		Dockerfile: "Dockerfile",
+		Tags:       i.Tags,
+		Remove:     true}
+
+	ImageBuildResponse, err := i.Client.ImageBuild(context.Background(), dockerBuildContext, options)
 	if err != nil {
-		log.Debugf("Error %v",err)
-		return nil,err
+		log.Debugf("Error %v", err)
+		return nil, err
 	}
-	return &imageBuildResponse,nil
+	return &ImageBuildResponse, nil
 }
 
-
-func tarIt(source, tarGet string) (string,error) {
-	filename := filepath.Base(source)
-	tarGet = filepath.Join(tarGet, fmt.Sprintf("%s.tar", filename))
-	tarFile, err := os.Create(tarGet)
-	if err != nil {
-		return tarGet,err
-	}
-	defer tarFile.Close()
-
-	tarball := tar.NewWriter(tarFile)
-	defer tarball.Close()
-
-	info, err := os.Stat(source)
-	if err != nil {
-		return tarGet,err
-	}
-
-	var baseDir string
-	if info.IsDir() {
-		baseDir = filepath.Base(source)
-	}
-
-	return tarGet,filepath.Walk(source,
-		func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-			header, err := tar.FileInfoHeader(info, info.Name())
-			if err != nil {
-				return err
-			}
-			if baseDir != "" {
-				header.Name = filepath.Join(baseDir, strings.TrimPrefix(path, source))
-			}
-
-			if err := tarball.WriteHeader(header); err != nil {
-				return err
-			}
-
-			if info.IsDir() {
-				return nil
-			}
-
-			file, err := os.Open(path)
-			if err != nil {
-				return err
-			}
-			defer file.Close()
-			_, err = io.Copy(tarball, file)
+func Compress(files []*os.File, dest string) error {
+	d, _ := os.Create(dest)
+	defer d.Close()
+	gw := gzip.NewWriter(d)
+	defer gw.Close()
+	tw := tar.NewWriter(gw)
+	defer tw.Close()
+	for _, file := range files {
+		err := compress(file, "", tw)
+		if err != nil {
 			return err
-		})
+		}
+	}
+	return nil
+}
+
+func compress(file *os.File, prefix string, tw *tar.Writer) error {
+	info, err := file.Stat()
+	if err != nil {
+		return err
+	}
+	if info.IsDir() {
+		prefix = prefix + "/" + info.Name()
+		fileInfos, err := file.Readdir(-1)
+		if err != nil {
+			return err
+		}
+		for _, fi := range fileInfos {
+			f, err := os.Open(file.Name() + "/" + fi.Name())
+			if err != nil {
+				return err
+			}
+			err = compress(f, prefix, tw)
+			if err != nil {
+				return err
+			}
+		}
+	} else {
+		header, err := tar.FileInfoHeader(info, "")
+		header.Name = prefix + "/" + header.Name
+		if err != nil {
+			return err
+		}
+		err = tw.WriteHeader(header)
+		if err != nil {
+			return err
+		}
+		_, err = io.Copy(tw, file)
+		file.Close()
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

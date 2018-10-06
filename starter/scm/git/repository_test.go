@@ -63,6 +63,6 @@ func TestCloneErr(t *testing.T) {
 		return nil, fmt.Errorf("clone faile")
 	})
 
-	_, err := repo.Clone("", "","","","")
+	_, err := repo.Clone("", "", "", "", "")
 	assert.Equal(t, err, fmt.Errorf("clone faile"))
 }
