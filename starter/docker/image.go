@@ -14,8 +14,12 @@ import (
 	"time"
 )
 
-type Image struct {
+type ImageClient struct {
 	Client        ClientInterface
+}
+
+type Image struct {
+
 	FromImage     string            `json:"from_image"`
 	Tag           string            `json:"tag"`
 	Username      string            `json:"username"`
@@ -35,25 +39,25 @@ type ImageInterface interface {
 	PullImage() error
 }
 
-func NewImage(c ClientInterface) *Image {
-	return &Image{
+func NewImage(c ClientInterface) *ImageClient {
+	return &ImageClient{
 		Client: c,
 	}
 }
 
-func (i *Image) PullImage() error {
+func (i *ImageClient) PullImage(image *Image) error {
 	log.Info("image pull :")
 	ctx := context.Background()
 	authConfig := types.AuthConfig{
-		Username: i.Username,
-		Password: i.Password,
+		Username: image.Username,
+		Password: image.Password,
 	}
 	encodedJSON, err := json.Marshal(authConfig)
 	if err != nil {
 		return err
 	}
 	authStr := base64.URLEncoding.EncodeToString(encodedJSON)
-	ref := GetTag(i.Tag, i.FromImage)
+	ref := GetTag(image.Tag, image.FromImage)
 	out, err := i.Client.ImagePull(ctx, ref, types.ImagePullOptions{RegistryAuth: authStr})
 	if err != nil {
 		log.Info("ImagePull error:", err)
@@ -64,27 +68,27 @@ func (i *Image) PullImage() error {
 	return nil
 }
 
-func (i *Image) TagImage(imageID string) error {
+func (i *ImageClient) TagImage(image *Image, imageID string) error {
 	log.Info("imgaes tag")
 	ctx := context.Background()
-	ref := GetTag(i.Tag, i.FromImage)
+	ref := GetTag(image.Tag, image.FromImage)
 	err := i.Client.ImageTag(ctx, imageID, ref)
 	return err
 }
 
-func (i *Image) PushImage() error {
+func (i *ImageClient) PushImage(image *Image) error {
 	log.Info("image push ")
 	ctx := context.Background()
 	authConfig := types.AuthConfig{
-		Username: i.Username,
-		Password: i.Password,
+		Username: image.Username,
+		Password: image.Password,
 	}
 	encodedJSON, err := json.Marshal(authConfig)
 	if err != nil {
 		return err
 	}
 	authStr := base64.URLEncoding.EncodeToString(encodedJSON)
-	ref := GetTag(i.Tag, i.FromImage)
+	ref := GetTag(image.Tag, image.FromImage)
 	out, err := i.Client.ImagePush(ctx, ref, types.ImagePushOptions{RegistryAuth: authStr})
 	if err != nil {
 		log.Info("ImagePush error:", err)
@@ -96,11 +100,11 @@ func (i *Image) PushImage() error {
 	return nil
 }
 
-func (i *Image) GetImage() (types.ImageSummary, error) {
+func (i *ImageClient) GetImage(image *Image) (types.ImageSummary, error) {
 	log.Info("get image ")
 	ctx := context.Background()
 	s := types.ImageSummary{}
-	ref := GetTag(i.Tag, i.FromImage)
+	ref := GetTag(image.Tag, image.FromImage)
 	opt := types.ImageListOptions{}
 	summaries, err := i.Client.ImageList(ctx, opt)
 	for _, summary := range summaries {
@@ -125,9 +129,9 @@ func GetTag(tag, name string) string {
 	return ref
 }
 
-func (i *Image) BuildImage() (*types.ImageBuildResponse, error) {
+func (i *ImageClient) BuildImage(image *Image) (*types.ImageBuildResponse, error) {
 	var files []*os.File
-	for _, fileName := range i.BuildFiles {
+	for _, fileName := range image.BuildFiles {
 		f, err := os.Open(fileName)
 		if err != nil {
 			return nil, err
@@ -153,7 +157,7 @@ func (i *Image) BuildImage() (*types.ImageBuildResponse, error) {
 
 	options := types.ImageBuildOptions{
 		Dockerfile: "Dockerfile",
-		Tags:       i.Tags,
+		Tags:       image.Tags,
 		Remove:     true}
 
 	ImageBuildResponse, err := i.Client.ImageBuild(context.Background(), dockerBuildContext, options)
