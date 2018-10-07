@@ -1,15 +1,13 @@
 package fake
 
 import (
-	"github.com/xanzy/go-gitlab"
 	"github.com/stretchr/testify/mock"
+	"github.com/xanzy/go-gitlab"
 )
-
 
 type GroupsService struct {
 	mock.Mock
 }
-
 
 func (c *GroupsService) ListGroups(opt *gitlab.ListGroupsOptions, options ...gitlab.OptionFunc) ([]*gitlab.Group, *gitlab.Response, error) {
 	args := c.Called(nil, nil)

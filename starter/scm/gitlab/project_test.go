@@ -1,12 +1,12 @@
 package gitlab_test
 
 import (
+	"github.com/hidevopsio/hioak/starter/scm/gitlab"
 	"github.com/hidevopsio/hioak/starter/scm/gitlab/fake"
 	"github.com/magiconair/properties/assert"
 	gogitlab "github.com/xanzy/go-gitlab"
 	"os"
 	"testing"
-	"github.com/hidevopsio/hioak/starter/scm/gitlab"
 )
 
 func TestGetProject(t *testing.T) {
@@ -14,7 +14,7 @@ func TestGetProject(t *testing.T) {
 	cli := &fake.Client{
 		ProjectsService: fs,
 	}
-	s := gitlab.NewProject(func (url, token string) (client gitlab.ClientInterface) {
+	s := gitlab.NewProject(func(url, token string) (client gitlab.ClientInterface) {
 		return cli
 	})
 	gra := &gogitlab.Project{
@@ -36,7 +36,7 @@ func TestGetGroupId(t *testing.T) {
 	cli := &fake.Client{
 		ProjectsService: fs,
 	}
-	s := gitlab.NewProject(func (url, token string) (client gitlab.ClientInterface) {
+	s := gitlab.NewProject(func(url, token string) (client gitlab.ClientInterface) {
 		return cli
 	})
 	gra := &gogitlab.Project{
@@ -58,7 +58,7 @@ func TestListProjects(t *testing.T) {
 	cli := &fake.Client{
 		ProjectsService: fs,
 	}
-	s := gitlab.NewProject(func (url, token string) (client gitlab.ClientInterface) {
+	s := gitlab.NewProject(func(url, token string) (client gitlab.ClientInterface) {
 		return cli
 	})
 	gra := &gogitlab.Project{
@@ -83,7 +83,7 @@ func TestSearch(t *testing.T) {
 	cli := &fake.Client{
 		ProjectsService: fs,
 	}
-	s := gitlab.NewProject(func (url, token string) (client gitlab.ClientInterface) {
+	s := gitlab.NewProject(func(url, token string) (client gitlab.ClientInterface) {
 		return cli
 	})
 	gra := &gogitlab.Project{
