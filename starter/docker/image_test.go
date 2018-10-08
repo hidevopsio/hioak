@@ -112,8 +112,9 @@ func newTestCommand(dockerImage *docker.Image) *TestCommand  {
 	return &TestCommand{dockerImage: dockerImage}
 }
 
-func (c *TestCommand) OnCreate(args []string)  {
+func (c *TestCommand) OnCreate(args []string) bool {
 	log.Debugf("OnNewImage")
+	return true
 }
 
 func TestApp(t *testing.T) {
