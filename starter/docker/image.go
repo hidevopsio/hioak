@@ -15,11 +15,10 @@ import (
 )
 
 type ImageClient struct {
-	Client        ClientInterface
+	Client ClientInterface
 }
 
 type Image struct {
-
 	FromImage     string            `json:"from_image"`
 	Tag           string            `json:"tag"`
 	Username      string            `json:"username"`

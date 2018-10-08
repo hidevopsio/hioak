@@ -17,12 +17,12 @@ func newConfiguration() *configuration {
 	return &configuration{}
 }
 
-func (c *configuration) NewImage() (client *ImageClient) {
+func (c *configuration) DockerImageClient() (imageClient *ImageClient) {
 	clientSet, err := NewClient()
 	if err != nil {
 		log.Errorf("new image err :%v", err)
 		return
 	}
-	client = NewImage(clientSet)
+	imageClient = NewImage(clientSet)
 	return
 }
