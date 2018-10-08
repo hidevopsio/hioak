@@ -45,6 +45,14 @@
   version = "v1.1.0"
 
 [[projects]]
+  digest = "1:aaeffbff5bd24654cb4c190ed75d6c7b57b4f5d6741914c1a7a6bb7447e756c5"
+  name = "github.com/deckarep/golang-set"
+  packages = ["."]
+  pruneopts = ""
+  revision = "cbaa98ba5575e67703b32b4b19f73c91f3c4159e"
+  version = "v1.7.1"
+
+[[projects]]
   branch = "master"
   digest = "1:1a8fd913b087787e048c4da5bbba21b6dfa9f1920d1ff6791dbc0af7a640f589"
   name = "github.com/docker/distribution"
@@ -220,17 +228,19 @@
   revision = "ef8a98b0bbce4a65b5aa4c368430a80ddc533168"
 
 [[projects]]
-  digest = "1:eff39de1146d2eae68837742856e8eda4117d68d00ec904a33545c4024deff4d"
+  digest = "1:a12c693300a95b2883f500fac2e111b895a866d86a0fb586a9f34289b2d069cc"
   name = "github.com/hidevopsio/hiboot"
   packages = [
     "pkg/app",
+    "pkg/app/cli",
     "pkg/factory",
     "pkg/factory/autoconfigure",
-    "pkg/factory/autoconfigure/depends",
+    "pkg/factory/depends",
     "pkg/factory/instantiate",
     "pkg/inject",
     "pkg/log",
     "pkg/system",
+    "pkg/system/types",
     "pkg/utils/cmap",
     "pkg/utils/copier",
     "pkg/utils/gotest",
@@ -241,8 +251,8 @@
     "pkg/utils/str",
   ]
   pruneopts = ""
-  revision = "8b965ab951aaa93644ec5ae5882180a7dbcf0b59"
-  version = "v0.8.1"
+  revision = "1b4cb41be8a5697f120e5ec40d4da5a293bbe093"
+  version = "v0.9.0"
 
 [[projects]]
   branch = "master"
@@ -259,6 +269,14 @@
   pruneopts = ""
   revision = "9f23e2d6bd2a77f959b2bf6acdbefd708a83a4a4"
   version = "v0.3.6"
+
+[[projects]]
+  digest = "1:870d441fe217b8e689d7949fef6e43efbc787e50f200cb1e70dbca9204a1d6be"
+  name = "github.com/inconshreveable/mousetrap"
+  packages = ["."]
+  pruneopts = ""
+  revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
+  version = "v1.0"
 
 [[projects]]
   branch = "master"
@@ -567,6 +585,14 @@
   pruneopts = ""
   revision = "8965335b8c7107321228e3e3702cab9832751bac"
   version = "v1.2.0"
+
+[[projects]]
+  digest = "1:a1403cc8a94b8d7956ee5e9694badef0e7b051af289caad1cf668331e3ffa4f6"
+  name = "github.com/spf13/cobra"
+  packages = ["."]
+  pruneopts = ""
+  revision = "ef82de70bb3f60c65fb8eebacbb2d122ef517385"
+  version = "v0.0.3"
 
 [[projects]]
   branch = "master"
@@ -1010,6 +1036,7 @@
     "github.com/docker/docker/api/types",
     "github.com/docker/docker/client",
     "github.com/hidevopsio/hiboot/pkg/app",
+    "github.com/hidevopsio/hiboot/pkg/app/cli",
     "github.com/hidevopsio/hiboot/pkg/log",
     "github.com/hidevopsio/hiboot/pkg/system",
     "github.com/hidevopsio/hiboot/pkg/utils/copier",

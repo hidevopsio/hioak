@@ -1,4 +1,4 @@
-package docker
+package docker_test
 
 import (
 	"errors"
@@ -8,12 +8,15 @@ import (
 	"io"
 	"os"
 	"testing"
+	"github.com/hidevopsio/hioak/starter/docker"
+	"github.com/hidevopsio/hiboot/pkg/app/cli"
+	"github.com/prometheus/common/log"
 )
 
 func TestPullImages(t *testing.T) {
 	c, err := fake.NewClient()
 	assert.Equal(t, nil, err)
-	image := &Image{
+	image := &docker.Image{
 		Username:  "",
 		Password:  "",
 		FromImage: "docker.io/library/nginx",
@@ -29,7 +32,7 @@ func TestPullImages(t *testing.T) {
 func TestImage_TagImage(t *testing.T) {
 	c, err := fake.NewClient()
 	assert.Equal(t, nil, err)
-	image := &Image{
+	image := &docker.Image{
 		FromImage: "docker.io/library/nginx",
 		Tag:       "1.0",
 		Client:    c,
@@ -42,7 +45,7 @@ func TestImage_TagImage(t *testing.T) {
 func TestImage_PushImage(t *testing.T) {
 	c, err := fake.NewClient()
 	assert.Equal(t, nil, err)
-	image := &Image{
+	image := &docker.Image{
 		Username:  "",
 		Password:  "",
 		FromImage: "docker.io/library/nginx",
@@ -58,7 +61,7 @@ func TestImage_PushImage(t *testing.T) {
 func TestImage_GetImage(t *testing.T) {
 	c, err := fake.NewClient()
 	assert.Equal(t, nil, err)
-	image := &Image{
+	image := &docker.Image{
 		FromImage: "docker.io/library/nginx",
 		Client:    c,
 	}
@@ -76,7 +79,7 @@ func TestImage_BuildImage(t *testing.T) {
 	file.Write([]byte("FROM k8s.gcr.io/pause:3.1"))
 	file.Close()
 	defer os.RemoveAll("./Dockerfile")
-	image := &Image{
+	image := &docker.Image{
 		DockerFile: "./Dockerfile",
 		Tags:       []string{"pause:latest"},
 		Client:     c,
@@ -94,5 +97,29 @@ func TestImage_BuildImage(t *testing.T) {
 		c.On("ImageBuild", nil, nil, nil).Return(types.ImageBuildResponse{}, nil)
 		_,err = image.BuildImage()
 		assert.NotEqual(t, nil, err)
+	})
+}
+
+// TestCommand is the root command
+type TestCommand struct {
+	// embedded cli.BaseCommand
+	cli.BaseCommand
+
+	dockerImage *docker.Image
+}
+
+func newTestCommand(dockerImage *docker.Image) *TestCommand  {
+	return &TestCommand{dockerImage: dockerImage}
+}
+
+func (c *TestCommand) OnCreate(args []string)  {
+	log.Debugf("OnNewImage")
+}
+
+func TestApp(t *testing.T) {
+	testApp := cli.NewTestApplication(t, newTestCommand)
+	t.Run("should run test command", func(t *testing.T) {
+		_, err := testApp.RunTest("create")
+		assert.Equal(t, nil, err)
 	})
 }
