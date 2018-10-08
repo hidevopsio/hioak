@@ -35,6 +35,14 @@
   version = "v1.1.0"
 
 [[projects]]
+  digest = "1:aaeffbff5bd24654cb4c190ed75d6c7b57b4f5d6741914c1a7a6bb7447e756c5"
+  name = "github.com/deckarep/golang-set"
+  packages = ["."]
+  pruneopts = ""
+  revision = "cbaa98ba5575e67703b32b4b19f73c91f3c4159e"
+  version = "v1.7.1"
+
+[[projects]]
   branch = "master"
   name = "github.com/docker/distribution"
   packages = [
@@ -180,16 +188,19 @@
   revision = "ef8a98b0bbce4a65b5aa4c368430a80ddc533168"
 
 [[projects]]
+  digest = "1:a12c693300a95b2883f500fac2e111b895a866d86a0fb586a9f34289b2d069cc"
   name = "github.com/hidevopsio/hiboot"
   packages = [
     "pkg/app",
+    "pkg/app/cli",
     "pkg/factory",
     "pkg/factory/autoconfigure",
-    "pkg/factory/autoconfigure/depends",
+    "pkg/factory/depends",
     "pkg/factory/instantiate",
     "pkg/inject",
     "pkg/log",
     "pkg/system",
+    "pkg/system/types",
     "pkg/utils/cmap",
     "pkg/utils/copier",
     "pkg/utils/gotest",
@@ -199,8 +210,9 @@
     "pkg/utils/replacer",
     "pkg/utils/str"
   ]
-  revision = "8b965ab951aaa93644ec5ae5882180a7dbcf0b59"
-  version = "v0.8.1"
+  pruneopts = ""
+  revision = "1b4cb41be8a5697f120e5ec40d4da5a293bbe093"
+  version = "v0.9.0"
 
 [[projects]]
   branch = "master"
@@ -213,6 +225,14 @@
   packages = ["."]
   revision = "9f23e2d6bd2a77f959b2bf6acdbefd708a83a4a4"
   version = "v0.3.6"
+
+[[projects]]
+  digest = "1:870d441fe217b8e689d7949fef6e43efbc787e50f200cb1e70dbca9204a1d6be"
+  name = "github.com/inconshreveable/mousetrap"
+  packages = ["."]
+  pruneopts = ""
+  revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
+  version = "v1.0"
 
 [[projects]]
   branch = "master"
@@ -461,6 +481,14 @@
   packages = ["."]
   revision = "8965335b8c7107321228e3e3702cab9832751bac"
   version = "v1.2.0"
+
+[[projects]]
+  digest = "1:a1403cc8a94b8d7956ee5e9694badef0e7b051af289caad1cf668331e3ffa4f6"
+  name = "github.com/spf13/cobra"
+  packages = ["."]
+  pruneopts = ""
+  revision = "ef82de70bb3f60c65fb8eebacbb2d122ef517385"
+  version = "v0.0.3"
 
 [[projects]]
   branch = "master"
@@ -854,6 +882,60 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5ba2f3852c7eff8a672e50983697fb0061288c44a7e83feca6cbef28d3d00206"
+  input-imports = [
+    "github.com/docker/docker/api/types",
+    "github.com/docker/docker/client",
+    "github.com/hidevopsio/hiboot/pkg/app",
+    "github.com/hidevopsio/hiboot/pkg/app/cli",
+    "github.com/hidevopsio/hiboot/pkg/log",
+    "github.com/hidevopsio/hiboot/pkg/system",
+    "github.com/hidevopsio/hiboot/pkg/utils/copier",
+    "github.com/hidevopsio/hiboot/pkg/utils/io",
+    "github.com/jinzhu/copier",
+    "github.com/magiconair/properties/assert",
+    "github.com/openshift/api/apps/v1",
+    "github.com/openshift/api/authorization/v1",
+    "github.com/openshift/api/build/v1",
+    "github.com/openshift/api/image/v1",
+    "github.com/openshift/api/oauth/v1",
+    "github.com/openshift/api/project/v1",
+    "github.com/openshift/api/route/v1",
+    "github.com/openshift/client-go/apps/clientset/versioned/fake",
+    "github.com/openshift/client-go/apps/clientset/versioned/typed/apps/v1",
+    "github.com/openshift/client-go/authorization/clientset/versioned/fake",
+    "github.com/openshift/client-go/authorization/clientset/versioned/typed/authorization/v1",
+    "github.com/openshift/client-go/build/clientset/versioned/fake",
+    "github.com/openshift/client-go/build/clientset/versioned/typed/build/v1",
+    "github.com/openshift/client-go/image/clientset/versioned/fake",
+    "github.com/openshift/client-go/image/clientset/versioned/typed/image/v1",
+    "github.com/openshift/client-go/oauth/clientset/versioned/fake",
+    "github.com/openshift/client-go/oauth/clientset/versioned/typed/oauth/v1",
+    "github.com/openshift/client-go/project/clientset/versioned/fake",
+    "github.com/openshift/client-go/project/clientset/versioned/typed/project/v1",
+    "github.com/openshift/client-go/route/clientset/versioned/fake",
+    "github.com/openshift/client-go/route/clientset/versioned/typed/route/v1",
+    "github.com/prometheus/common/log",
+    "github.com/stretchr/testify/assert",
+    "github.com/stretchr/testify/mock",
+    "github.com/xanzy/go-gitlab",
+    "golang.org/x/net/context",
+    "gopkg.in/src-d/go-git.v4",
+    "gopkg.in/src-d/go-git.v4/plumbing/transport",
+    "gopkg.in/src-d/go-git.v4/plumbing/transport/http",
+    "k8s.io/api/apps/v1beta1",
+    "k8s.io/api/core/v1",
+    "k8s.io/api/extensions/v1beta1",
+    "k8s.io/apimachinery/pkg/api/errors",
+    "k8s.io/apimachinery/pkg/apis/meta/v1",
+    "k8s.io/apimachinery/pkg/util/intstr",
+    "k8s.io/apimachinery/pkg/watch",
+    "k8s.io/client-go/kubernetes",
+    "k8s.io/client-go/kubernetes/fake",
+    "k8s.io/client-go/kubernetes/typed/core/v1",
+    "k8s.io/client-go/rest",
+    "k8s.io/client-go/tools/clientcmd",
+    "k8s.io/client-go/util/homedir",
+  ]
+
   solver-name = "gps-cdcl"
   solver-version = 1
