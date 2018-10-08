@@ -1,12 +1,12 @@
 package gitlab_test
 
 import (
+	"github.com/hidevopsio/hioak/starter/scm/gitlab"
 	"github.com/hidevopsio/hioak/starter/scm/gitlab/fake"
 	"github.com/magiconair/properties/assert"
 	gogitlab "github.com/xanzy/go-gitlab"
 	"os"
 	"testing"
-	"github.com/hidevopsio/hioak/starter/scm/gitlab"
 )
 
 func TestListProjectMembers(t *testing.T) {
@@ -14,7 +14,7 @@ func TestListProjectMembers(t *testing.T) {
 	cli := &fake.Client{
 		ProjectsService: fs,
 	}
-	s := gitlab.NewProjectMember(func (url, token string) (client gitlab.ClientInterface) {
+	s := gitlab.NewProjectMember(func(url, token string) (client gitlab.ClientInterface) {
 		return cli
 	})
 	gra := &gogitlab.GroupMember{
