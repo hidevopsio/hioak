@@ -17,12 +17,12 @@ func newConfiguration() *configuration {
 	return &configuration{}
 }
 
-func (c *configuration) NewImage() (image *Image) {
+func (c *configuration) NewImage() (client *ImageClient) {
 	clientSet, err := NewClient()
 	if err != nil {
 		log.Errorf("new image err :%v", err)
 		return
 	}
-	image = NewImage(clientSet)
+	client = NewImage(clientSet)
 	return
 }
