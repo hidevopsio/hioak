@@ -128,12 +128,12 @@ func GetTag(tag, name string) string {
 	return ref
 }
 
-func (i *ImageClient) BuildImage(image *Image) (*types.ImageBuildResponse, error) {
+func (i *ImageClient) BuildImage(image *Image) error {
 	var files []*os.File
 	for _, fileName := range image.BuildFiles {
 		f, err := os.Open(fileName)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		files = append(files, f)
 	}
@@ -144,13 +144,13 @@ func (i *ImageClient) BuildImage(image *Image) (*types.ImageBuildResponse, error
 	}()
 	tarName := fmt.Sprintf("%s-build.tar", time.Now())
 	if err := Compress(files, tarName); err != nil {
-		return nil, err
+		return err
 	}
 	defer os.RemoveAll(tarName)
 
 	dockerBuildContext, err := os.Open(tarName)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer dockerBuildContext.Close()
 
@@ -162,9 +162,11 @@ func (i *ImageClient) BuildImage(image *Image) (*types.ImageBuildResponse, error
 	ImageBuildResponse, err := i.Client.ImageBuild(context.Background(), dockerBuildContext, options)
 	if err != nil {
 		log.Debugf("Error %v", err)
-		return nil, err
+		return err
 	}
-	return &ImageBuildResponse, nil
+	defer ImageBuildResponse.Body.Close()
+	io.Copy(os.Stdout, ImageBuildResponse.Body)
+	return nil
 }
 
 func Compress(files []*os.File, dest string) error {

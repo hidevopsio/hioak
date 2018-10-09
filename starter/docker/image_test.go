@@ -96,14 +96,14 @@ func TestImage_BuildImage(t *testing.T) {
 	}
 	t.Run("should err is nil", func(t *testing.T) {
 		c.On("ImageBuild", nil, nil, nil).Return(types.ImageBuildResponse{}, nil)
-		_, err = client.BuildImage(image)
+		err = client.BuildImage(image)
 		assert.Equal(t, nil, err)
 	})
 
 	t.Run("shoud file not found", func(t *testing.T) {
 		image.BuildFiles = []string{"notfile"}
 		c.On("ImageBuild", nil, nil, nil).Return(types.ImageBuildResponse{}, nil)
-		_, err = client.BuildImage(image)
+		err = client.BuildImage(image)
 		assert.NotEqual(t, nil, err)
 	})
 }
