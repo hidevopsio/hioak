@@ -1,11 +1,9 @@
 package fake
 
 import (
-	"github.com/xanzy/go-gitlab"
 	"github.com/stretchr/testify/mock"
+	"github.com/xanzy/go-gitlab"
 )
-
-
 
 type RepositoryFilesService struct {
 	mock.Mock

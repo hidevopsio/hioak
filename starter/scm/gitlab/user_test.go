@@ -1,12 +1,12 @@
 package gitlab_test
 
 import (
+	"github.com/hidevopsio/hioak/starter/scm/gitlab"
 	"github.com/hidevopsio/hioak/starter/scm/gitlab/fake"
 	"github.com/stretchr/testify/assert"
 	gogitlab "github.com/xanzy/go-gitlab"
 	"os"
 	"testing"
-	"github.com/hidevopsio/hioak/starter/scm/gitlab"
 )
 
 func TestUser_GetUser(t *testing.T) {
@@ -14,7 +14,7 @@ func TestUser_GetUser(t *testing.T) {
 	cli := &fake.Client{
 		UsersService: fs,
 	}
-	s := gitlab.NewUser(func (url, token string) (client gitlab.ClientInterface) {
+	s := gitlab.NewUser(func(url, token string) (client gitlab.ClientInterface) {
 		return cli
 	})
 	user := &gogitlab.User{

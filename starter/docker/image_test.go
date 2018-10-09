@@ -1,68 +1,134 @@
-package docker
+package docker_test
 
 import (
 	"errors"
 	"github.com/docker/docker/api/types"
+	"github.com/hidevopsio/hiboot/pkg/app/cli"
+	"github.com/hidevopsio/hioak/starter/docker"
 	"github.com/hidevopsio/hioak/starter/docker/fake"
-	"github.com/magiconair/properties/assert"
+	"github.com/prometheus/common/log"
+	"github.com/stretchr/testify/assert"
 	"io"
+	"os"
 	"testing"
 )
 
 func TestPullImages(t *testing.T) {
 	c, err := fake.NewClient()
 	assert.Equal(t, nil, err)
-	image := &Image{
+	image := &docker.Image{
 		Username:  "",
 		Password:  "",
 		FromImage: "docker.io/library/nginx",
 		Tag:       "latest",
-		client:    c,
+	}
+	client := docker.ImageClient{
+		Client: c,
 	}
 	var i io.ReadCloser
 	c.On("ImagePull", nil, nil, nil).Return(i, errors.New("1"))
-	err = image.PullImage()
+	err = client.PullImage(image)
 	assert.Equal(t, errors.New("1"), err)
 }
 
 func TestImage_TagImage(t *testing.T) {
 	c, err := fake.NewClient()
 	assert.Equal(t, nil, err)
-	image := &Image{
+	image := &docker.Image{
 		FromImage: "docker.io/library/nginx",
 		Tag:       "1.0",
-		client:    c,
+	}
+	client := docker.ImageClient{
+		Client: c,
 	}
 	c.On("ImageTag", nil, nil, nil).Return(nil)
-	err = image.TagImage("sha256:c82521676580c4850bb8f0d72e47390a50d60c8ffe44d623ce57be521bca9869")
+	err = client.TagImage(image, "sha256:c82521676580c4850bb8f0d72e47390a50d60c8ffe44d623ce57be521bca9869")
 	assert.Equal(t, nil, err)
 }
 
 func TestImage_PushImage(t *testing.T) {
 	c, err := fake.NewClient()
 	assert.Equal(t, nil, err)
-	image := &Image{
+	image := &docker.Image{
 		Username:  "",
 		Password:  "",
 		FromImage: "docker.io/library/nginx",
 		Tag:       "latest",
-		client:    c,
+	}
+	client := docker.ImageClient{
+		Client: c,
 	}
 	var i io.ReadCloser
 	c.On("ImagePush", nil, nil, nil).Return(i, errors.New("1"))
-	err = image.PushImage()
+	err = client.PushImage(image)
 	assert.Equal(t, errors.New("1"), err)
 }
 
 func TestImage_GetImage(t *testing.T) {
 	c, err := fake.NewClient()
 	assert.Equal(t, nil, err)
-	image := &Image{
+	image := &docker.Image{
 		FromImage: "docker.io/library/nginx",
-		client:    c,
+	}
+	client := docker.ImageClient{
+		Client: c,
 	}
 	var s []types.ImageSummary
 	c.On("ImageList", nil, nil).Return(s, nil)
-	_, err = image.GetImage()
+	_, err = client.GetImage(image)
 	assert.Equal(t, nil, err)
+}
+
+func TestImage_BuildImage(t *testing.T) {
+	c, err := fake.NewClient()
+	assert.Equal(t, nil, err)
+	file, err := os.Create("Dockerfile")
+	assert.Equal(t, nil, err)
+	file.Write([]byte("FROM k8s.gcr.io/pause:3.1"))
+	file.Close()
+	defer os.RemoveAll("./Dockerfile")
+	image := &docker.Image{
+		BuildFiles: []string{"./Dockerfile"},
+		Tags:       []string{"pause:latest"},
+	}
+	client := docker.ImageClient{
+		Client: c,
+	}
+	t.Run("should err is nil", func(t *testing.T) {
+		c.On("ImageBuild", nil, nil, nil).Return(types.ImageBuildResponse{}, nil)
+		_, err = client.BuildImage(image)
+		assert.Equal(t, nil, err)
+	})
+
+	t.Run("shoud file not found", func(t *testing.T) {
+		image.BuildFiles = []string{"notfile"}
+		c.On("ImageBuild", nil, nil, nil).Return(types.ImageBuildResponse{}, nil)
+		_, err = client.BuildImage(image)
+		assert.NotEqual(t, nil, err)
+	})
+}
+
+// TestCommand is the root command
+type TestCommand struct {
+	// embedded cli.BaseCommand
+	cli.BaseCommand
+
+	dockerImageClient *docker.ImageClient
+}
+
+func newTestCommand(dockerImageClient *docker.ImageClient) *TestCommand {
+	return &TestCommand{dockerImageClient: dockerImageClient}
+}
+
+func (c *TestCommand) OnCreate(args []string) bool {
+	log.Debugf("OnNewImage")
+	return true
+}
+
+func TestApp(t *testing.T) {
+	testApp := cli.NewTestApplication(t, newTestCommand)
+	t.Run("should run create command", func(t *testing.T) {
+		_, err := testApp.RunTest("create")
+		assert.Equal(t, nil, err)
+	})
 }

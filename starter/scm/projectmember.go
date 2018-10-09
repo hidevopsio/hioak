@@ -15,11 +15,11 @@ type ProjectPermissions struct {
 }
 
 var Permissions = map[gitlab.AccessLevelValue]ProjectPermissions{
-	gitlab.OwnerPermission:      ProjectPermissions{MetaName: "admin", RoleRefName: "admin", AccessLevelValue: 50},
-	gitlab.MasterPermissions:    ProjectPermissions{MetaName: "admin", RoleRefName: "view", AccessLevelValue: 40},
-	gitlab.DeveloperPermissions: ProjectPermissions{MetaName: "edit-hptg8", RoleRefName: "view", AccessLevelValue: 30},
-	gitlab.ReporterPermissions:  ProjectPermissions{MetaName: "view-gbtpw", RoleRefName: "view", AccessLevelValue: 20},
-	gitlab.GuestPermissions:     ProjectPermissions{MetaName: "view-gbtpw", RoleRefName: "view", AccessLevelValue: 10},
+	gitlab.OwnerPermission:      {MetaName: "admin", RoleRefName: "admin", AccessLevelValue: 50},
+	gitlab.MasterPermissions:    {MetaName: "admin", RoleRefName: "view", AccessLevelValue: 40},
+	gitlab.DeveloperPermissions: {MetaName: "edit-hptg8", RoleRefName: "view", AccessLevelValue: 30},
+	gitlab.ReporterPermissions:  {MetaName: "view-gbtpw", RoleRefName: "view", AccessLevelValue: 20},
+	gitlab.GuestPermissions:     {MetaName: "view-gbtpw", RoleRefName: "view", AccessLevelValue: 10},
 	//gitlab.NoPermissions:        ProjectPermissions{MetaName: "view-gbtpw", RoleRefName: "view", AccessLevelValue: 0},
 }
 

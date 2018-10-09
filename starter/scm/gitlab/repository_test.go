@@ -1,10 +1,10 @@
 package gitlab_test
 
 import (
+	"github.com/hidevopsio/hioak/starter/scm/gitlab"
 	"github.com/hidevopsio/hioak/starter/scm/gitlab/fake"
 	"github.com/magiconair/properties/assert"
 	gogitlab "github.com/xanzy/go-gitlab"
-	"github.com/hidevopsio/hioak/starter/scm/gitlab"
 	"os"
 	"testing"
 )
@@ -14,7 +14,7 @@ func TestListTree(t *testing.T) {
 	cli := &fake.Client{
 		RepositoriesService: fs,
 	}
-	s := gitlab.NewRepository(func (url, token string) (client gitlab.ClientInterface) {
+	s := gitlab.NewRepository(func(url, token string) (client gitlab.ClientInterface) {
 		return cli
 	})
 	file := &gogitlab.TreeNode{

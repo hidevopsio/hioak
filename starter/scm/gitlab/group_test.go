@@ -1,12 +1,12 @@
 package gitlab_test
 
 import (
+	"github.com/hidevopsio/hioak/starter/scm/gitlab"
 	"github.com/hidevopsio/hioak/starter/scm/gitlab/fake"
 	"github.com/magiconair/properties/assert"
+	gogitlab "github.com/xanzy/go-gitlab"
 	"os"
 	"testing"
-	gogitlab "github.com/xanzy/go-gitlab"
-	"github.com/hidevopsio/hioak/starter/scm/gitlab"
 )
 
 func TestListGroups(t *testing.T) {
@@ -14,7 +14,7 @@ func TestListGroups(t *testing.T) {
 	cli := &fake.Client{
 		GroupsService: fs,
 	}
-	s := gitlab.NewGroup(func (url, token string) (client gitlab.ClientInterface) {
+	s := gitlab.NewGroup(func(url, token string) (client gitlab.ClientInterface) {
 		return cli
 	})
 	cli.On("Session", nil, nil).Return(fs)
@@ -36,7 +36,7 @@ func TestGetGroup(t *testing.T) {
 	cli := &fake.Client{
 		GroupsService: fs,
 	}
-	s := gitlab.NewGroup(func (url, token string) (client gitlab.ClientInterface) {
+	s := gitlab.NewGroup(func(url, token string) (client gitlab.ClientInterface) {
 		return cli
 	})
 	gra := &gogitlab.Group{
@@ -55,7 +55,7 @@ func TestListGroupProjects1(t *testing.T) {
 	cli := &fake.Client{
 		GroupsService: fs,
 	}
-	s := gitlab.NewGroup(func (url, token string) (client gitlab.ClientInterface) {
+	s := gitlab.NewGroup(func(url, token string) (client gitlab.ClientInterface) {
 		return cli
 	})
 	fs.On("SetBaseURL", nil).Return(nil)
