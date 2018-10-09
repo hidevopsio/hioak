@@ -4,13 +4,11 @@ import (
 	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/hidevopsio/hiboot/pkg/utils/io"
 	"gopkg.in/src-d/go-git.v4"
-	"gopkg.in/src-d/go-git.v4/plumbing/transport"
-	"gopkg.in/src-d/go-git.v4/plumbing/transport/http"
 	"path/filepath"
 )
 
 type Repository interface {
-	Clone(url, branch, dir, username, password string) (string, error)
+	Clone(cloneOptions *git.CloneOptions,destDir string) (string, error)
 }
 
 type CloneFunc func(path string, isBare bool, o *git.CloneOptions) (*git.Repository, error)
@@ -32,17 +30,13 @@ func NewRepository(cloneFunc ...CloneFunc) Repository {
 }
 
 // Clone the given repository to the given directory
-func (r *repository) Clone(url, branch, dir, username, password string) (string, error) {
-	projectName := io.Filename(url)
+func (r *repository) Clone(cloneOptions *git.CloneOptions,destDir string) (string, error) {
+	projectName := io.Filename(cloneOptions.URL)
 	projectName = io.Basename(projectName)
-	projectPath := filepath.Join(dir, projectName)
+	projectPath := filepath.Join(destDir, projectName)
 
-	log.Debugf("git clone %s %s", url, projectPath)
-	_, err := r.cloneFunc(projectPath, false, &git.CloneOptions{
-		URL:               url,
-		RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
-		Auth:              transport.AuthMethod(&http.BasicAuth{Username: username, Password: password}),
-	})
+	log.Debugf("git clone %s %s", cloneOptions.URL, projectPath)
+	_, err := r.cloneFunc(projectPath, false, cloneOptions)
 	if err != nil {
 		log.Debugf("Error", err)
 		return "", err
