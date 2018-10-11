@@ -34,34 +34,34 @@ func (c *configuration) GitlabNewClient() NewClient {
 	}
 }
 
-func (c *configuration) GitlabGroup(newCli NewClient) *Group {
+func (c *configuration) Group(newCli NewClient) *Group {
 	return NewGroup(newCli)
 }
 
-func (c *configuration) GitlabGroupMember(newCli NewClient) *GroupMember {
+func (c *configuration) GroupMember(newCli NewClient) *GroupMember {
 	return NewGroupMember(newCli)
 }
 
-func (c *configuration) GitlabProject(newCli NewClient) *Project {
+func (c *configuration) Project(newCli NewClient) *Project {
 	return NewProject(newCli)
 }
 
-func (c *configuration) GitlabProjectMember(newCli NewClient) *ProjectMember {
+func (c *configuration) ProjectMember(newCli NewClient) *ProjectMember {
 	return NewProjectMember(newCli)
 }
 
-func (c *configuration) GitlabRepository(newCli NewClient) *Repository {
+func (c *configuration) Repository(newCli NewClient) *Repository {
 	return NewRepository(newCli)
 }
 
-func (c *configuration) GitlabUser(newCli NewClient) *User {
+func (c *configuration) User(newCli NewClient) *User {
 	return NewUser(newCli)
 }
 
-func (c *configuration) GitlabSession(newCli NewClient) *Session {
+func (c *configuration) Session(newCli NewClient) *Session {
 	return NewSession(newCli)
 }
 
-func (c *configuration) GitlabRepositoryFile(newCli NewClient) *RepositoryFile {
+func (c *configuration) RepositoryFile(newCli NewClient) *RepositoryFile {
 	return NewRepositoryFile(newCli)
 }

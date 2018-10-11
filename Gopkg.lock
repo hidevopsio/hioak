@@ -228,7 +228,7 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:994b8e36157657571f5b3cfb08e084ce63e252a9945cc4657129eb43b5faddf9"
+  digest = "1:da6c667c04e6f29708ba782b37be428aef30011b0542af4edaba4d3109f9ec83"
   name = "github.com/hidevopsio/hiboot"
   packages = [
     "pkg/app",
@@ -251,8 +251,8 @@
     "pkg/utils/str",
   ]
   pruneopts = ""
-  revision = "2404b18239b9a5af230c3c1f44203705fbc2124f"
-  version = "v0.9.2"
+  revision = "fe6ec6ff18f881f127a32aa8bd653a48a7178457"
+  version = "v0.9.3"
 
 [[projects]]
   branch = "master"
