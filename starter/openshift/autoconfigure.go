@@ -21,7 +21,7 @@ type Oauth interface {
 	oauthv1.OauthV1Interface
 }
 
-func (c *configuration) OpenshiftAuth(restConfig *kube.RestConfig) (retVal *OAuthAccessToken) {
+func (c *configuration) Auth(restConfig *kube.RestConfig) (retVal *OAuthAccessToken) {
 	clientSet, err := oauthv1.NewForConfig(restConfig.Config)
 	if err != nil {
 		log.Errorf("oauthv1.NewForConfig %v", err)
@@ -31,7 +31,7 @@ func (c *configuration) OpenshiftAuth(restConfig *kube.RestConfig) (retVal *OAut
 	return
 }
 
-func (c *configuration) OpenshiftDeploymentConfig(restConfig *kube.RestConfig) (retVal *DeploymentConfig) {
+func (c *configuration) DeploymentConfig(restConfig *kube.RestConfig) (retVal *DeploymentConfig) {
 	clientSet, err := appsv1.NewForConfig(restConfig.Config)
 	if err != nil {
 		log.Errorf("appsv1.NewForConfig %v", err)
@@ -41,7 +41,7 @@ func (c *configuration) OpenshiftDeploymentConfig(restConfig *kube.RestConfig) (
 	return
 }
 
-func (c *configuration) OpenshiftImageStream(restConfig *kube.RestConfig) (retVal *ImageStream) {
+func (c *configuration) ImageStream(restConfig *kube.RestConfig) (retVal *ImageStream) {
 	clientSet, err := imagev1.NewForConfig(restConfig.Config)
 	if err != nil {
 		log.Errorf("imagev1.NewForConfig %v", err)
@@ -51,7 +51,7 @@ func (c *configuration) OpenshiftImageStream(restConfig *kube.RestConfig) (retVa
 	return
 }
 
-func (c *configuration) OpenshiftImageStreamTag(restConfig *kube.RestConfig) (retVal *ImageStreamTag) {
+func (c *configuration) ImageStreamTag(restConfig *kube.RestConfig) (retVal *ImageStreamTag) {
 	clientSet, err := imagev1.NewForConfig(restConfig.Config)
 	if err != nil {
 		log.Errorf("imagev1.NewForConfig %v", err)
@@ -61,7 +61,7 @@ func (c *configuration) OpenshiftImageStreamTag(restConfig *kube.RestConfig) (re
 	return
 }
 
-func (c *configuration) OpenshiftProject(restConfig *kube.RestConfig) (retVal *Project) {
+func (c *configuration) Project(restConfig *kube.RestConfig) (retVal *Project) {
 	clientSet, err := projectv1.NewForConfig(restConfig.Config)
 	if err != nil {
 		log.Errorf("projectv1.NewForConfig %v", err)
@@ -71,7 +71,7 @@ func (c *configuration) OpenshiftProject(restConfig *kube.RestConfig) (retVal *P
 	return
 }
 
-func (c *configuration) OpenshiftRoleBinding(restConfig *kube.RestConfig) (retVal *RoleBinding) {
+func (c *configuration) RoleBinding(restConfig *kube.RestConfig) (retVal *RoleBinding) {
 	clientSet, err := authorizationv1.NewForConfig(restConfig.Config)
 	if err != nil {
 		log.Errorf("authorizationv1.NewForConfig %v", err)
@@ -81,7 +81,7 @@ func (c *configuration) OpenshiftRoleBinding(restConfig *kube.RestConfig) (retVa
 	return
 }
 
-func (c *configuration) OpenshiftRoute(restConfig *kube.RestConfig) (retVal *Route) {
+func (c *configuration) Route(restConfig *kube.RestConfig) (retVal *Route) {
 	clientSet, err := routev1.NewForConfig(restConfig.Config)
 	if err != nil {
 		log.Errorf("routev1.NewForConfig %v", err)
@@ -91,7 +91,7 @@ func (c *configuration) OpenshiftRoute(restConfig *kube.RestConfig) (retVal *Rou
 	return
 }
 
-func (c *configuration) OpenshiftBuildConfig(restConfig *kube.RestConfig) (retVal *BuildConfig) {
+func (c *configuration) BuildConfig(restConfig *kube.RestConfig) (retVal *BuildConfig) {
 	clientSet, err := buildv1.NewForConfig(restConfig.Config)
 	if err != nil {
 		log.Errorf("routev1.NewForConfig %v", err)

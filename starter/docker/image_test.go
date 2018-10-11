@@ -113,11 +113,11 @@ type TestCommand struct {
 	// embedded cli.BaseCommand
 	cli.BaseCommand
 
-	dockerImageClient *docker.ImageClient
+	imageClient *docker.ImageClient
 }
 
-func newTestCommand(dockerImageClient *docker.ImageClient) *TestCommand {
-	return &TestCommand{dockerImageClient: dockerImageClient}
+func newTestCommand(imageClient *docker.ImageClient) *TestCommand {
+	return &TestCommand{imageClient: imageClient}
 }
 
 func (c *TestCommand) OnCreate(args []string) bool {

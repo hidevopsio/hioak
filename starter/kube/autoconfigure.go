@@ -12,7 +12,7 @@ import (
 )
 
 type properties struct {
-	KubeServiceHost string `json:"kube_service_host" default:"${KUBERNETES_SERVICE_HOST}"`
+	ServiceHost string `json:"service_host" default:"${KUBERNETES_SERVICE_HOST}"`
 }
 
 // define type configuration
@@ -42,11 +42,11 @@ func init() {
 	app.AutoConfiguration(newConfiguration)
 }
 
-func (c *configuration) KubeRestConfig(kubeConfig *Config) *RestConfig {
+func (c *configuration) RestConfig(Config *Config) *RestConfig {
 	retVal := new(RestConfig)
 	var err error
-	if c.Properties.KubeServiceHost == "" {
-		retVal.Config, err = clientcmd.BuildConfigFromFlags("", *kubeConfig.string)
+	if c.Properties.ServiceHost == "" {
+		retVal.Config, err = clientcmd.BuildConfigFromFlags("", *Config.string)
 	} else {
 		retVal.Config, err = rest.InClusterConfig()
 	}
@@ -56,9 +56,9 @@ func (c *configuration) KubeRestConfig(kubeConfig *Config) *RestConfig {
 	return retVal
 }
 
-func (c *configuration) KubeConfig() *Config {
+func (c *configuration) Config() *Config {
 	kc := new(Config)
-	if c.Properties.KubeServiceHost == "" {
+	if c.Properties.ServiceHost == "" {
 		log.Info("Kubernetes External Client Mode")
 		if home := homedir.HomeDir(); home != "" {
 			kc.string = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
@@ -71,30 +71,30 @@ func (c *configuration) KubeConfig() *Config {
 	return kc
 }
 
-func (c *configuration) KubeClientSet(kubeRestConfig *RestConfig) ClientSet {
-	clientSet, err := kubernetes.NewForConfig(kubeRestConfig.Config)
+func (c *configuration) ClientSet(RestConfig *RestConfig) ClientSet {
+	clientSet, err := kubernetes.NewForConfig(RestConfig.Config)
 	if err != nil {
 		return nil
 	}
 	return clientSet
 }
 
-func (c *configuration) KubeConfigMaps(clientSet ClientSet) *ConfigMaps {
+func (c *configuration) ConfigMaps(clientSet ClientSet) *ConfigMaps {
 	return newConfigMaps(clientSet)
 }
 
-func (c *configuration) KubeDeployment(clientSet ClientSet) *Deployment {
+func (c *configuration) Deployment(clientSet ClientSet) *Deployment {
 	return newDeployment(clientSet)
 }
 
-func (c *configuration) KubeReplicationController(clientSet ClientSet) *ReplicationController {
+func (c *configuration) ReplicationController(clientSet ClientSet) *ReplicationController {
 	return NewReplicationController(clientSet)
 }
 
-func (c *configuration) KubeSecret(clientSet ClientSet) *Secret {
+func (c *configuration) Secret(clientSet ClientSet) *Secret {
 	return NewSecret(clientSet)
 }
 
-func (c *configuration) KubeService(clientSet ClientSet) *Service {
+func (c *configuration) Service(clientSet ClientSet) *Service {
 	return NewService(clientSet)
 }
