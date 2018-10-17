@@ -192,15 +192,73 @@ func (d *Deployment) ExtensionsV1beta1Deploy(app, project, profile, imageTag, do
 	return retVal, err
 }
 
-func (d *Deployment) DeployNode(app, project, dockerRegistry, imageTag, profile string) (string, error) {
+type MockDeployment struct {
+	Name           string
+	NameSpace      string
+	Replicas       int32
+	Labels         map[string]string
+	Image          string
+	Ports          []int
+	Envs           map[string]string
+	HostPathVolume map[string]string
+}
+
+func (d *Deployment) DeployNode(md *MockDeployment) (string, error) {
+
 	log.Debug("Deployment.Deploy()")
+
+	//port
+	var containerPorts []corev1.ContainerPort
+	for _, port := range md.Ports {
+		containerPorts = append(containerPorts, corev1.ContainerPort{
+			Name:          fmt.Sprintf("http-%d", port),
+			Protocol:      corev1.ProtocolTCP,
+			ContainerPort: int32(port),
+		})
+	}
+
+	//env
+	var envs []corev1.EnvVar
+	for k, v := range md.Envs {
+		envs = append(envs, corev1.EnvVar{
+			Name:  k,
+			Value: v,
+		})
+	}
+
+	//volume
+	var Volumes []corev1.Volume
+	var VolumeMounts []corev1.VolumeMount
+	i := 0
+	for k, v := range md.HostPathVolume {
+		i++
+		volumeName := fmt.Sprintf("volume%d", i)
+		Volumes = append(Volumes, corev1.Volume{
+			Name: volumeName,
+			VolumeSource: corev1.VolumeSource{
+				HostPath: &corev1.HostPathVolumeSource{
+					Path: k,
+				},
+			},
+		})
+
+		VolumeMounts = append(VolumeMounts, corev1.VolumeMount{
+			Name:      volumeName,
+			MountPath: v,
+		})
+	}
+
 	deploySpec := &v1beta1.Deployment{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "Deployment",
+			APIVersion: "extensions/v1beta1",
+		},
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      app,
-			Namespace: project,
+			Name:      md.Name,
+			Namespace: md.NameSpace,
 		},
 		Spec: v1beta1.DeploymentSpec{
-			Replicas: int32Ptr(1),
+			Replicas: int32Ptr(md.Replicas),
 			Strategy: v1beta1.DeploymentStrategy{
 				Type: v1beta1.RollingUpdateDeploymentStrategyType,
 				RollingUpdate: &v1beta1.RollingUpdateDeployment{
@@ -217,32 +275,21 @@ func (d *Deployment) DeployNode(app, project, dockerRegistry, imageTag, profile 
 			RevisionHistoryLimit: int32Ptr(10),
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
-					Name: app,
-					Labels: map[string]string{
-						"app": app,
-					},
+					Name:   md.Name,
+					Labels: md.Labels,
 				},
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{
 						{
-							Name:  app,
-							Image: dockerRegistry + "/" + project + "/" + app + ":" + imageTag,
-							Ports: []corev1.ContainerPort{
-								{
-									Name:          "http",
-									Protocol:      corev1.ProtocolTCP,
-									ContainerPort: 7575,
-								},
-							},
-							Env: []corev1.EnvVar{
-								{
-									Name:  "APP_PROFILES_ACTIVE",
-									Value: profile,
-								},
-							},
+							Name:            md.Name,
+							Image:           md.Image, //dockerRegistry + "/" + project + "/" + app + ":" + imageTag,
+							Ports:           containerPorts,
+							Env:             envs,
 							ImagePullPolicy: corev1.PullIfNotPresent,
+							VolumeMounts:    VolumeMounts,
 						},
 					},
+					Volumes: Volumes,
 				},
 			},
 		},
@@ -251,7 +298,7 @@ func (d *Deployment) DeployNode(app, project, dockerRegistry, imageTag, profile 
 	j, err := json.Marshal(deploySpec)
 	log.Debug("json", string(j))
 	// Create Deployment
-	deployments := d.clientSet.AppsV1beta1().Deployments(project)
+	deployments := d.clientSet.AppsV1beta1().Deployments(md.NameSpace)
 	log.Info("Update or Create Deployment...")
 	result, err := deployments.Update(deploySpec)
 	var retVal string
