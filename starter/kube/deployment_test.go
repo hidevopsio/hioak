@@ -47,3 +47,26 @@ func TestDeploy(t *testing.T) {
 	_, err := deploy.Deploy(app, project, profile, imageTag, dockerRegistry, nil, nil, nil, 0, false, "", "")
 	assert.Equal(t, nil, err)
 }
+
+//should return err is nil
+func TestDeployment(t *testing.T) {
+	clientSet := fake.NewSimpleClientset()
+	deployDate := &DeployData{
+		Name:           "hello-world",
+		NameSpace:      "demo-dev",
+		Replicas:       int32(1),
+		Labels:         map[string]string{"app": "hello-world"},
+		Image:          "demo:0.1",
+		Ports:          []int{8080},
+		Envs:           map[string]string{"ENVTEST": "ENVTEST"},
+		HostPathVolume: map[string]string{"/var": "var"},
+	}
+
+	deploy := Deployment{
+		clientSet: clientSet,
+	}
+
+	_, err := deploy.DeployNode(deployDate)
+	assert.Equal(t, nil, err)
+
+}
