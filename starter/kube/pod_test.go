@@ -34,6 +34,6 @@ func TestPodWatching(t *testing.T) {
 	assert.Equal(t, nil, err)
 	listOptions := metav1.ListOptions{}
 	i, err := client.Watch(listOptions, app, namespace)
-	log.Infof("i", i)
+	log.Infof("i: %v", i)
 	assert.Equal(t, nil, err)
 }
