@@ -16,6 +16,7 @@ package kube
 
 import (
 	"github.com/magiconair/properties/assert"
+	"k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/fake"
 	"testing"
 )
@@ -67,6 +68,31 @@ func TestDeployment(t *testing.T) {
 	}
 
 	_, err := deploy.DeployNode(deployDate)
+	assert.Equal(t, nil, err)
+
+}
+
+func TestDeleteDeployment(t *testing.T) {
+	clientSet := fake.NewSimpleClientset()
+	deploy := Deployment{
+		clientSet: clientSet,
+	}
+	name := "hello-world"
+	namespace := "demo-dev"
+	option := &v1.DeleteOptions{}
+	deployDate := &DeployData{
+		Name:           name,
+		NameSpace:      namespace,
+		Replicas:       int32(1),
+		Labels:         map[string]string{"app": "hello-world"},
+		Image:          "demo:0.1",
+		Ports:          []int{8080},
+		Envs:           map[string]string{"ENVTEST": "ENVTEST"},
+		HostPathVolume: map[string]string{"/var": "var"},
+	}
+	_, err := deploy.DeployNode(deployDate)
+	assert.Equal(t, nil, err)
+	err = deploy.Delete(name, namespace, option)
 	assert.Equal(t, nil, err)
 
 }
