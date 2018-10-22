@@ -301,3 +301,9 @@ func (d *Deployment) DeployNode(deployData *DeployData) (string, error) {
 	deploymentJson, _ := json.Marshal(deployment)
 	return string(deploymentJson), nil
 }
+
+func (d *Deployment) Delete(name, namespace string, option *metav1.DeleteOptions) error {
+	log.Debug("delete deployment name :%v, namespaec :%v", name, namespace)
+	err := d.clientSet.AppsV1beta1().Deployments(namespace).Delete(name, option)
+	return err
+}
