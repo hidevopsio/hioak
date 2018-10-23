@@ -31,10 +31,6 @@ func (c *configuration) Auth(restConfig *kube.RestConfig) (retVal *OAuthAccessTo
 	return
 }
 
-func (c *configuration) Token(restConfig *kube.RestConfig) Token {
-	return Token(restConfig.Config.BearerToken)
-}
-
 func (c *configuration) DeploymentConfig(restConfig *kube.RestConfig) (retVal *DeploymentConfig) {
 	clientSet, err := appsv1.NewForConfig(restConfig.Config)
 	if err != nil {

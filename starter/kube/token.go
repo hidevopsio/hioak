@@ -1,4 +1,4 @@
-package openshift
+package kube
 
 type Token string
 

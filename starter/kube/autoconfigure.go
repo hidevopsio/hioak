@@ -102,3 +102,7 @@ func (c *configuration) Service(clientSet ClientSet) *Service {
 func (c *configuration) Pod(clientSet ClientSet) *Pod {
 	return NewPod(clientSet)
 }
+
+func (c *configuration) Token(restConfig *RestConfig) Token {
+	return Token(restConfig.Config.BearerToken)
+}
