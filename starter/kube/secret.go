@@ -37,17 +37,19 @@ func NewSecret(clientSet kubernetes.Interface) *Secret {
 }
 
 // Create takes the representation of a secret and creates it.  Returns the server's representation of the secret, and an error, if there is any.
-func (s *Secret) Create(username, password, name, namespace string) error {
+func (s *Secret) Create(username, password, token, name, namespace string) error {
 	log.Debug("Secret.Create()")
 	var data map[string][]byte
 	if username != "" {
 		data = map[string][]byte{
-			corev1.BasicAuthUsernameKey: []byte(username),
-			corev1.BasicAuthPasswordKey: []byte(password),
+			corev1.BasicAuthUsernameKey:   []byte(username),
+			corev1.BasicAuthPasswordKey:   []byte(password),
+			corev1.ServiceAccountTokenKey: []byte(token),
 		}
 	} else {
 		data = map[string][]byte{
-			corev1.BasicAuthPasswordKey: []byte(password),
+			corev1.BasicAuthPasswordKey:   []byte(password),
+			corev1.ServiceAccountTokenKey: []byte(token),
 		}
 	}
 	// k8s.io/api/core/v1/types.go
