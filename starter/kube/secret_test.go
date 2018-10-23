@@ -34,9 +34,11 @@ func TestSecretCreation(t *testing.T) {
 	namespace := "demo-dev"
 	clientSet := fake.NewSimpleClientset()
 	secret := NewSecret(clientSet)
-
+	token := "xxxxxxxxxxxxx"
 	// Create secret
-	err := secret.Create(username, password, secretName, namespace)
+	err := secret.Create(username, password, token, secretName, namespace)
+	assert.Equal(t, nil, err)
+	err = secret.Create("", password, token, secretName, namespace)
 	assert.Equal(t, nil, err)
 }
 
@@ -49,9 +51,9 @@ func TestSecretCrud(t *testing.T) {
 	namespace := "demo-dev"
 	clientSet := fake.NewSimpleClientset()
 	secret := NewSecret(clientSet)
-
+	token := "xxxxxxxxxxxxx"
 	// Create secret
-	err := secret.Create(username, password, secretName, namespace)
+	err := secret.Create(username, password, token, secretName, namespace)
 	assert.Equal(t, nil, err)
 
 	// Get secret
