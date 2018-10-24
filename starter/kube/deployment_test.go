@@ -25,13 +25,12 @@ func TestExtensionsV1beta1Deploy(t *testing.T) {
 	clientSet := fake.NewSimpleClientset()
 	app := "hello-world"
 	project := "demo-dev"
-	profile := "master"
 	dockerRegistry := "docker.vpclub.cn"
 	imageTag := "v1"
 	deploy := Deployment{
 		clientSet: clientSet,
 	}
-	_, err := deploy.ExtensionsV1beta1Deploy(app, project, profile, imageTag, dockerRegistry, nil, nil, nil, 0, false, "", "")
+	_, err := deploy.ExtensionsV1beta1Deploy(app, project, imageTag, dockerRegistry, nil, nil, nil, 0, false, "", "")
 	assert.Equal(t, nil, err)
 }
 
@@ -39,13 +38,12 @@ func TestDeploy(t *testing.T) {
 	clientSet := fake.NewSimpleClientset()
 	app := "hello-world"
 	project := "demo-dev"
-	profile := "master"
 	dockerRegistry := "docker.vpclub.cn"
 	imageTag := "v1"
 	deploy := Deployment{
 		clientSet: clientSet,
 	}
-	_, err := deploy.Deploy(app, project, profile, imageTag, dockerRegistry, nil, nil, nil, 0, false, "", "")
+	_, err := deploy.Deploy(app, project, imageTag, dockerRegistry, nil, nil, nil, 0, false, nil, nil)
 	assert.Equal(t, nil, err)
 }
 
