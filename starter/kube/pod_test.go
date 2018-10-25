@@ -1,12 +1,12 @@
 package kube
 
 import (
-	"testing"
 	"github.com/hidevopsio/hiboot/pkg/log"
-	"k8s.io/client-go/kubernetes/fake"
 	"github.com/magiconair/properties/assert"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes/fake"
+	"testing"
 )
 
 func TestPodWatching(t *testing.T) {
@@ -17,7 +17,7 @@ func TestPodWatching(t *testing.T) {
 	namespace := projectName + "-" + profile
 	app := "hello-world"
 	labels := map[string]string{
-		"app":app,
+		"app": app,
 	}
 	clientSet := fake.NewSimpleClientset()
 	client := NewPod(clientSet)
