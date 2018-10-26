@@ -40,16 +40,19 @@ func (p *Pod) Watch(listOptions metav1.ListOptions, namespace, name string) (wat
 
 func (p *Pod) GetPodLogs(namespace, name string, opts *corev1.PodLogOptions) (*restclient.Request, error) {
 	log.Infof(fmt.Sprintf("get pod %s logs in namespace %s", name, namespace))
-	if _, err := p.clientSet.CoreV1().Pods(namespace).Get(name, metav1.GetOptions{}); err != nil {
+	var err error
+	if _, err = p.clientSet.CoreV1().Pods(namespace).Get(name, metav1.GetOptions{}); err != nil {
 		return nil, err
 	}
-	return p.clientSet.CoreV1().Pods(namespace).GetLogs(name, opts), nil
+	request :=p.clientSet.CoreV1().Pods(namespace).GetLogs(name, opts)
+	return request, nil
 }
 
 func (p *Pod) GetPods(namespace, name string, opts metav1.GetOptions) (*corev1.Pod, error) {
 	log.Infof(fmt.Sprintf("get pod %s in namespace %s", name, namespace))
-	pod, err := p.clientSet.CoreV1().Pods(namespace).Get(name, opts)
-	if err != nil {
+	var pod *corev1.Pod
+	var err error
+	if pod, err = p.clientSet.CoreV1().Pods(namespace).Get(name, opts);err != nil {
 		return nil, err
 	}
 	return pod, nil
@@ -57,9 +60,10 @@ func (p *Pod) GetPods(namespace, name string, opts metav1.GetOptions) (*corev1.P
 
 func (p *Pod) GetPodList(namespace string, opts metav1.ListOptions) (*corev1.PodList, error) {
 	log.Infof(fmt.Sprintf("get pod list in namespace %s", namespace))
-	pod, err := p.clientSet.CoreV1().Pods(namespace).List(opts)
-	if err != nil {
+	var podList *corev1.PodList
+	var err error
+	if podList, err = p.clientSet.CoreV1().Pods(namespace).List(opts);err != nil {
 		return nil, err
 	}
-	return pod, nil
+	return podList, nil
 }
