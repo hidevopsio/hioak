@@ -42,18 +42,28 @@ func TestPodWatching(t *testing.T) {
 	})
 
 	t.Run("pods should list succeed", func(t *testing.T) {
-		_, err := client.GetPodList(namespace, metav1.ListOptions{})
+		_,err:= client.GetPodList(namespace,metav1.ListOptions{})
 		assert.Equal(t, nil, err)
 	})
 
+
 	t.Run("pod should get succeed", func(t *testing.T) {
-		_, err := client.GetPods(namespace, app, metav1.GetOptions{})
+		_,err:= client.GetPods(namespace,app,metav1.GetOptions{})
 		assert.Equal(t, nil, err)
+	})
+
+	t.Run("pod should get failed", func(t *testing.T) {
+		_,err:= client.GetPods(namespace,projectName,metav1.GetOptions{})
+		assert.NotEqual(t, nil, err)
 	})
 
 	t.Run("Pods should get logs succeed", func(t *testing.T) {
-		_, err := client.GetPodLogs(namespace, app, &corev1.PodLogOptions{})
+		_,err:= client.GetPodLogs(namespace,app,&corev1.PodLogOptions{})
 		assert.Equal(t, nil, err)
 	})
 
+	t.Run("Pods should get logs failed", func(t *testing.T) {
+		_,err:= client.GetPodLogs(namespace,projectName,&corev1.PodLogOptions{})
+		assert.NotEqual(t, nil, err)
+	})
 }
