@@ -1,12 +1,13 @@
 package kube
 
 import (
-	"k8s.io/client-go/kubernetes"
-	corev1 "k8s.io/api/core/v1"
-	"github.com/prometheus/common/log"
 	"fmt"
-	"k8s.io/apimachinery/pkg/watch"
+	"github.com/prometheus/common/log"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/watch"
+	"k8s.io/client-go/kubernetes"
+	restclient "k8s.io/client-go/rest"
 )
 
 type Pod struct {
@@ -35,4 +36,30 @@ func (p *Pod) Watch(listOptions metav1.ListOptions, namespace, name string) (wat
 		return nil, err
 	}
 	return w, nil
+}
+
+func (p *Pod) GetPodLogs(namespace, name string, opts *corev1.PodLogOptions) (*restclient.Request, error) {
+	log.Infof(fmt.Sprintf("get pod %s logs in namespace %s", name, namespace))
+	if _, err := p.clientSet.CoreV1().Pods(namespace).Get(name, metav1.GetOptions{}); err != nil {
+		return nil, err
+	}
+	return p.clientSet.CoreV1().Pods(namespace).GetLogs(name, opts), nil
+}
+
+func (p *Pod) GetPods(namespace, name string, opts metav1.GetOptions) (*corev1.Pod, error) {
+	log.Infof(fmt.Sprintf("get pod %s in namespace %s", name, namespace))
+	pod, err := p.clientSet.CoreV1().Pods(namespace).Get(name, opts)
+	if err != nil {
+		return nil, err
+	}
+	return pod, nil
+}
+
+func (p *Pod) GetPodList(namespace string, opts metav1.ListOptions) (*corev1.PodList, error) {
+	log.Infof(fmt.Sprintf("get pod list in namespace %s", namespace))
+	pod, err := p.clientSet.CoreV1().Pods(namespace).List(opts)
+	if err != nil {
+		return nil, err
+	}
+	return pod, nil
 }
