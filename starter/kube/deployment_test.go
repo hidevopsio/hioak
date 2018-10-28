@@ -43,7 +43,14 @@ func TestDeploy(t *testing.T) {
 	deploy := Deployment{
 		clientSet: clientSet,
 	}
-	_, err := deploy.Deploy(app, project, imageTag, dockerRegistry, nil, nil, nil, 0, false, nil, nil)
+	request := &DeployRequest{
+		App:       app,
+		Namespace: project,
+		Version:imageTag,
+		DockerRegistry:dockerRegistry,
+		Replicas:int32Ptr(1),
+	}
+	_, err := deploy.Deploy(request)
 	assert.Equal(t, nil, err)
 }
 

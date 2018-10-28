@@ -39,26 +39,38 @@ func newDeployment(clientSet kubernetes.Interface) *Deployment {
 	}
 }
 
-
+type DeployRequest struct {
+	App            string
+	Namespace      string
+	Version        string
+	DockerRegistry string
+	Env            []corev1.EnvVar
+	Labels         map[string]string
+	Ports          []corev1.ContainerPort
+	Replicas       *int32
+	NodeSelector   map[string]string
+	ReadinessProbe *corev1.Probe
+	LivenessProbe  *corev1.Probe
+}
 
 // @Title Deploy
 // @Description deploy application
 // @Param pipeline
 // @Return error
-func (d *Deployment) Deploy(app, project, imageTag, dockerRegistry string, env []corev1.EnvVar, labels map[string]string, ports []corev1.ContainerPort, replicas int32, force bool, healthEndPoint, nodeSelector map[string]string) (*extensionsV1beta1.Deployment, error) {
+func (d *Deployment) Deploy(request *DeployRequest) (*extensionsV1beta1.Deployment, error) {
 
 	log.Debug("Deployment.Deploy()")
 	deploySpec := &extensionsV1beta1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      app,
-			Namespace: project,
+			Name:      request.App,
+			Namespace: request.Namespace,
 			Labels: map[string]string{
-				"app":     app,
-				"version": imageTag,
+				"app":     request.App,
+				"version": request.Version,
 			},
 		},
 		Spec: extensionsV1beta1.DeploymentSpec{
-			Replicas: int32Ptr(1),
+			Replicas: request.Replicas,
 			Strategy: extensionsV1beta1.DeploymentStrategy{
 				Type: extensionsV1beta1.RollingUpdateDeploymentStrategyType,
 				RollingUpdate: &extensionsV1beta1.RollingUpdateDeployment{
@@ -75,20 +87,22 @@ func (d *Deployment) Deploy(app, project, imageTag, dockerRegistry string, env [
 			RevisionHistoryLimit: int32Ptr(10),
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
-					Name: app,
+					Name: request.App,
 					Labels: map[string]string{
-						"app":     app,
-						"version": imageTag,
+						"app":     request.App,
+						"version": request.Version,
 					},
 				},
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{
 						{
-							Name:            app,
-							Image:           dockerRegistry + "/" + project + "/" + app + ":" + imageTag,
-							Ports:           ports,
-							Env:             env,
+							Name:            request.App,
+							Image:           request.DockerRegistry + "/" + request.Namespace + "/" + request.App + ":" + request.Version,
+							Ports:           request.Ports,
+							Env:             request.Env,
 							ImagePullPolicy: corev1.PullAlways,
+							ReadinessProbe:  request.ReadinessProbe,
+							LivenessProbe:   request.LivenessProbe,
 						},
 					},
 				},
@@ -100,7 +114,7 @@ func (d *Deployment) Deploy(app, project, imageTag, dockerRegistry string, env [
 	log.Debug("json", string(j))
 	// Create Deployment
 	//Client.ClientSet.ExtensionsV1beta1().Deployments()
-	deployments := d.clientSet.ExtensionsV1beta1().Deployments(project)
+	deployments := d.clientSet.ExtensionsV1beta1().Deployments(request.Namespace)
 	log.Info("Update or Create Deployment...")
 	result, err := deployments.Update(deploySpec)
 	switch {
