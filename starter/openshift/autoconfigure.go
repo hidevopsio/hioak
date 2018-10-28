@@ -14,7 +14,7 @@ import (
 )
 
 type configuration struct {
-	app.Configuration `depends:"kube"`
+	app.Configuration
 }
 
 type Oauth interface {
