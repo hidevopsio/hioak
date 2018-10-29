@@ -58,7 +58,7 @@ type DeployRequest struct {
 // @Param pipeline
 // @Return error
 func (d *Deployment) Deploy(request *DeployRequest) (*extensionsV1beta1.Deployment, error) {
-
+	runAsRoot := false
 	log.Debug("Deployment.Deploy()")
 	deploySpec := &extensionsV1beta1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
@@ -94,6 +94,9 @@ func (d *Deployment) Deploy(request *DeployRequest) (*extensionsV1beta1.Deployme
 					},
 				},
 				Spec: corev1.PodSpec{
+					SecurityContext: &corev1.PodSecurityContext{
+						RunAsNonRoot: &runAsRoot,
+					},
 					Containers: []corev1.Container{
 						{
 							Name:            request.App,
