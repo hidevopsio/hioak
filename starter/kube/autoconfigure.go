@@ -106,3 +106,7 @@ func (c *configuration) Pod(clientSet ClientSet) *Pod {
 func (c *configuration) Token(restConfig *RestConfig) Token {
 	return Token(restConfig.Config.BearerToken)
 }
+
+func (c *configuration) ReplicaSet(clientSet ClientSet) *ReplicaSet {
+	return NewReplicaSet(clientSet)
+}

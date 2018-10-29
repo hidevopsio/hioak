@@ -50,7 +50,11 @@ func TestDeploy(t *testing.T) {
 		DockerRegistry:dockerRegistry,
 		Replicas:int32Ptr(1),
 	}
-	_, err := deploy.Deploy(request)
+	deployment, err := deploy.Deploy(request)
+	assert.Equal(t, nil, err)
+	_, err = deploy.Get(app, project, v1.GetOptions{})
+	assert.Equal(t, nil, err)
+	err = deploy.Update(deployment)
 	assert.Equal(t, nil, err)
 }
 

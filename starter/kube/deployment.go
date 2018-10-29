@@ -325,3 +325,15 @@ func (d *Deployment) Delete(name, namespace string, option *metav1.DeleteOptions
 	err := d.clientSet.ExtensionsV1beta1().Deployments(namespace).Delete(name, option)
 	return err
 }
+
+func (d *Deployment) Update(deployment *extensionsV1beta1.Deployment) error {
+	log.Debugf("update deployment name :%v, namespace :%v", deployment.Name, deployment.Namespace)
+	_, err := d.clientSet.ExtensionsV1beta1().Deployments(deployment.Namespace).Update(deployment)
+	return err
+}
+
+func (d *Deployment) Get(name, namespace string, option metav1.GetOptions) (*extensionsV1beta1.Deployment, error) {
+	log.Debugf("get deployment name :%v, namespace :%v", name, namespace)
+	deploy, err := d.clientSet.ExtensionsV1beta1().Deployments(namespace).Get(name, option)
+	return deploy, err
+}
