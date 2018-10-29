@@ -62,7 +62,7 @@ func (d *Deployment) Deploy(request *DeployRequest) (*extensionsV1beta1.Deployme
 	log.Debug("Deployment.Deploy()")
 	deploySpec := &extensionsV1beta1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      request.App,
+			Name:      fmt.Sprintf("%s-%s", request.App, request.Version),
 			Namespace: request.Namespace,
 			Labels: map[string]string{
 				"app":     request.App,
