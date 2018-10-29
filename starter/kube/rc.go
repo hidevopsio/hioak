@@ -81,3 +81,8 @@ func (rc *ReplicationController) Watch(name, namespace string, completedHandler 
 		}
 	}
 }
+
+func (rc *ReplicationController) Delete(name, namespace string, option *metav1.DeleteOptions) (err error) {
+	err = rc.clientSet.CoreV1().ReplicationControllers(namespace).Delete(name, option)
+	return err
+}
