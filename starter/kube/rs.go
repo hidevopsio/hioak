@@ -28,3 +28,9 @@ func (rs *ReplicaSet) Delete(name, namespace string, option *metav1.DeleteOption
 	err := rs.clientSet.AppsV1().ReplicaSets(namespace).Delete(name, option)
 	return err
 }
+
+func (rs *ReplicaSet) List(name, namespace string, option metav1.ListOptions) (*v1.ReplicaSetList, error) {
+	log.Infof("list replica set name %v, namespace %v", name, namespace)
+	replicaSets, err := rs.clientSet.AppsV1().ReplicaSets(namespace).List(option)
+	return replicaSets, err
+}

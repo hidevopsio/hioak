@@ -19,12 +19,21 @@ func TestReplicaSetCreate(t *testing.T) {
 	rs := NewReplicaSet(clientSet)
 	replica := &v1.ReplicaSet{
 		ObjectMeta: metav1.ObjectMeta{
-			Namespace:namespace,
-			Name:app,
+			Namespace: namespace,
+			Name:      app,
+			Labels: map[string]string{
+				"app": app,
+			},
 		},
 	}
 	_, err := rs.Create(replica)
 	assert.Equal(t, nil, err)
+	option := metav1.ListOptions{
+		LabelSelector: "app=" + app,
+	}
+	_, err = rs.List(app, namespace, option)
+	assert.Equal(t, nil, err)
+
 	err = rs.Delete(app, namespace, &metav1.DeleteOptions{})
 	assert.Equal(t, nil, err)
 }
