@@ -58,11 +58,11 @@ type DeployRequest struct {
 // @Param pipeline
 // @Return error
 func (d *Deployment) Deploy(request *DeployRequest) (*extensionsV1beta1.Deployment, error) {
-
+	runAsRoot := false
 	log.Debug("Deployment.Deploy()")
 	deploySpec := &extensionsV1beta1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      request.App,
+			Name:      fmt.Sprintf("%s-%s", request.App, request.Version),
 			Namespace: request.Namespace,
 			Labels: map[string]string{
 				"app":     request.App,
@@ -94,6 +94,9 @@ func (d *Deployment) Deploy(request *DeployRequest) (*extensionsV1beta1.Deployme
 					},
 				},
 				Spec: corev1.PodSpec{
+					SecurityContext: &corev1.PodSecurityContext{
+						RunAsNonRoot: &runAsRoot,
+					},
 					Containers: []corev1.Container{
 						{
 							Name:            request.App,
@@ -324,4 +327,16 @@ func (d *Deployment) Delete(name, namespace string, option *metav1.DeleteOptions
 	log.Debugf("delete deployment name :%v, namespace :%v", name, namespace)
 	err := d.clientSet.ExtensionsV1beta1().Deployments(namespace).Delete(name, option)
 	return err
+}
+
+func (d *Deployment) Update(deployment *extensionsV1beta1.Deployment) error {
+	log.Debugf("update deployment name :%v, namespace :%v", deployment.Name, deployment.Namespace)
+	_, err := d.clientSet.ExtensionsV1beta1().Deployments(deployment.Namespace).Update(deployment)
+	return err
+}
+
+func (d *Deployment) Get(name, namespace string, option metav1.GetOptions) (*extensionsV1beta1.Deployment, error) {
+	log.Debugf("get deployment name :%v, namespace :%v", name, namespace)
+	deploy, err := d.clientSet.ExtensionsV1beta1().Deployments(namespace).Get(name, option)
+	return deploy, err
 }

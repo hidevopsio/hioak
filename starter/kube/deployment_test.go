@@ -15,6 +15,7 @@
 package kube
 
 import (
+	"fmt"
 	"github.com/magiconair/properties/assert"
 	"k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/fake"
@@ -40,6 +41,7 @@ func TestDeploy(t *testing.T) {
 	project := "demo-dev"
 	dockerRegistry := "docker.vpclub.cn"
 	imageTag := "v1"
+	name := fmt.Sprintf("%s-%s", app, imageTag)
 	deploy := Deployment{
 		clientSet: clientSet,
 	}
@@ -50,7 +52,11 @@ func TestDeploy(t *testing.T) {
 		DockerRegistry:dockerRegistry,
 		Replicas:int32Ptr(1),
 	}
-	_, err := deploy.Deploy(request)
+	deployment, err := deploy.Deploy(request)
+	assert.Equal(t, nil, err)
+	_, err = deploy.Get(name, project, v1.GetOptions{})
+	assert.Equal(t, nil, err)
+	err = deploy.Update(deployment)
 	assert.Equal(t, nil, err)
 }
 
