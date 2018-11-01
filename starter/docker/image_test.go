@@ -111,7 +111,7 @@ func TestImage_BuildImage(t *testing.T) {
 // TestCommand is the root command
 type TestCommand struct {
 	// embedded cli.BaseCommand
-	cli.BaseCommand
+	cli.RootCommand
 
 	imageClient *docker.ImageClient
 }
@@ -128,7 +128,7 @@ func (c *TestCommand) OnCreate(args []string) bool {
 func TestApp(t *testing.T) {
 	testApp := cli.NewTestApplication(t, newTestCommand)
 	t.Run("should run create command", func(t *testing.T) {
-		_, err := testApp.RunTest("create")
+		_, err := testApp.Run("create")
 		assert.Equal(t, nil, err)
 	})
 }
