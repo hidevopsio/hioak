@@ -27,7 +27,7 @@ func TestClone(t *testing.T) {
 	}{
 		{
 			title:        "should return file path correctly",
-			url:          "https://github.com/hidevopsio/hiboot.git",
+			url:          "https://hidevops.io/hiboot.git",
 			branch:       "master",
 			dstDir:       "/path/to/dir",
 			expectedPath: "/path/to/dir/hiboot",
@@ -35,7 +35,7 @@ func TestClone(t *testing.T) {
 		},
 		{
 			title:        "should err is nil",
-			url:          "https://github.com/hidevopsio/hiboot",
+			url:          "https://hidevops.io/hiboot",
 			branch:       "master",
 			dstDir:       "/path/to/dir/",
 			expectedPath: "/path/to/dir/hiboot",
@@ -45,12 +45,12 @@ func TestClone(t *testing.T) {
 
 	for _, testCase := range testCases {
 		t.Run(testCase.title, func(t *testing.T) {
-			path, err := repo.Clone(&git.CloneOptions{URL:testCase.url,
-				ReferenceName:plumbing.Master,
+			path, err := repo.Clone(&git.CloneOptions{URL: testCase.url,
+				ReferenceName:     plumbing.Master,
 				RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
-				Auth:transport.AuthMethod(&http.BasicAuth{
+				Auth: transport.AuthMethod(&http.BasicAuth{
 					Username: testCase.username,
-					Password: testCase.password})},testCase.dstDir)
+					Password: testCase.password})}, testCase.dstDir)
 			assert.Equal(t, testCase.expectedPath, path)
 			assert.Equal(t, testCase.err, err)
 		})

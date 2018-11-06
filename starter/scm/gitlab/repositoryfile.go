@@ -1,9 +1,9 @@
 package gitlab
 
 import (
-	"github.com/hidevopsio/hiboot/pkg/log"
-	"github.com/hidevopsio/hioak/starter/scm"
 	"github.com/xanzy/go-gitlab"
+	"hidevops.io/hiboot/pkg/log"
+	"hidevops.io/hioak/starter/scm"
 )
 
 type RepositoryFile struct {

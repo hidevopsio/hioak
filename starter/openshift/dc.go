@@ -16,10 +16,10 @@ package openshift
 
 import (
 	"fmt"
-	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/jinzhu/copier"
 	"github.com/openshift/api/apps/v1"
 	appsv1 "github.com/openshift/client-go/apps/clientset/versioned/typed/apps/v1"
+	"hidevops.io/hiboot/pkg/log"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

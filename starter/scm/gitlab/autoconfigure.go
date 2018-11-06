@@ -1,8 +1,8 @@
 package gitlab
 
 import (
-	"github.com/hidevopsio/hiboot/pkg/app"
 	"github.com/xanzy/go-gitlab"
+	"hidevops.io/hiboot/pkg/app"
 	"net/http"
 	"strings"
 )

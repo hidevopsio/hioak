@@ -1,8 +1,8 @@
 package gitlab
 
 import (
-	"github.com/hidevopsio/hiboot/pkg/log"
-	"github.com/hidevopsio/hioak/starter/scm"
+	"hidevops.io/hiboot/pkg/log"
+	"hidevops.io/hioak/starter/scm"
 )
 
 type ProjectMember struct {

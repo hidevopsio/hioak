@@ -16,8 +16,8 @@ package kube
 
 import (
 	"fmt"
-	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/jinzhu/copier"
+	"hidevops.io/hiboot/pkg/log"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -78,7 +78,6 @@ func (s *Service) Create(name, namespace string, ports interface{}) error {
 	return nil
 }
 
-
 func (s *Service) CreateService(name, namespace string, ports []corev1.ServicePort) error {
 
 	// create service
@@ -120,7 +119,6 @@ func (s *Service) CreateService(name, namespace string, ports []corev1.ServicePo
 	}
 	return nil
 }
-
 
 func (s *Service) Delete(name, namespace string) error {
 	return s.clientSet.CoreV1().Services(namespace).Delete(name, &metav1.DeleteOptions{})

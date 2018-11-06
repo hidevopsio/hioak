@@ -44,7 +44,7 @@ func (p *Pod) GetPodLogs(namespace, name string, opts *corev1.PodLogOptions) (*r
 	if _, err = p.clientSet.CoreV1().Pods(namespace).Get(name, metav1.GetOptions{}); err != nil {
 		return nil, err
 	}
-	request :=p.clientSet.CoreV1().Pods(namespace).GetLogs(name, opts)
+	request := p.clientSet.CoreV1().Pods(namespace).GetLogs(name, opts)
 	return request, nil
 }
 
@@ -52,7 +52,7 @@ func (p *Pod) GetPods(namespace, name string, opts metav1.GetOptions) (*corev1.P
 	log.Infof(fmt.Sprintf("get pod %s in namespace %s", name, namespace))
 	var pod *corev1.Pod
 	var err error
-	if pod, err = p.clientSet.CoreV1().Pods(namespace).Get(name, opts);err != nil {
+	if pod, err = p.clientSet.CoreV1().Pods(namespace).Get(name, opts); err != nil {
 		return nil, err
 	}
 	return pod, nil
@@ -62,7 +62,7 @@ func (p *Pod) GetPodList(namespace string, opts metav1.ListOptions) (*corev1.Pod
 	log.Infof(fmt.Sprintf("get pod list in namespace %s", namespace))
 	var podList *corev1.PodList
 	var err error
-	if podList, err = p.clientSet.CoreV1().Pods(namespace).List(opts);err != nil {
+	if podList, err = p.clientSet.CoreV1().Pods(namespace).List(opts); err != nil {
 		return nil, err
 	}
 	return podList, nil

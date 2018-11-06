@@ -17,9 +17,9 @@ package factories
 import (
 	"errors"
 	"fmt"
-	"github.com/hidevopsio/hiboot/pkg/log"
-	"github.com/hidevopsio/hioak/starter/scm"
-	"github.com/hidevopsio/hioak/starter/scm/gitlab"
+	"hidevops.io/hiboot/pkg/log"
+	"hidevops.io/hioak/starter/scm"
+	"hidevops.io/hioak/starter/scm/gitlab"
 )
 
 const (

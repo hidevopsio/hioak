@@ -1,9 +1,9 @@
 package openshift
 
 import (
-	"github.com/hidevopsio/hiboot/pkg/log"
 	authorization_v1 "github.com/openshift/api/authorization/v1"
 	"github.com/openshift/client-go/authorization/clientset/versioned/typed/authorization/v1"
+	"hidevops.io/hiboot/pkg/log"
 	corev1 "k8s.io/api/core/v1"
 	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )

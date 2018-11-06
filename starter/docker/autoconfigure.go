@@ -1,8 +1,8 @@
 package docker
 
 import (
-	"github.com/hidevopsio/hiboot/pkg/app"
 	"github.com/prometheus/common/log"
+	"hidevops.io/hiboot/pkg/app"
 )
 
 type configuration struct {

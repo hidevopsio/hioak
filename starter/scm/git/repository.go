@@ -1,14 +1,14 @@
 package git
 
 import (
-	"github.com/hidevopsio/hiboot/pkg/log"
-	"github.com/hidevopsio/hiboot/pkg/utils/io"
 	"gopkg.in/src-d/go-git.v4"
+	"hidevops.io/hiboot/pkg/log"
+	"hidevops.io/hiboot/pkg/utils/io"
 	"path/filepath"
 )
 
 type Repository interface {
-	Clone(cloneOptions *git.CloneOptions,destDir string) (string, error)
+	Clone(cloneOptions *git.CloneOptions, destDir string) (string, error)
 }
 
 type CloneFunc func(path string, isBare bool, o *git.CloneOptions) (*git.Repository, error)
@@ -30,7 +30,7 @@ func NewRepository(cloneFunc ...CloneFunc) Repository {
 }
 
 // Clone the given repository to the given directory
-func (r *repository) Clone(cloneOptions *git.CloneOptions,destDir string) (string, error) {
+func (r *repository) Clone(cloneOptions *git.CloneOptions, destDir string) (string, error) {
 	projectName := io.Filename(cloneOptions.URL)
 	projectName = io.Basename(projectName)
 	projectPath := filepath.Join(destDir, projectName)
