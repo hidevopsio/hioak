@@ -1,8 +1,8 @@
 package fake
 
 import (
-	"github.com/hidevopsio/hioak/starter/scm/gitlab"
 	"github.com/stretchr/testify/mock"
+	"hidevops.io/hioak/starter/scm/gitlab"
 )
 
 type Client struct {

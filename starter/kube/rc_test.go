@@ -1,8 +1,8 @@
 package kube
 
 import (
-	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/stretchr/testify/assert"
+	"hidevops.io/hiboot/pkg/log"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/fake"
 	"testing"

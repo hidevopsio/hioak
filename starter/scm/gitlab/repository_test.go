@@ -1,10 +1,10 @@
 package gitlab_test
 
 import (
-	"github.com/hidevopsio/hioak/starter/scm/gitlab"
-	"github.com/hidevopsio/hioak/starter/scm/gitlab/fake"
 	"github.com/magiconair/properties/assert"
 	gogitlab "github.com/xanzy/go-gitlab"
+	"hidevops.io/hioak/starter/scm/gitlab"
+	"hidevops.io/hioak/starter/scm/gitlab/fake"
 	"os"
 	"testing"
 )

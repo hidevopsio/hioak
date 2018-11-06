@@ -1,8 +1,6 @@
 package openshift
 
 import (
-	"github.com/hidevopsio/hiboot/pkg/app"
-	"github.com/hidevopsio/hioak/starter/kube"
 	appsv1 "github.com/openshift/client-go/apps/clientset/versioned/typed/apps/v1"
 	authorizationv1 "github.com/openshift/client-go/authorization/clientset/versioned/typed/authorization/v1"
 	buildv1 "github.com/openshift/client-go/build/clientset/versioned/typed/build/v1"
@@ -11,6 +9,8 @@ import (
 	projectv1 "github.com/openshift/client-go/project/clientset/versioned/typed/project/v1"
 	routev1 "github.com/openshift/client-go/route/clientset/versioned/typed/route/v1"
 	"github.com/prometheus/common/log"
+	"hidevops.io/hiboot/pkg/app"
+	"hidevops.io/hioak/starter/kube"
 )
 
 type configuration struct {

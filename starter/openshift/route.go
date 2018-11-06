@@ -16,9 +16,9 @@ package openshift
 
 import (
 	"fmt"
-	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/openshift/api/route/v1"
 	routev1 "github.com/openshift/client-go/route/clientset/versioned/typed/route/v1"
+	"hidevops.io/hiboot/pkg/log"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"

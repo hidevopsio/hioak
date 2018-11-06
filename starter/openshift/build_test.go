@@ -15,11 +15,11 @@
 package openshift
 
 import (
-	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/openshift/api/build/v1"
 	"github.com/openshift/client-go/build/clientset/versioned/fake"
 	imageFake "github.com/openshift/client-go/image/clientset/versioned/fake"
 	"github.com/stretchr/testify/assert"
+	"hidevops.io/hiboot/pkg/log"
 	"os"
 	"testing"
 )

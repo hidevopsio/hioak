@@ -1,8 +1,8 @@
 package kube
 
 import (
-	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/magiconair/properties/assert"
+	"hidevops.io/hiboot/pkg/log"
 	"k8s.io/api/apps/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/fake"

@@ -15,9 +15,9 @@
 package openshift
 
 import (
-	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/openshift/api/image/v1"
 	imagev1 "github.com/openshift/client-go/image/clientset/versioned/typed/image/v1"
+	"hidevops.io/hiboot/pkg/log"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

@@ -15,11 +15,11 @@
 package gitlab_test
 
 import (
-	"github.com/hidevopsio/hiboot/pkg/log"
-	"github.com/hidevopsio/hioak/starter/scm/gitlab"
-	"github.com/hidevopsio/hioak/starter/scm/gitlab/fake"
 	"github.com/magiconair/properties/assert"
 	gg "github.com/xanzy/go-gitlab"
+	"hidevops.io/hiboot/pkg/log"
+	"hidevops.io/hioak/starter/scm/gitlab"
+	"hidevops.io/hioak/starter/scm/gitlab/fake"
 	"testing"
 )
 

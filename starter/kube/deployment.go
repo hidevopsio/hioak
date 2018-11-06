@@ -17,8 +17,8 @@ package kube
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/hidevopsio/hiboot/pkg/log"
-	"github.com/hidevopsio/hiboot/pkg/utils/copier"
+	"hidevops.io/hiboot/pkg/log"
+	"hidevops.io/hiboot/pkg/utils/copier"
 	corev1 "k8s.io/api/core/v1"
 	extensionsV1beta1 "k8s.io/api/extensions/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

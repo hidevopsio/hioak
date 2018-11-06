@@ -15,11 +15,11 @@
 package openshift
 
 import (
-	"github.com/hidevopsio/hiboot/pkg/log"
-	"github.com/hidevopsio/hiboot/pkg/system"
-	"github.com/hidevopsio/hioak/starter"
 	"github.com/openshift/client-go/apps/clientset/versioned/fake"
 	"github.com/stretchr/testify/assert"
+	"hidevops.io/hiboot/pkg/log"
+	"hidevops.io/hiboot/pkg/system"
+	"hidevops.io/hioak/starter"
 	"testing"
 )
 

@@ -1,9 +1,9 @@
 package openshift
 
 import (
-	"github.com/hidevopsio/hiboot/pkg/log"
 	"github.com/magiconair/properties/assert"
 	"github.com/openshift/client-go/authorization/clientset/versioned/fake"
+	"hidevops.io/hiboot/pkg/log"
 	"testing"
 )
 
