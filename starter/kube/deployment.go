@@ -224,6 +224,8 @@ type DeployData struct {
 	Ports          []int
 	Envs           map[string]string
 	HostPathVolume map[string]string
+	NodeSelector   map[string]string
+	NodeName       string
 }
 
 func (d *Deployment) DeployNode(deployData *DeployData) (string, error) {
@@ -301,10 +303,11 @@ func (d *Deployment) DeployNode(deployData *DeployData) (string, error) {
 					Labels: deployData.Labels,
 				},
 				Spec: corev1.PodSpec{
+					NodeSelector: deployData.NodeSelector,
 					Containers: []corev1.Container{
 						{
 							Name:            deployData.Name,
-							Image:           deployData.Image, //dockerRegistry + "/" + project + "/" + app + ":" + imageTag,
+							Image:           deployData.Image,
 							Ports:           containerPorts,
 							Env:             envs,
 							ImagePullPolicy: corev1.PullIfNotPresent,
@@ -315,6 +318,9 @@ func (d *Deployment) DeployNode(deployData *DeployData) (string, error) {
 				},
 			},
 		},
+	}
+	if deployData.NodeName != "" {
+		deploySpec.Spec.Template.Spec.NodeName = deployData.NodeName
 	}
 	// Create Deployment
 	deployment, err := d.clientSet.ExtensionsV1beta1().Deployments(deployData.NameSpace).Create(deploySpec)
