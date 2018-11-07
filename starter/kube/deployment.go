@@ -43,6 +43,7 @@ type DeployRequest struct {
 	App            string
 	Namespace      string
 	Version        string
+	Tag            string
 	DockerRegistry string
 	Env            []corev1.EnvVar
 	Labels         map[string]string
@@ -97,10 +98,11 @@ func (d *Deployment) Deploy(request *DeployRequest) (*extensionsV1beta1.Deployme
 					SecurityContext: &corev1.PodSecurityContext{
 						RunAsNonRoot: &runAsRoot,
 					},
+					NodeSelector: request.NodeSelector,
 					Containers: []corev1.Container{
 						{
 							Name:            request.App,
-							Image:           request.DockerRegistry + "/" + request.Namespace + "/" + request.App + ":" + request.Version,
+							Image:           request.DockerRegistry + "/" + request.Namespace + "/" + request.App + ":" + request.Tag,
 							Ports:           request.Ports,
 							Env:             request.Env,
 							ImagePullPolicy: corev1.PullAlways,
