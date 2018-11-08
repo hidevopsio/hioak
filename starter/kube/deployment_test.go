@@ -49,6 +49,7 @@ func TestDeploy(t *testing.T) {
 		App:            app,
 		Namespace:      project,
 		Version:        imageTag,
+		Tag:            imageTag,
 		DockerRegistry: dockerRegistry,
 		Replicas:       int32Ptr(1),
 	}
@@ -72,6 +73,7 @@ func TestDeployment(t *testing.T) {
 		Ports:          []int{8080},
 		Envs:           map[string]string{"ENVTEST": "ENVTEST"},
 		HostPathVolume: map[string]string{"/var": "var"},
+		NodeName:       "1",
 	}
 
 	deploy := Deployment{
