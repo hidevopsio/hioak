@@ -157,7 +157,9 @@ func (i *ImageClient) BuildImage(image *Image) (*types.ImageBuildResponse, error
 	options := types.ImageBuildOptions{
 		Dockerfile: "Dockerfile",
 		Tags:       image.Tags,
-		Remove:     true}
+		Remove:     true,
+	    NoCache:	true,
+		ForceRemove:true}
 
 	ImageBuildResponse, err := i.Client.ImageBuild(context.Background(), dockerBuildContext, options)
 	if err != nil {
