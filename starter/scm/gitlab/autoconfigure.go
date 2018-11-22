@@ -3,16 +3,17 @@ package gitlab
 import (
 	"github.com/xanzy/go-gitlab"
 	"hidevops.io/hiboot/pkg/app"
+	"hidevops.io/hiboot/pkg/at"
 	"net/http"
 	"strings"
 )
 
 type configuration struct {
-	app.Configuration
+	at.AutoConfiguration
 }
 
 func init() {
-	app.AutoConfiguration(newConfiguration)
+	app.Register(newConfiguration)
 }
 
 func newConfiguration() *configuration {

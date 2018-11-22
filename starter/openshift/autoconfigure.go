@@ -9,12 +9,12 @@ import (
 	projectv1 "github.com/openshift/client-go/project/clientset/versioned/typed/project/v1"
 	routev1 "github.com/openshift/client-go/route/clientset/versioned/typed/route/v1"
 	"github.com/prometheus/common/log"
-	"hidevops.io/hiboot/pkg/app"
+	"hidevops.io/hiboot/pkg/at"
 	"hidevops.io/hioak/starter/kube"
 )
 
 type configuration struct {
-	app.Configuration
+	at.AutoConfiguration
 }
 
 type Oauth interface {
