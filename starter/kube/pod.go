@@ -28,7 +28,7 @@ func (p *Pod) Create(pod *corev1.Pod) (*corev1.Pod, error) {
 func (p *Pod) Watch(listOptions metav1.ListOptions, namespace, name string) (watch.Interface, error) {
 	log.Infof(fmt.Sprintf("watch pod app %s in namespace %s:", name, namespace))
 
-	listOptions.LabelSelector = fmt.Sprintf("app=%s", name)
+	//listOptions.LabelSelector = fmt.Sprintf("app=%s", name)
 	listOptions.Watch = true
 
 	w, err := p.clientSet.CoreV1().Pods(namespace).Watch(listOptions)
