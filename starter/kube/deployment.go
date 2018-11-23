@@ -68,6 +68,7 @@ func (d *Deployment) Deploy(request *DeployRequest) (*extensionsV1beta1.Deployme
 			Labels: map[string]string{
 				"app":     request.App,
 				"version": request.Version,
+				"name": fmt.Sprintf("%s-%s", request.App, request.Version),
 			},
 		},
 		Spec: extensionsV1beta1.DeploymentSpec{
@@ -92,6 +93,7 @@ func (d *Deployment) Deploy(request *DeployRequest) (*extensionsV1beta1.Deployme
 					Labels: map[string]string{
 						"app":     request.App,
 						"version": request.Version,
+						"name": fmt.Sprintf("%s-%s", request.App, request.Version),
 					},
 				},
 				Spec: corev1.PodSpec{
