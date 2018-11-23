@@ -52,6 +52,8 @@ type DeployRequest struct {
 	NodeSelector   map[string]string
 	ReadinessProbe *corev1.Probe
 	LivenessProbe  *corev1.Probe
+	Volumes        []corev1.Volume
+	VolumeMounts   []corev1.VolumeMount
 }
 
 // @Title Deploy
@@ -99,6 +101,7 @@ func (d *Deployment) Deploy(request *DeployRequest) (*extensionsV1beta1.Deployme
 						RunAsNonRoot: &runAsRoot,
 					},
 					NodeSelector: request.NodeSelector,
+					Volumes:      request.Volumes,
 					Containers: []corev1.Container{
 						{
 							Name:            request.App,
@@ -108,6 +111,7 @@ func (d *Deployment) Deploy(request *DeployRequest) (*extensionsV1beta1.Deployme
 							ImagePullPolicy: corev1.PullAlways,
 							ReadinessProbe:  request.ReadinessProbe,
 							LivenessProbe:   request.LivenessProbe,
+							VolumeMounts:    request.VolumeMounts,
 						},
 					},
 				},
