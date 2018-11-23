@@ -25,12 +25,10 @@ func (p *Pod) Create(pod *corev1.Pod) (*corev1.Pod, error) {
 	return p.clientSet.CoreV1().Pods(pod.Namespace).Create(pod)
 }
 
-func (p *Pod) Watch(listOptions metav1.ListOptions, namespace, name string) (watch.Interface, error) {
-	log.Infof(fmt.Sprintf("watch pod app %s in namespace %s:", name, namespace))
+func (p *Pod) Watch(listOptions metav1.ListOptions, namespace string) (watch.Interface, error) {
+	log.Infof(fmt.Sprintf("watch label for %s pod，in the namespace %s", listOptions.LabelSelector, namespace))
 
-	//listOptions.LabelSelector = fmt.Sprintf("app=%s", name)
 	listOptions.Watch = true
-
 	w, err := p.clientSet.CoreV1().Pods(namespace).Watch(listOptions)
 	if err != nil {
 		return nil, err
