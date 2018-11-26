@@ -11,7 +11,7 @@ type ConfigMaps struct {
 	clientSet kubernetes.Interface
 }
 
-func newConfigMaps(clientSet kubernetes.Interface) *ConfigMaps {
+func NewConfigMaps(clientSet kubernetes.Interface) *ConfigMaps {
 	return &ConfigMaps{
 		clientSet: clientSet,
 	}

@@ -80,11 +80,11 @@ func (c *configuration) ClientSet(RestConfig *RestConfig) ClientSet {
 }
 
 func (c *configuration) ConfigMaps(clientSet ClientSet) *ConfigMaps {
-	return newConfigMaps(clientSet)
+	return NewConfigMaps(clientSet)
 }
 
 func (c *configuration) Deployment(clientSet ClientSet) *Deployment {
-	return newDeployment(clientSet)
+	return NewDeployment(clientSet)
 }
 
 func (c *configuration) ReplicationController(clientSet ClientSet) *ReplicationController {
