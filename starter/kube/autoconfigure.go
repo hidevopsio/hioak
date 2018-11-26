@@ -3,6 +3,7 @@ package kube
 import (
 	"flag"
 	"hidevops.io/hiboot/pkg/app"
+	"hidevops.io/hiboot/pkg/at"
 	"hidevops.io/hiboot/pkg/log"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -17,7 +18,7 @@ type properties struct {
 
 // define type configuration
 type configuration struct {
-	app.Configuration
+	at.AutoConfiguration
 
 	Properties properties `json:"properties" mapstructure:"kube"`
 }
@@ -39,7 +40,7 @@ type ClientSet interface {
 }
 
 func init() {
-	app.AutoConfiguration(newConfiguration)
+	app.Register(newConfiguration)
 }
 
 func (c *configuration) RestConfig(Config *Config) *RestConfig {

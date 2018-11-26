@@ -3,10 +3,11 @@ package docker
 import (
 	"github.com/prometheus/common/log"
 	"hidevops.io/hiboot/pkg/app"
+	"hidevops.io/hiboot/pkg/at"
 )
 
 type configuration struct {
-	app.Configuration
+	at.AutoConfiguration
 }
 
 func init() {

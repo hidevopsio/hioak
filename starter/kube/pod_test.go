@@ -1,6 +1,7 @@
 package kube
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"hidevops.io/hiboot/pkg/log"
 	corev1 "k8s.io/api/core/v1"
@@ -34,8 +35,8 @@ func TestPodWatching(t *testing.T) {
 	assert.Equal(t, nil, err)
 
 	t.Run("Pods should watch succeed", func(t *testing.T) {
-		listOptions := metav1.ListOptions{}
-		i, err := client.Watch(listOptions, app, namespace)
+		listOptions := metav1.ListOptions{LabelSelector:fmt.Sprintf("app=%s",app)}
+		i, err := client.Watch(listOptions,namespace)
 		log.Infof("i: %v", i)
 		assert.Equal(t, nil, err)
 

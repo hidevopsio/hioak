@@ -833,11 +833,12 @@
   revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
 
 [[projects]]
-  digest = "1:3fc2c7e8ea64e8b6f6d4f7152cd101f6c4c875df63cadee6bb414f73525c90d6"
+  digest = "1:b22f460022b0e9b40fc2d2b8539407520541302632e3829eb5aa2415ce9b211e"
   name = "hidevops.io/hiboot"
   packages = [
     "pkg/app",
     "pkg/app/cli",
+    "pkg/app/web/context",
     "pkg/at",
     "pkg/factory",
     "pkg/factory/autoconfigure",
@@ -849,7 +850,6 @@
     "pkg/system/types",
     "pkg/utils/cmap",
     "pkg/utils/copier",
-    "pkg/utils/gotest",
     "pkg/utils/io",
     "pkg/utils/mapstruct",
     "pkg/utils/reflector",
@@ -857,8 +857,8 @@
     "pkg/utils/str",
   ]
   pruneopts = ""
-  revision = "e4b6cdd5b00394e4d583cc81bc4eb8289b5a947a"
-  version = "v0.10.2"
+  revision = "a615cd2622f01d861cbaa0ba7bed7f15073ea771"
+  version = "v0.11.0"
 
 [[projects]]
   digest = "1:5beb32094452970c0d73a2bdacd79aa9cfaa4947a774d521c1bed4b4c2705f15"
