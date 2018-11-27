@@ -28,6 +28,7 @@ type Service struct {
 	clientSet kubernetes.Interface
 }
 
+// NewService need add test
 func NewService(clientSet kubernetes.Interface) *Service {
 	return &Service{
 		clientSet: clientSet,

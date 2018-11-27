@@ -16,6 +16,7 @@ type TreeNode struct {
 	scm.TreeNode
 }
 
+// NewRepository need add test
 func NewRepository(c NewClient) *Repository {
 	return &Repository{
 		client: c,

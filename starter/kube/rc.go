@@ -13,6 +13,7 @@ type ReplicationController struct {
 	clientSet kubernetes.Interface
 }
 
+// NewReplicationController need add test
 func NewReplicationController(clientSet kubernetes.Interface) *ReplicationController {
 	return &ReplicationController{
 		clientSet: clientSet,

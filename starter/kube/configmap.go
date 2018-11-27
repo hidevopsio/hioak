@@ -11,6 +11,7 @@ type ConfigMaps struct {
 	clientSet kubernetes.Interface
 }
 
+// NewConfigMaps need add test
 func NewConfigMaps(clientSet kubernetes.Interface) *ConfigMaps {
 	return &ConfigMaps{
 		clientSet: clientSet,

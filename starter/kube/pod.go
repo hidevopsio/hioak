@@ -14,6 +14,7 @@ type Pod struct {
 	clientSet kubernetes.Interface
 }
 
+// NewPod need add test
 func NewPod(clientSet kubernetes.Interface) *Pod {
 	return &Pod{
 		clientSet: clientSet,

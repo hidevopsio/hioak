@@ -11,6 +11,7 @@ type ReplicaSet struct {
 	clientSet kubernetes.Interface
 }
 
+// NewReplicaSet need add test
 func NewReplicaSet(clientSet kubernetes.Interface) *ReplicaSet {
 	return &ReplicaSet{
 		clientSet: clientSet,
