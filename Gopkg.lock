@@ -253,6 +253,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:8a2a940fd81980cd5394dbb60a8f9ab49b5d8195e52cddec562b9a40eab394f0"
+  name = "github.com/iris-contrib/blackfriday"
+  packages = ["."]
+  pruneopts = ""
+  revision = "48b3da6a6f3865c7eb1eba96d74cf0a16f63faca"
+
+[[projects]]
+  branch = "master"
   digest = "1:be0e14e780a05a33d034ff3a33c385a383a028c84df710a95ec402062df025c3"
   name = "github.com/iris-contrib/formBinder"
   packages = ["."]
@@ -300,7 +308,7 @@
   revision = "03be101463868edc5a81f094fc68a5f6c1b5503a"
 
 [[projects]]
-  digest = "1:e9f754e14f4536ed8c7e3571e6434714cca2f8d4a2d945ca0e495048af54b80c"
+  digest = "1:801411aefedd0fa7c6329b57cdabe35a2d6131134d57317ec1ab14290570b2b0"
   name = "github.com/kataras/iris"
   packages = [
     "context",
@@ -313,8 +321,8 @@
     "core/router/macro/interpreter/token",
   ]
   pruneopts = ""
-  revision = "44674201c83b18548b26bcf06e63e491b26dea39"
-  version = "v10.7"
+  revision = "39b8b1eb00eae9914addee3dee3612ffa785817f"
+  version = "v10.7.1"
 
 [[projects]]
   branch = "master"
@@ -584,14 +592,6 @@
   version = "v1.0.3"
 
 [[projects]]
-  digest = "1:1ed7a19588d3b74fc6a45fe89f95aa980a34870342fb9c3183b19cad08b18a1e"
-  name = "github.com/spf13/viper"
-  packages = ["."]
-  pruneopts = ""
-  revision = "2c12c60302a5a0e62ee102ca9bc996277c2f64f5"
-  version = "v1.2.1"
-
-[[projects]]
   digest = "1:740b31391e4c3e4d2b5a20e1cbf2c2f7765275ead23945acc7669c36c0b8095a"
   name = "github.com/src-d/gcfg"
   packages = [
@@ -746,14 +746,6 @@
   version = "v0.9.1"
 
 [[projects]]
-  branch = "v2"
-  digest = "1:87dffed114a34c714199c74e15c04ecb1c332c669f63f722220a5e4e6eb2ef52"
-  name = "gopkg.in/russross/blackfriday.v2"
-  packages = ["."]
-  pruneopts = ""
-  revision = "d3b5b032dc8e8927d31a5071b56e14c89f045135"
-
-[[projects]]
   digest = "1:cc4fc94e3088593a2cde96c032e05d1e3c7d494147d7a7d707445ccc478bf4a0"
   name = "gopkg.in/src-d/go-billy.v4"
   packages = [
@@ -825,15 +817,15 @@
   version = "v0.1.2"
 
 [[projects]]
-  branch = "v2"
   digest = "1:f0620375dd1f6251d9973b5f2596228cc8042e887cd7f827e4220bc1ce8c30e2"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
   pruneopts = ""
   revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
+  version = "v2.2.1"
 
 [[projects]]
-  digest = "1:b22f460022b0e9b40fc2d2b8539407520541302632e3829eb5aa2415ce9b211e"
+  digest = "1:de5cfcda74834dd7ba48fc88cba45b127698663b25aed2c9a1cb3aeee59d074a"
   name = "hidevops.io/hiboot"
   packages = [
     "pkg/app",
@@ -857,8 +849,16 @@
     "pkg/utils/str",
   ]
   pruneopts = ""
-  revision = "a615cd2622f01d861cbaa0ba7bed7f15073ea771"
-  version = "v0.11.0"
+  revision = "4222ad7c4524bbf047be68db6daf33b4b3d91ef0"
+  version = "v0.11.1"
+
+[[projects]]
+  digest = "1:6048c84fd9a273541ca3c775acf6b3e92bf3483d8452160f4bfe7fdabb497a94"
+  name = "hidevops.io/viper"
+  packages = ["."]
+  pruneopts = ""
+  revision = "86828cc12e0d5432e8440421083c6cf8f905470c"
+  version = "v1.3.1"
 
 [[projects]]
   digest = "1:5beb32094452970c0d73a2bdacd79aa9cfaa4947a774d521c1bed4b4c2705f15"
@@ -1070,6 +1070,7 @@
     "gopkg.in/src-d/go-git.v4/plumbing/transport/http",
     "hidevops.io/hiboot/pkg/app",
     "hidevops.io/hiboot/pkg/app/cli",
+    "hidevops.io/hiboot/pkg/at",
     "hidevops.io/hiboot/pkg/log",
     "hidevops.io/hiboot/pkg/system",
     "hidevops.io/hiboot/pkg/utils/copier",
