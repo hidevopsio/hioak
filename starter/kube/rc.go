@@ -13,6 +13,7 @@ type ReplicationController struct {
 	clientSet kubernetes.Interface
 }
 
+// NewReplicationController ConfigMaps initialize construction
 func NewReplicationController(clientSet kubernetes.Interface) *ReplicationController {
 	return &ReplicationController{
 		clientSet: clientSet,

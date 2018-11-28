@@ -11,6 +11,7 @@ type ReplicaSet struct {
 	clientSet kubernetes.Interface
 }
 
+// NewReplicaSet ConfigMaps initialize construction
 func NewReplicaSet(clientSet kubernetes.Interface) *ReplicaSet {
 	return &ReplicaSet{
 		clientSet: clientSet,

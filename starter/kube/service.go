@@ -28,6 +28,7 @@ type Service struct {
 	clientSet kubernetes.Interface
 }
 
+// NewService ConfigMaps initialize construction
 func NewService(clientSet kubernetes.Interface) *Service {
 	return &Service{
 		clientSet: clientSet,

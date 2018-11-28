@@ -80,34 +80,42 @@ func (c *configuration) ClientSet(RestConfig *RestConfig) ClientSet {
 	return clientSet
 }
 
+//ConfigMaps autoConfigure deployment need initialize construction
 func (c *configuration) ConfigMaps(clientSet ClientSet) *ConfigMaps {
-	return newConfigMaps(clientSet)
+	return NewConfigMaps(clientSet)
 }
 
+//Deployment autoConfigure deployment need initialize construction
 func (c *configuration) Deployment(clientSet ClientSet) *Deployment {
-	return newDeployment(clientSet)
+	return NewDeployment(clientSet)
 }
 
+//ReplicationController autoConfigure deployment need initialize construction
 func (c *configuration) ReplicationController(clientSet ClientSet) *ReplicationController {
 	return NewReplicationController(clientSet)
 }
 
+//Secret autoConfigure deployment need initialize construction
 func (c *configuration) Secret(clientSet ClientSet) *Secret {
 	return NewSecret(clientSet)
 }
 
+//Service autoConfigure deployment need initialize construction
 func (c *configuration) Service(clientSet ClientSet) *Service {
 	return NewService(clientSet)
 }
 
+//Pod autoConfigure deployment need initialize construction
 func (c *configuration) Pod(clientSet ClientSet) *Pod {
 	return NewPod(clientSet)
 }
 
+//Token autoConfigure deployment need initialize construction
 func (c *configuration) Token(restConfig *RestConfig) Token {
 	return Token(restConfig.Config.BearerToken)
 }
 
+//ReplicaSet autoConfigure deployment need initialize construction
 func (c *configuration) ReplicaSet(clientSet ClientSet) *ReplicaSet {
 	return NewReplicaSet(clientSet)
 }
