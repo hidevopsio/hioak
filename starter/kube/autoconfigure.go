@@ -84,30 +84,37 @@ func (c *configuration) ConfigMaps(clientSet ClientSet) *ConfigMaps {
 	return NewConfigMaps(clientSet)
 }
 
+//autoConfigure deployment need initialize construction
 func (c *configuration) Deployment(clientSet ClientSet) *Deployment {
 	return NewDeployment(clientSet)
 }
 
+//autoConfigure deployment need initialize construction
 func (c *configuration) ReplicationController(clientSet ClientSet) *ReplicationController {
 	return NewReplicationController(clientSet)
 }
 
+//autoConfigure deployment need initialize construction
 func (c *configuration) Secret(clientSet ClientSet) *Secret {
 	return NewSecret(clientSet)
 }
 
+//autoConfigure deployment need initialize construction
 func (c *configuration) Service(clientSet ClientSet) *Service {
 	return NewService(clientSet)
 }
 
+//autoConfigure deployment need initialize construction
 func (c *configuration) Pod(clientSet ClientSet) *Pod {
 	return NewPod(clientSet)
 }
 
+//autoConfigure deployment need initialize construction
 func (c *configuration) Token(restConfig *RestConfig) Token {
 	return Token(restConfig.Config.BearerToken)
 }
 
+//autoConfigure deployment need initialize construction
 func (c *configuration) ReplicaSet(clientSet ClientSet) *ReplicaSet {
 	return NewReplicaSet(clientSet)
 }
