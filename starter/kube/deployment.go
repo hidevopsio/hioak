@@ -33,7 +33,7 @@ type Deployment struct {
 
 func int32Ptr(i int32) *int32 { return &i }
 
-// NewDeployment need add test
+// NewDeployment ConfigMaps initialize construction
 func NewDeployment(clientSet kubernetes.Interface) *Deployment {
 	return &Deployment{
 		clientSet: clientSet,

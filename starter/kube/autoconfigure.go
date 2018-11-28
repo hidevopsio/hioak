@@ -80,6 +80,7 @@ func (c *configuration) ClientSet(RestConfig *RestConfig) ClientSet {
 	return clientSet
 }
 
+//ConfigMaps autoConfigure deployment need initialize construction
 func (c *configuration) ConfigMaps(clientSet ClientSet) *ConfigMaps {
 	return NewConfigMaps(clientSet)
 }
