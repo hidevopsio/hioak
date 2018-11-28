@@ -73,49 +73,81 @@ func (c *configuration) Config() *Config {
 }
 
 func (c *configuration) ClientSet(RestConfig *RestConfig) ClientSet {
-	clientSet, err := kubernetes.NewForConfig(RestConfig.Config)
-	if err != nil {
-		return nil
+	if RestConfig != nil {
+		clientSet, err := kubernetes.NewForConfig(RestConfig.Config)
+		if err != nil {
+			return nil
+		}
+		return clientSet
 	}
-	return clientSet
+	return nil
 }
 
 //ConfigMaps autoConfigure deployment need initialize construction
 func (c *configuration) ConfigMaps(clientSet ClientSet) *ConfigMaps {
-	return NewConfigMaps(clientSet)
+	if clientSet != nil {
+		return NewConfigMaps(clientSet)
+	}
+	return nil
 }
 
 //Deployment autoConfigure deployment need initialize construction
 func (c *configuration) Deployment(clientSet ClientSet) *Deployment {
-	return NewDeployment(clientSet)
+	if clientSet != nil {
+		return NewDeployment(clientSet)
+	}
+	return nil
 }
 
 //ReplicationController autoConfigure deployment need initialize construction
 func (c *configuration) ReplicationController(clientSet ClientSet) *ReplicationController {
-	return NewReplicationController(clientSet)
+	if clientSet != nil {
+		return NewReplicationController(clientSet)
+	}
+	return nil
+
 }
 
 //Secret autoConfigure deployment need initialize construction
 func (c *configuration) Secret(clientSet ClientSet) *Secret {
-	return NewSecret(clientSet)
+	if clientSet != nil {
+		return NewSecret(clientSet)
+	}
+	return nil
+
 }
 
 //Service autoConfigure deployment need initialize construction
 func (c *configuration) Service(clientSet ClientSet) *Service {
-	return NewService(clientSet)
+	if clientSet != nil {
+		return NewService(clientSet)
+	}
+	return nil
+
 }
 
 //Pod autoConfigure deployment need initialize construction
 func (c *configuration) Pod(clientSet ClientSet) *Pod {
-	return NewPod(clientSet)
+	if clientSet != nil {
+		return NewPod(clientSet)
+	}
+	return nil
+
 }
 
 //Token autoConfigure deployment need initialize construction
 func (c *configuration) Token(restConfig *RestConfig) Token {
-	return Token(restConfig.Config.BearerToken)
+	if restConfig != nil {
+		return Token(restConfig.Config.BearerToken)
+	}
+	return ""
+
 }
 
 //ReplicaSet autoConfigure deployment need initialize construction
 func (c *configuration) ReplicaSet(clientSet ClientSet) *ReplicaSet {
-	return NewReplicaSet(clientSet)
+	if clientSet != nil {
+		return NewReplicaSet(clientSet)
+	}
+	return nil
 }
