@@ -1,48 +1,37 @@
 package kube
 
 import (
-	"github.com/prometheus/common/log"
+	"github.com/magiconair/properties/assert"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"testing"
 )
 
-func TestAutoConfigure(t *testing.T) {
-	c := newConfiguration()
-	cm := c.ConfigMaps(nil)
-	log.Info(cm)
-	pod := c.Pod(nil)
-	log.Info(pod)
-	secret := c.Secret(nil)
-	log.Info(secret)
-	service := c.Service(nil)
-	log.Info(service)
-	replicaSet := c.ReplicaSet(nil)
-	log.Info(replicaSet)
-	deployment := c.Deployment(nil)
-	log.Info(deployment)
-	replicationController := c.ReplicationController(nil)
-	log.Info(replicationController)
-}
-
-
 func TestNewAutoConfigure(t *testing.T) {
 	c := newConfiguration()
 	clientSet, _ := kubernetes.NewForConfig(&rest.Config{})
-	cm := c.ConfigMaps(clientSet)
-	log.Info(cm)
-	pod := c.Pod(clientSet)
-	log.Info(pod)
-	secret := c.Secret(clientSet)
-	log.Info(secret)
-	service := c.Service(clientSet)
-	log.Info(service)
-	replicaSet := c.ReplicaSet(clientSet)
-	log.Info(replicaSet)
-	deployment := c.Deployment(clientSet)
-	log.Info(deployment)
-	token := c.Token(nil)
-	log.Info(token)
-	replicationController := c.ReplicationController(clientSet)
-	log.Info(replicationController)
+
+	testCases := []struct {
+		expected interface{}
+		actual   interface{}
+	}{
+		{NewConfigMaps(clientSet), c.ConfigMaps(clientSet)},
+		{NewPod(clientSet), c.Pod(clientSet)},
+		{NewService(clientSet), c.Service(clientSet)},
+		{NewDeployment(clientSet), c.Deployment(clientSet)},
+		{NewReplicaSet(clientSet), c.ReplicaSet(clientSet)},
+		{NewReplicationController(clientSet), c.ReplicationController(clientSet)},
+		{(*ConfigMaps)(nil), c.ConfigMaps(nil)},
+		{(*Pod)(nil), c.Pod(nil)},
+		{(*Secret)(nil), c.Secret(nil)},
+		{(*Service)(nil), c.Service(nil)},
+		{(*Deployment)(nil), c.Deployment(nil)},
+		{(*ReplicationController)(nil), c.ReplicationController(nil)},
+		{(*ReplicaSet)(nil), c.ReplicaSet(nil)},
+	}
+
+	for _, item := range testCases {
+		assert.Equal(t, item.expected, item.actual)
+	}
+
 }
