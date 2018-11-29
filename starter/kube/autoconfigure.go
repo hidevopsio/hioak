@@ -5,6 +5,7 @@ import (
 	"hidevops.io/hiboot/pkg/app"
 	"hidevops.io/hiboot/pkg/at"
 	"hidevops.io/hiboot/pkg/log"
+	apiextensionsclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
@@ -37,6 +38,10 @@ type RestConfig struct {
 
 type ClientSet interface {
 	kubernetes.Interface
+}
+
+type ApiExtensionsClient interface {
+	apiextensionsclient.Interface
 }
 
 func init() {
@@ -81,6 +86,14 @@ func (c *configuration) ClientSet(RestConfig *RestConfig) ClientSet {
 		return clientSet
 	}
 	return nil
+}
+
+func (c *configuration) ApiExtensionsClient(RestConfig *RestConfig) ApiExtensionsClient {
+	clientSet, err := apiextensionsclient.NewForConfig(RestConfig.Config)
+	if err != nil {
+		return nil
+	}
+	return clientSet
 }
 
 //ConfigMaps autoConfigure deployment need initialize construction
@@ -141,7 +154,6 @@ func (c *configuration) Token(restConfig *RestConfig) Token {
 		return Token(restConfig.Config.BearerToken)
 	}
 	return ""
-
 }
 
 //ReplicaSet autoConfigure deployment need initialize construction
@@ -150,4 +162,21 @@ func (c *configuration) ReplicaSet(clientSet ClientSet) *ReplicaSet {
 		return NewReplicaSet(clientSet)
 	}
 	return nil
+}
+
+//Events autoConfigure deployment need initialize construction
+func (c *configuration) Events(clientSet ClientSet) *Events {
+	if clientSet != nil {
+		return NewEvents(clientSet)
+	}
+	return nil
+}
+
+//CustomResourceDefinition autoConfigure deployment need initialize construction
+func (c *configuration) CustomResourceDefinition(apiExtensionsClient ApiExtensionsClient) *CustomResourceDefinition {
+	if apiExtensionsClient != nil {
+		return NewCustomResourceDefinition(apiExtensionsClient)
+	}
+	return nil
+
 }
