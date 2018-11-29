@@ -10,7 +10,11 @@ import (
 func TestNewAutoConfigure(t *testing.T) {
 	c := newConfiguration()
 	clientSet, _ := kubernetes.NewForConfig(&rest.Config{})
-
+	restConfig := &RestConfig{
+		Config: &rest.Config{
+			BearerToken: "",
+		},
+	}
 	testCases := []struct {
 		expected interface{}
 		actual   interface{}
@@ -21,7 +25,9 @@ func TestNewAutoConfigure(t *testing.T) {
 		{NewDeployment(clientSet), c.Deployment(clientSet)},
 		{NewReplicaSet(clientSet), c.ReplicaSet(clientSet)},
 		{NewReplicationController(clientSet), c.ReplicationController(clientSet)},
+		{Token(""), c.Token(restConfig)},
 		{(*ConfigMaps)(nil), c.ConfigMaps(nil)},
+		{(Token)(""), c.Token(nil)},
 		{(*Pod)(nil), c.Pod(nil)},
 		{(*Secret)(nil), c.Secret(nil)},
 		{(*Service)(nil), c.Service(nil)},
