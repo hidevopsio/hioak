@@ -38,5 +38,9 @@
   name = "k8s.io/api"
 
 [[constraint]]
+  name = "k8s.io/apiextensions-apiserver"
+  version = "kubernetes-1.10.4"
+
+[[constraint]]
   version = "v0.11.1"
   name = "hidevops.io/hiboot"

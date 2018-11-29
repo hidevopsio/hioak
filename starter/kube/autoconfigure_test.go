@@ -5,6 +5,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"testing"
+	apiextensionsclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 )
 
 func TestAutoConfigure(t *testing.T) {
@@ -23,6 +24,10 @@ func TestAutoConfigure(t *testing.T) {
 	log.Info(deployment)
 	replicationController := c.ReplicationController(nil)
 	log.Info(replicationController)
+	event := c.Events(nil)
+	log.Info(event)
+	crd := c.CustomResourceDefinition(nil)
+	log.Info(crd)
 }
 
 
@@ -45,4 +50,10 @@ func TestNewAutoConfigure(t *testing.T) {
 	log.Info(token)
 	replicationController := c.ReplicationController(clientSet)
 	log.Info(replicationController)
+	event := c.Events(clientSet)
+	log.Info(event)
+
+	apiExtensionsClient,_ :=apiextensionsclient.NewForConfig(&rest.Config{})
+	crd := c.CustomResourceDefinition(apiExtensionsClient)
+	log.Info(crd)
 }
