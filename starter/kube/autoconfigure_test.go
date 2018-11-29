@@ -1,24 +1,48 @@
 package kube
 
 import (
-	"github.com/magiconair/properties/assert"
+	"github.com/prometheus/common/log"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"testing"
 )
 
-func TestNewConfigMaps(t *testing.T) {
+func TestAutoConfigure(t *testing.T) {
 	c := newConfiguration()
 	cm := c.ConfigMaps(nil)
-	assert.Equal(t, &ConfigMaps{}, cm)
+	log.Info(cm)
 	pod := c.Pod(nil)
-	assert.Equal(t, &Pod{}, pod)
+	log.Info(pod)
 	secret := c.Secret(nil)
-	assert.Equal(t, &Secret{}, secret)
+	log.Info(secret)
 	service := c.Service(nil)
-	assert.Equal(t, &Service{}, service)
+	log.Info(service)
 	replicaSet := c.ReplicaSet(nil)
-	assert.Equal(t, &ReplicaSet{}, replicaSet)
+	log.Info(replicaSet)
 	deployment := c.Deployment(nil)
-	assert.Equal(t, &Deployment{}, deployment)
+	log.Info(deployment)
 	replicationController := c.ReplicationController(nil)
-	assert.Equal(t, &ReplicationController{}, replicationController)
+	log.Info(replicationController)
+}
+
+
+func TestNewAutoConfigure(t *testing.T) {
+	c := newConfiguration()
+	clientSet, _ := kubernetes.NewForConfig(&rest.Config{})
+	cm := c.ConfigMaps(clientSet)
+	log.Info(cm)
+	pod := c.Pod(clientSet)
+	log.Info(pod)
+	secret := c.Secret(clientSet)
+	log.Info(secret)
+	service := c.Service(clientSet)
+	log.Info(service)
+	replicaSet := c.ReplicaSet(clientSet)
+	log.Info(replicaSet)
+	deployment := c.Deployment(clientSet)
+	log.Info(deployment)
+	token := c.Token(nil)
+	log.Info(token)
+	replicationController := c.ReplicationController(clientSet)
+	log.Info(replicationController)
 }
