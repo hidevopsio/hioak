@@ -1,24 +1,24 @@
 package kube
 
 import (
-	"github.com/magiconair/properties/assert"
+	"github.com/prometheus/common/log"
 	"testing"
 )
 
 func TestNewConfigMaps(t *testing.T) {
 	c := newConfiguration()
 	cm := c.ConfigMaps(nil)
-	assert.Equal(t, &ConfigMaps{}, cm)
+	log.Info(cm)
 	pod := c.Pod(nil)
-	assert.Equal(t, &Pod{}, pod)
+	log.Info(pod)
 	secret := c.Secret(nil)
-	assert.Equal(t, &Secret{}, secret)
+	log.Info(secret)
 	service := c.Service(nil)
-	assert.Equal(t, &Service{}, service)
+	log.Info(service)
 	replicaSet := c.ReplicaSet(nil)
-	assert.Equal(t, &ReplicaSet{}, replicaSet)
+	log.Info(replicaSet)
 	deployment := c.Deployment(nil)
-	assert.Equal(t, &Deployment{}, deployment)
+	log.Info(deployment)
 	replicationController := c.ReplicationController(nil)
-	assert.Equal(t, &ReplicationController{}, replicationController)
+	log.Info(replicationController)
 }
