@@ -36,8 +36,8 @@ func TestPodWatching(t *testing.T) {
 	assert.Equal(t, nil, err)
 
 	t.Run("Pods should watch succeed", func(t *testing.T) {
-		listOptions := metav1.ListOptions{LabelSelector:fmt.Sprintf("app=%s",appName)}
-		i, err := client.Watch(listOptions,namespace)
+		listOptions := metav1.ListOptions{LabelSelector: fmt.Sprintf("app=%s", appName)}
+		i, err := client.Watch(listOptions, namespace)
 		log.Infof("i: %v", i)
 		assert.Equal(t, nil, err)
 
