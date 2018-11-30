@@ -13,7 +13,7 @@ type RepositoryFile struct {
 
 func NewRepositoryFile(newClient NewClient) *RepositoryFile {
 	return &RepositoryFile{
-		clienewClientnt: newClient,
+		newClient: newClient,
 	}
 }
 
