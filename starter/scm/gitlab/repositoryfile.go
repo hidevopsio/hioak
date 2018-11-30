@@ -8,12 +8,12 @@ import (
 
 type RepositoryFile struct {
 	scm.TreeNode
-	client NewClient
+	newClient NewClient
 }
 
-func NewRepositoryFile(c NewClient) *RepositoryFile {
+func NewRepositoryFile(newClient NewClient) *RepositoryFile {
 	return &RepositoryFile{
-		client: c,
+		clienewClientnt: newClient,
 	}
 }
 
@@ -24,7 +24,7 @@ func (r *RepositoryFile) GetRepository(baseUrl, token, filePath, ref string, pid
 		Ref:      &ref,
 		FilePath: &filePath,
 	}
-	file, _, err := r.client(baseUrl, token).RepositoryFile().GetFile(pid, opt)
+	file, _, err := r.newClient(baseUrl, token).RepositoryFile().GetFile(pid, opt)
 	if err != nil {
 		return "", err
 	}

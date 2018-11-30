@@ -8,18 +8,18 @@ import (
 
 type User struct {
 	scm.User
-	client NewClient
+	newClient NewClient
 }
 
-func NewUser(c NewClient) *User {
+func NewUser(newClient NewClient) *User {
 	return &User{
-		client: c,
+		newClient: newClient,
 	}
 }
 
 func (s *User) GetUser(baseUrl, accessToken string) (*scm.User, error) {
 	log.Debug("Session get user")
-	user, _, err := s.client(baseUrl, accessToken).User().CurrentUser()
+	user, _, err := s.newClient(baseUrl, accessToken).User().CurrentUser()
 	if err != nil {
 		return nil, err
 	}

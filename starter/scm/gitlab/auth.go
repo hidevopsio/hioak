@@ -23,7 +23,7 @@ import (
 
 type Session struct {
 	scm.Session
-	client NewClient
+	newClient NewClient
 }
 
 const (
@@ -32,7 +32,7 @@ const (
 
 func NewSession(c NewClient) *Session {
 	return &Session{
-		client: c,
+		newClient: c,
 	}
 }
 
@@ -43,7 +43,7 @@ func (s *Session) GetSession(baseUrl, username, password string) error {
 		Login:    &username,
 		Password: &password,
 	}
-	session, _, err := s.client(baseUrl, "").Session().GetSession(so)
+	session, _, err := s.newClient(baseUrl, "").Session().GetSession(so)
 	log.Debug("after c.Session.GetSession(so)", err)
 
 	copier.Copy(s, session)
