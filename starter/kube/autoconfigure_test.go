@@ -31,6 +31,7 @@ func TestNewAutoConfigure(t *testing.T) {
 		{NewService(clientSet), c.Service(clientSet)},
 		{NewDeployment(clientSet), c.Deployment(clientSet)},
 		{NewReplicaSet(clientSet), c.ReplicaSet(clientSet)},
+		{NewSecret(clientSet), c.Secret(clientSet)},
 		{NewReplicationController(clientSet), c.ReplicationController(clientSet)},
 		{NewEvents(clientSet), c.Events(clientSet)},
 		{NewCustomResourceDefinition(apiExtensionsClient), c.CustomResourceDefinition(apiExtensionsClient)},
@@ -50,4 +51,22 @@ func TestNewAutoConfigure(t *testing.T) {
 	for _, item := range testCases {
 		assert.Equal(t, item.expected, item.actual)
 	}
+}
+
+func TestConfigurationClientSet(t *testing.T) {
+	c := newConfiguration()
+	//config := c.RestConfig(nil)
+	config := &RestConfig{
+		Config: &rest.Config{},
+	}
+	clientSet := c.ClientSet(nil)
+	assert.Equal(t, nil, clientSet)
+
+	extensionsClient := c.ApiExtensionsClient(nil)
+	assert.Equal(t, nil, extensionsClient)
+
+	c.ClientSet(config)
+	c.ApiExtensionsClient(config)
+	_, err := apiextensionsclient.NewForConfig(&rest.Config{})
+	assert.Equal(t, nil, err)
 }
