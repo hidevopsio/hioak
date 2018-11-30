@@ -3,7 +3,6 @@ package kube
 import (
 	"fmt"
 	"github.com/magiconair/properties/assert"
-	"github.com/prometheus/common/log"
 	apiextensionsclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -32,6 +31,7 @@ func TestNewAutoConfigure(t *testing.T) {
 		{NewService(clientSet), c.Service(clientSet)},
 		{NewDeployment(clientSet), c.Deployment(clientSet)},
 		{NewReplicaSet(clientSet), c.ReplicaSet(clientSet)},
+		{NewSecret(clientSet), c.Secret(clientSet)},
 		{NewReplicationController(clientSet), c.ReplicationController(clientSet)},
 		{NewEvents(clientSet), c.Events(clientSet)},
 		{NewCustomResourceDefinition(apiExtensionsClient), c.CustomResourceDefinition(apiExtensionsClient)},
@@ -65,9 +65,8 @@ func TestConfigurationClientSet(t *testing.T) {
 	extensionsClient := c.ApiExtensionsClient(nil)
 	assert.Equal(t, nil, extensionsClient)
 
-	clientSet = c.ClientSet(config)
-	log.Info(&clientSet)
-	cl, err := apiextensionsclient.NewForConfig(&rest.Config{})
-	log.Info(&cl)
+	c.ClientSet(config)
+	c.ApiExtensionsClient(config)
+	_, err := apiextensionsclient.NewForConfig(&rest.Config{})
 	assert.Equal(t, nil, err)
 }
