@@ -9,19 +9,19 @@ import (
 
 type Project struct {
 	scm.Project
-	client NewClient
+	newClient NewClient
 }
 
-func NewProject(c NewClient) *Project {
+func NewProject(newClient NewClient) *Project {
 	return &Project{
-		client: c,
+		newClient: newClient,
 	}
 }
 
 func (p *Project) GetProject(baseUrl, id, token string) (int, int, error) {
 	log.Debug("project.GetProject()")
 	log.Debug("before c.project.GetProject(so)")
-	project, _, err := p.client(baseUrl, token).Project().GetProject(id)
+	project, _, err := p.newClient(baseUrl, token).Project().GetProject(id)
 	if err != nil {
 		log.Error("Projects.GetProject err:", err)
 		return 0, 0, err
@@ -32,7 +32,7 @@ func (p *Project) GetProject(baseUrl, id, token string) (int, int, error) {
 func (p *Project) GetGroupId(baseUrl, token string, pid int) (int, error) {
 	log.Debug("project.GetProject()")
 	log.Debug("before c.Session.GetSession(so)")
-	project, _, err := p.client(baseUrl, token).Project().GetProject(pid)
+	project, _, err := p.newClient(baseUrl, token).Project().GetProject(pid)
 	log.Debug("after c.project.GetProject(so)", project)
 	return project.Namespace.ID, err
 }
@@ -56,7 +56,7 @@ func (p *Project) ListProjects(baseUrl, token, search string, page int) ([]scm.P
 			},
 		}
 	}
-	ps, _, err := p.client(baseUrl, token).Project().ListProjects(listProjectsOptions)
+	ps, _, err := p.newClient(baseUrl, token).Project().ListProjects(listProjectsOptions)
 	log.Debugf("after project: %v", len(ps))
 	var projects []scm.Project
 	project := &scm.Project{}
@@ -73,7 +73,7 @@ func (p *Project) Search(baseUrl, token, search string) ([]scm.Project, error) {
 	listProjectsOptions := &gitlab.ListProjectsOptions{
 		Search: &search,
 	}
-	ps, _, err := p.client(baseUrl, token).Project().ListProjects(listProjectsOptions)
+	ps, _, err := p.newClient(baseUrl, token).Project().ListProjects(listProjectsOptions)
 	if err != nil {
 		return nil, err
 	}
