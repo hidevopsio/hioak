@@ -77,9 +77,9 @@ func (c *configuration) Config() *Config {
 	return kc
 }
 
-func (c *configuration) ClientSet(RestConfig *RestConfig) ClientSet {
-	if RestConfig != nil {
-		clientSet, err := kubernetes.NewForConfig(RestConfig.Config)
+func (c *configuration) ClientSet(restConfig *RestConfig) ClientSet {
+	if restConfig != nil {
+		clientSet, err := kubernetes.NewForConfig(restConfig.Config)
 		if err != nil {
 			return nil
 		}
@@ -88,12 +88,15 @@ func (c *configuration) ClientSet(RestConfig *RestConfig) ClientSet {
 	return nil
 }
 
-func (c *configuration) ApiExtensionsClient(RestConfig *RestConfig) ApiExtensionsClient {
-	clientSet, err := apiextensionsclient.NewForConfig(RestConfig.Config)
-	if err != nil {
-		return nil
+func (c *configuration) ApiExtensionsClient(restConfig *RestConfig) ApiExtensionsClient {
+	if restConfig != nil {
+		clientSet, err := apiextensionsclient.NewForConfig(restConfig.Config)
+		if err != nil {
+			return nil
+		}
+		return clientSet
 	}
-	return clientSet
+	return nil
 }
 
 //ConfigMaps autoConfigure deployment need initialize construction

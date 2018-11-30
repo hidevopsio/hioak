@@ -3,6 +3,7 @@ package kube
 import (
 	"fmt"
 	"github.com/magiconair/properties/assert"
+	"github.com/prometheus/common/log"
 	apiextensionsclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -50,4 +51,23 @@ func TestNewAutoConfigure(t *testing.T) {
 	for _, item := range testCases {
 		assert.Equal(t, item.expected, item.actual)
 	}
+}
+
+func TestConfigurationClientSet(t *testing.T) {
+	c := newConfiguration()
+	//config := c.RestConfig(nil)
+	config := &RestConfig{
+		Config: &rest.Config{},
+	}
+	clientSet := c.ClientSet(nil)
+	assert.Equal(t, nil, clientSet)
+
+	extensionsClient := c.ApiExtensionsClient(nil)
+	assert.Equal(t, nil, extensionsClient)
+
+	clientSet = c.ClientSet(config)
+	log.Info(&clientSet)
+	cl, err := apiextensionsclient.NewForConfig(&rest.Config{})
+	log.Info(&cl)
+	assert.Equal(t, nil, err)
 }
