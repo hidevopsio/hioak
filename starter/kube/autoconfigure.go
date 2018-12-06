@@ -5,6 +5,7 @@ import (
 	"hidevops.io/hiboot/pkg/app"
 	"hidevops.io/hiboot/pkg/at"
 	"hidevops.io/hiboot/pkg/log"
+	apiextensionsclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
@@ -37,6 +38,10 @@ type RestConfig struct {
 
 type ClientSet interface {
 	kubernetes.Interface
+}
+
+type ApiExtensionsClient interface {
+	apiextensionsclient.Interface
 }
 
 func init() {
@@ -72,42 +77,109 @@ func (c *configuration) Config() *Config {
 	return kc
 }
 
-func (c *configuration) ClientSet(RestConfig *RestConfig) ClientSet {
-	clientSet, err := kubernetes.NewForConfig(RestConfig.Config)
-	if err != nil {
-		return nil
+func (c *configuration) ClientSet(restConfig *RestConfig) ClientSet {
+	if restConfig != nil {
+		clientSet, err := kubernetes.NewForConfig(restConfig.Config)
+		if err != nil {
+			return nil
+		}
+		return clientSet
 	}
-	return clientSet
+	return nil
 }
 
+func (c *configuration) ApiExtensionsClient(restConfig *RestConfig) ApiExtensionsClient {
+	if restConfig != nil {
+		clientSet, err := apiextensionsclient.NewForConfig(restConfig.Config)
+		if err != nil {
+			return nil
+		}
+		return clientSet
+	}
+	return nil
+}
+
+//ConfigMaps autoConfigure deployment need initialize construction
 func (c *configuration) ConfigMaps(clientSet ClientSet) *ConfigMaps {
-	return newConfigMaps(clientSet)
+	if clientSet != nil {
+		return NewConfigMaps(clientSet)
+	}
+	return nil
 }
 
+//Deployment autoConfigure deployment need initialize construction
 func (c *configuration) Deployment(clientSet ClientSet) *Deployment {
-	return newDeployment(clientSet)
+	if clientSet != nil {
+		return NewDeployment(clientSet)
+	}
+	return nil
 }
 
+//ReplicationController autoConfigure deployment need initialize construction
 func (c *configuration) ReplicationController(clientSet ClientSet) *ReplicationController {
-	return NewReplicationController(clientSet)
+	if clientSet != nil {
+		return NewReplicationController(clientSet)
+	}
+	return nil
+
 }
 
+//Secret autoConfigure deployment need initialize construction
 func (c *configuration) Secret(clientSet ClientSet) *Secret {
-	return NewSecret(clientSet)
+	if clientSet != nil {
+		return NewSecret(clientSet)
+	}
+	return nil
+
 }
 
+//Service autoConfigure deployment need initialize construction
 func (c *configuration) Service(clientSet ClientSet) *Service {
-	return NewService(clientSet)
+	if clientSet != nil {
+		return NewService(clientSet)
+	}
+	return nil
+
 }
 
+//Pod autoConfigure deployment need initialize construction
 func (c *configuration) Pod(clientSet ClientSet) *Pod {
-	return NewPod(clientSet)
+	if clientSet != nil {
+		return NewPod(clientSet)
+	}
+	return nil
+
 }
 
+//Token autoConfigure deployment need initialize construction
 func (c *configuration) Token(restConfig *RestConfig) Token {
-	return Token(restConfig.Config.BearerToken)
+	if restConfig != nil {
+		return Token(restConfig.Config.BearerToken)
+	}
+	return ""
 }
 
+//ReplicaSet autoConfigure deployment need initialize construction
 func (c *configuration) ReplicaSet(clientSet ClientSet) *ReplicaSet {
-	return NewReplicaSet(clientSet)
+	if clientSet != nil {
+		return NewReplicaSet(clientSet)
+	}
+	return nil
+}
+
+//Events autoConfigure deployment need initialize construction
+func (c *configuration) Events(clientSet ClientSet) *Events {
+	if clientSet != nil {
+		return NewEvents(clientSet)
+	}
+	return nil
+}
+
+//CustomResourceDefinition autoConfigure deployment need initialize construction
+func (c *configuration) CustomResourceDefinition(apiExtensionsClient ApiExtensionsClient) *CustomResourceDefinition {
+	if apiExtensionsClient != nil {
+		return NewCustomResourceDefinition(apiExtensionsClient)
+	}
+	return nil
+
 }

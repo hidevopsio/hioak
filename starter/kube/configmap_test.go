@@ -13,7 +13,7 @@ func TestConfigMapsCurd(t *testing.T) {
 	namespace := "demo-dev"
 	data := map[string]string{}
 	clientSet := fake.NewSimpleClientset()
-	configMaps := newConfigMaps(clientSet)
+	configMaps := NewConfigMaps(clientSet)
 	result, err := configMaps.Create(name, namespace, data)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, name, result.Name)

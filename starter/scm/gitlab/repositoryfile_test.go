@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-func TestGetRepositoty(t *testing.T) {
+func TestGetRepository(t *testing.T) {
 	fs := new(fake.RepositoryFilesService)
 	cli := &fake.Client{
 		RepositoryFilesService: fs,

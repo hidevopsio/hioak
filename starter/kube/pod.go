@@ -14,6 +14,7 @@ type Pod struct {
 	clientSet kubernetes.Interface
 }
 
+// NewPod ConfigMaps initialize construction
 func NewPod(clientSet kubernetes.Interface) *Pod {
 	return &Pod{
 		clientSet: clientSet,
