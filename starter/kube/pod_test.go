@@ -1,9 +1,10 @@
-package kube
+package kube_test
 
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"hidevops.io/hiboot/pkg/log"
+	"hidevops.io/hioak/starter/kube"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/fake"
@@ -16,16 +17,16 @@ func TestPodWatching(t *testing.T) {
 	projectName := "demo"
 	profile := "dev"
 	namespace := projectName + "-" + profile
-	app := "hello-world"
+	appName := "hello-world"
 	labels := map[string]string{
-		"app": app,
+		"app": appName,
 	}
 	clientSet := fake.NewSimpleClientset()
-	client := NewPod(clientSet)
+	client := kube.NewPod(clientSet)
 
 	pod := &corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      app,
+			Name:      appName,
 			Namespace: namespace,
 			Labels:    labels,
 		},
@@ -35,8 +36,8 @@ func TestPodWatching(t *testing.T) {
 	assert.Equal(t, nil, err)
 
 	t.Run("Pods should watch succeed", func(t *testing.T) {
-		listOptions := metav1.ListOptions{LabelSelector:fmt.Sprintf("app=%s",app)}
-		i, err := client.Watch(listOptions,namespace)
+		listOptions := metav1.ListOptions{LabelSelector: fmt.Sprintf("app=%s", appName)}
+		i, err := client.Watch(listOptions, namespace)
 		log.Infof("i: %v", i)
 		assert.Equal(t, nil, err)
 
@@ -48,7 +49,7 @@ func TestPodWatching(t *testing.T) {
 	})
 
 	t.Run("pod should get succeed", func(t *testing.T) {
-		_, err := client.GetPods(namespace, app, metav1.GetOptions{})
+		_, err := client.GetPods(namespace, appName, metav1.GetOptions{})
 		assert.Equal(t, nil, err)
 	})
 
@@ -58,7 +59,7 @@ func TestPodWatching(t *testing.T) {
 	})
 
 	t.Run("Pods should get logs succeed", func(t *testing.T) {
-		_, err := client.GetPodLogs(namespace, app, &corev1.PodLogOptions{})
+		_, err := client.GetPodLogs(namespace, appName, &corev1.PodLogOptions{})
 		assert.Equal(t, nil, err)
 	})
 

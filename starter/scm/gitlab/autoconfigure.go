@@ -22,7 +22,7 @@ func newConfiguration() *configuration {
 
 type NewClient func(url, token string) ClientInterface
 
-func (c *configuration) GitlabNewClient() NewClient {
+func (c *configuration) NewClient() NewClient {
 	return func(url, token string) (client ClientInterface) {
 		length := strings.Count(token, "") - 1
 		cli := new(Client)

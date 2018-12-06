@@ -9,12 +9,12 @@ import (
 
 type GroupMember struct {
 	scm.GroupMember
-	client NewClient
+	newClient NewClient
 }
 
 func NewGroupMember(c NewClient) *GroupMember {
 	return &GroupMember{
-		client: c,
+		newClient: c,
 	}
 }
 
@@ -23,7 +23,7 @@ func (gm *GroupMember) GetGroupMember(token, baseUrl string, gid, uid int) (*scm
 	scmGroupMember := &scm.GroupMember{}
 	log.Debug("before c.group.ListGroups(so)")
 	opt := &gitlab.ListGroupMembersOptions{}
-	groupMembers, _, err := gm.client(baseUrl, token).GroupMember().ListGroupMembers(gid, opt)
+	groupMembers, _, err := gm.newClient(baseUrl, token).GroupMember().ListGroupMembers(gid, opt)
 	log.Debug("after c.group member.groupMembers(so)")
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ func (gm *GroupMember) ListGroupMembers(token, baseUrl string, gid, uid int) (in
 	log.Debug("group.ListGroups()")
 	log.Debug("before c.group.ListGroups(so)")
 	opt := &gitlab.ListGroupMembersOptions{}
-	groupMembers, _, err := gm.client(baseUrl, token).GroupMember().ListGroupMembers(gid, opt)
+	groupMembers, _, err := gm.newClient(baseUrl, token).GroupMember().ListGroupMembers(gid, opt)
 	if err != nil {
 		return 0, err
 	}
