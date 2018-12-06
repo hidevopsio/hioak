@@ -28,8 +28,9 @@ func (c *configuration) NewClient() NewClient {
 		cli := new(Client)
 		if length <= 20 {
 			cli.Client = gitlab.NewClient(&http.Client{}, token)
+		} else {
+			cli.Client = gitlab.NewOAuthClient(&http.Client{}, token)
 		}
-		cli.Client = gitlab.NewOAuthClient(&http.Client{}, token)
 		cli.Client.SetBaseURL(url)
 		return cli
 	}
