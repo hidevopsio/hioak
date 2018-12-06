@@ -1,7 +1,7 @@
 language: go
 
 go:
-  - master
+- "1.11.x"
 
 git:
   depth: 1
@@ -12,9 +12,10 @@ branches:
 
 go_import_path: hidevops.io/hioak
 
-before_install:
-  - go get -u github.com/golang/dep/cmd/dep
-  - dep ensure -v
+env:
+- GO111MODULE=on APP_PROFILES_ACTIVE=local
+
+install: true
 
 script:
   - go test -v ./... -coverprofile=coverage.out -covermode=atomic
@@ -22,5 +23,3 @@ script:
 after_success:
   - bash <(curl -s https://codecov.io/bash) -t ${CODECOV_TOKEN}
 
-env:
-  - GO111MODULE = on
