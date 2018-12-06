@@ -825,7 +825,7 @@
   version = "v2.2.1"
 
 [[projects]]
-  digest = "1:de5cfcda74834dd7ba48fc88cba45b127698663b25aed2c9a1cb3aeee59d074a"
+  digest = "1:c746e4c8d8f53dca6252630bd7ec8205789da0e6bfab0286ed3c342828b2e55a"
   name = "hidevops.io/hiboot"
   packages = [
     "pkg/app",
@@ -849,16 +849,16 @@
     "pkg/utils/str",
   ]
   pruneopts = ""
-  revision = "4222ad7c4524bbf047be68db6daf33b4b3d91ef0"
-  version = "v0.11.1"
+  revision = "ffb641d7c7f34251db4776cae46b0f0a849241e1"
+  version = "v1.0.0"
 
 [[projects]]
-  digest = "1:6048c84fd9a273541ca3c775acf6b3e92bf3483d8452160f4bfe7fdabb497a94"
+  digest = "1:7b57e74ead6e9f37be481f627a1afb04fbbbf655715135a60647b4768c64b649"
   name = "hidevops.io/viper"
   packages = ["."]
   pruneopts = ""
-  revision = "86828cc12e0d5432e8440421083c6cf8f905470c"
-  version = "v1.3.1"
+  revision = "759cc1a242b33c7a6fce864b3f1c560496fc72e6"
+  version = "v1.3.2"
 
 [[projects]]
   digest = "1:5beb32094452970c0d73a2bdacd79aa9cfaa4947a774d521c1bed4b4c2705f15"
