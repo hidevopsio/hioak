@@ -22,3 +22,5 @@ script:
 after_success:
   - bash <(curl -s https://codecov.io/bash) -t ${CODECOV_TOKEN}
 
+env:
+  - GO111MODULE = on
