@@ -57,6 +57,8 @@ func TestDeploy(t *testing.T) {
 	assert.Equal(t, nil, err)
 	_, err = deploy.Get(name, project, v1.GetOptions{})
 	assert.Equal(t, nil, err)
+	_, err = deploy.List(project, v1.ListOptions{})
+	assert.Equal(t, nil, err)
 	err = deploy.Update(deployment)
 	assert.Equal(t, nil, err)
 }
