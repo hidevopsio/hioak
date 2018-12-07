@@ -222,6 +222,7 @@ func (d *Deployment) ExtensionsV1beta1Deploy(app, project, imageTag, dockerRegis
 
 type DeployData struct {
 	Name           string
+	App            string
 	NameSpace      string
 	Replicas       int32
 	Labels         map[string]string

@@ -35,7 +35,7 @@ func NewService(clientSet kubernetes.Interface) *Service {
 	}
 }
 
-func (s *Service) Create(name, namespace string, ports interface{}) error {
+func (s *Service) Create(name, app, namespace string, ports interface{}) error {
 
 	p := make([]corev1.ServicePort, 0)
 	copier.Copy(&p, ports)
@@ -45,7 +45,8 @@ func (s *Service) Create(name, namespace string, ports interface{}) error {
 		ObjectMeta: metav1.ObjectMeta{
 			Name: name,
 			Labels: map[string]string{
-				"app": name,
+				"app":  name,
+				"name": app,
 			},
 		},
 		Spec: corev1.ServiceSpec{
