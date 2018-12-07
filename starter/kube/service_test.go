@@ -16,7 +16,7 @@ func init() {
 
 func TestServiceCreation(t *testing.T) {
 	log.Debug("TestServiceCreation()")
-
+	name := "demo"
 	projectName := "demo"
 	profile := "dev"
 	namespace := projectName + "-" + profile
@@ -34,7 +34,7 @@ func TestServiceCreation(t *testing.T) {
 	}
 	clientSet := fake.NewSimpleClientset()
 	service := NewService(clientSet)
-	err := service.Create(app, namespace, p)
+	err := service.Create(app, name, namespace, p)
 	assert.Equal(t, nil, err)
 
 	svc, err := service.Get(app, namespace)
