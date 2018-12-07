@@ -6,6 +6,7 @@ import (
 	"hidevops.io/hioak/starter"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes/fake"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"testing"
 )
 
@@ -70,6 +71,9 @@ func TestServiceCreate(t *testing.T) {
 	svc, err := service.Get(app, namespace)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, app, svc.Name)
+
+	_, err = service.List(namespace, metav1.ListOptions{})
+	assert.Equal(t, nil, err)
 
 	err = service.Delete(app, namespace)
 	assert.Equal(t, nil, err)

@@ -128,3 +128,7 @@ func (s *Service) Delete(name, namespace string) error {
 func (s *Service) Get(name, namespace string) (*corev1.Service, error) {
 	return s.clientSet.CoreV1().Services(namespace).Get(name, metav1.GetOptions{})
 }
+
+func (s *Service) List(namespace string, option metav1.ListOptions) (*corev1.ServiceList, error) {
+	return s.clientSet.CoreV1().Services(namespace).List(option)
+}

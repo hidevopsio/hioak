@@ -353,3 +353,9 @@ func (d *Deployment) Get(name, namespace string, option metav1.GetOptions) (*ext
 	deploy, err := d.clientSet.ExtensionsV1beta1().Deployments(namespace).Get(name, option)
 	return deploy, err
 }
+
+func (d *Deployment) List(namespace string, option metav1.ListOptions) (*extensionsV1beta1.DeploymentList, error) {
+	log.Debugf("get deployment namespace :%v", namespace)
+	deploys, err := d.clientSet.ExtensionsV1beta1().Deployments(namespace).List(option)
+	return deploys, err
+}
