@@ -9,6 +9,7 @@ import (
 	projectv1 "github.com/openshift/client-go/project/clientset/versioned/typed/project/v1"
 	routev1 "github.com/openshift/client-go/route/clientset/versioned/typed/route/v1"
 	"github.com/prometheus/common/log"
+	"hidevops.io/hiboot/pkg/app"
 	"hidevops.io/hiboot/pkg/at"
 	"hidevops.io/hioak/starter/kube"
 )
@@ -19,6 +20,15 @@ type configuration struct {
 
 type Oauth interface {
 	oauthv1.OauthV1Interface
+}
+
+func init() {
+	app.Register(newConfiguration)
+}
+
+
+func newConfiguration() *configuration {
+	return &configuration{}
 }
 
 func (c *configuration) Auth(restConfig *kube.RestConfig) (retVal *OAuthAccessToken) {
