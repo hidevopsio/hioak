@@ -26,6 +26,7 @@ func init() {
 	app.Register(newConfiguration)
 }
 
+
 func newConfiguration() *configuration {
 	return &configuration{}
 }
