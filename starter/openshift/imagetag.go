@@ -13,13 +13,6 @@ const (
 	Kind       = "ImageStreamTag"
 )
 
-type ImageTagInterface interface {
-	Create(fromNamespace string) (*v1.ImageStreamTag, error)
-	Get() (*v1.ImageStreamTag, error)
-	Delete() error
-	Update(fromNamespace string) (*v1.ImageStreamTag, error)
-}
-
 type ImageStreamTag struct {
 	clientSet imagev1.ImageV1Interface
 }

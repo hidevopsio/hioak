@@ -23,12 +23,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-type ImageStreamInterface interface {
-	Create() (*v1.ImageStream, error)
-	Get() (*v1.ImageStream, error)
-	Delete() error
-}
-
 type ImageStream struct {
 	clientSet imagev1.ImageV1Interface
 }
