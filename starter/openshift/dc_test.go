@@ -62,7 +62,20 @@ func TestDeploymentConfigCreation(t *testing.T) {
 	dc := newDeploymentConfig(clientSet)
 	// create dc
 	fullName := app + "-" + version
-	err := dc.Create(app, namespace, fullName, version, &env, map[string]string{}, &ports, 1, false, healthEndPoint, "")
+	request := &DeploymentRequest{
+		Name:           app,
+		Namespace:      namespace,
+		FullName:       fullName,
+		Version:        version,
+		Env:            env,
+		Ports:          ports,
+		Force:          true,
+		HealthEndPoint: healthEndPoint,
+		NodeSelector:   "",
+		Replicas:       1,
+		Tag:            "",
+	}
+	err := dc.Create(request)
 	assert.Equal(t, nil, err)
 }
 
@@ -101,7 +114,20 @@ func TestDeploymentConfigInstantiation(t *testing.T) {
 	log.Debug("TestDeploymentConfigInstantiation()")
 	clientSet := fake.NewSimpleClientset().AppsV1()
 	dc := newDeploymentConfig(clientSet)
-	err := dc.Create(app, namespace, fullName, version, &env, map[string]string{}, &ports, 1, false, healthEndPoint, "")
+	request := &DeploymentRequest{
+		Name:           app,
+		Namespace:      namespace,
+		FullName:       fullName,
+		Version:        version,
+		Env:            env,
+		Ports:          ports,
+		Force:          true,
+		HealthEndPoint: healthEndPoint,
+		NodeSelector:   "",
+		Replicas:       1,
+		Tag:            "",
+	}
+	err := dc.Create(request)
 	assert.Equal(t, nil, err)
 }
 
@@ -140,7 +166,20 @@ func TestDeploymentConfig(t *testing.T) {
 	log.Debug("TestDeploymentConfigDeletion()")
 	clientSet := fake.NewSimpleClientset().AppsV1()
 	dc := newDeploymentConfig(clientSet)
-	err := dc.Create(app, namespace, fullName, version, &env, map[string]string{}, &ports, 1, false, healthEndPoint, "")
+	request := &DeploymentRequest{
+		Name:           app,
+		Namespace:      namespace,
+		FullName:       fullName,
+		Version:        version,
+		Env:            env,
+		Ports:          ports,
+		Force:          true,
+		HealthEndPoint: healthEndPoint,
+		NodeSelector:   "",
+		Replicas:       1,
+		Tag:            "",
+	}
+	err := dc.Create(request)
 	assert.Equal(t, nil, err)
 	err = dc.Delete(namespace, fullName)
 	assert.Equal(t, nil, err)
