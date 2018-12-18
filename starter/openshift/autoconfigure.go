@@ -32,10 +32,7 @@ func newConfiguration() *configuration {
 
 func (c *configuration) Auth(restConfig *kube.RestConfig) (retVal *OAuthAccessToken) {
 	if restConfig != nil {
-		clientSet, err := oauthv1.NewForConfig(restConfig.Config)
-		if err != nil {
-			return
-		}
+		clientSet, _ := oauthv1.NewForConfig(restConfig.Config)
 		retVal = NewOAuthAccessToken(clientSet)
 		return
 	}
@@ -44,10 +41,7 @@ func (c *configuration) Auth(restConfig *kube.RestConfig) (retVal *OAuthAccessTo
 
 func (c *configuration) DeploymentConfig(restConfig *kube.RestConfig) (retVal *DeploymentConfig) {
 	if restConfig != nil {
-		clientSet, err := appsv1.NewForConfig(restConfig.Config)
-		if err != nil {
-			return
-		}
+		clientSet, _ := appsv1.NewForConfig(restConfig.Config)
 		retVal = newDeploymentConfig(clientSet)
 		return
 	}
@@ -56,10 +50,7 @@ func (c *configuration) DeploymentConfig(restConfig *kube.RestConfig) (retVal *D
 
 func (c *configuration) ImageStream(restConfig *kube.RestConfig) (retVal *ImageStream) {
 	if restConfig != nil {
-		clientSet, err := imagev1.NewForConfig(restConfig.Config)
-		if err != nil {
-			return
-		}
+		clientSet, _ := imagev1.NewForConfig(restConfig.Config)
 		retVal = newImageStream(clientSet)
 		return
 	}
@@ -68,10 +59,7 @@ func (c *configuration) ImageStream(restConfig *kube.RestConfig) (retVal *ImageS
 
 func (c *configuration) ImageStreamTag(restConfig *kube.RestConfig) (retVal *ImageStreamTag) {
 	if restConfig != nil {
-		clientSet, err := imagev1.NewForConfig(restConfig.Config)
-		if err != nil {
-			return
-		}
+		clientSet, _ := imagev1.NewForConfig(restConfig.Config)
 		retVal = newImageStreamTags(clientSet)
 		return
 	}
@@ -80,10 +68,7 @@ func (c *configuration) ImageStreamTag(restConfig *kube.RestConfig) (retVal *Ima
 
 func (c *configuration) Project(restConfig *kube.RestConfig) (retVal *Project) {
 	if restConfig != nil {
-		clientSet, err := projectv1.NewForConfig(restConfig.Config)
-		if err != nil {
-			return
-		}
+		clientSet, _ := projectv1.NewForConfig(restConfig.Config)
 		retVal = newProject(clientSet)
 		return
 	}
@@ -92,10 +77,7 @@ func (c *configuration) Project(restConfig *kube.RestConfig) (retVal *Project) {
 
 func (c *configuration) RoleBinding(restConfig *kube.RestConfig) (retVal *RoleBinding) {
 	if restConfig != nil {
-		clientSet, err := authorizationv1.NewForConfig(restConfig.Config)
-		if err != nil {
-			return
-		}
+		clientSet, _ := authorizationv1.NewForConfig(restConfig.Config)
 		retVal = newRoleBinding(clientSet)
 		return
 	}
@@ -104,10 +86,7 @@ func (c *configuration) RoleBinding(restConfig *kube.RestConfig) (retVal *RoleBi
 
 func (c *configuration) Route(restConfig *kube.RestConfig) (retVal *Route) {
 	if restConfig != nil {
-		clientSet, err := routev1.NewForConfig(restConfig.Config)
-		if err != nil {
-			return
-		}
+		clientSet, _ := routev1.NewForConfig(restConfig.Config)
 		retVal = newRoute(clientSet)
 		return
 	}
@@ -116,10 +95,7 @@ func (c *configuration) Route(restConfig *kube.RestConfig) (retVal *Route) {
 
 func (c *configuration) BuildConfig(restConfig *kube.RestConfig) (retVal *BuildConfig) {
 	if restConfig != nil {
-		clientSet, err := buildv1.NewForConfig(restConfig.Config)
-		if err != nil {
-			return
-		}
+		clientSet, _ := buildv1.NewForConfig(restConfig.Config)
 		retVal = newBuildConfig(clientSet)
 		return
 	}
