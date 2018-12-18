@@ -37,32 +37,47 @@ func newDeploymentConfig(clientSet appsv1.AppsV1Interface) *DeploymentConfig {
 	}
 }
 
-func (dc *DeploymentConfig) Create(name, namespace, fullName, version string, env interface{}, labels map[string]string, ports interface{}, replicas int32, force bool, healthEndPoint, nodeSelector string) error {
-	log.Debug("DeploymentConfig.Create()", force)
+type DeploymentRequest struct {
+	Name           string
+	Namespace      string
+	FullName       string
+	Version        string
+	Env            interface{}
+	Labels         map[string]string
+	Ports          interface{}
+	Replicas       int32
+	Force          bool
+	HealthEndPoint string
+	NodeSelector   string
+	Tag            string
+}
+
+func (dc *DeploymentConfig) Create(request *DeploymentRequest) error {
+	log.Debug("DeploymentConfig.Create()", request.Force)
 	// env
 	e := make([]corev1.EnvVar, 0)
-	copier.Copy(&e, env)
+	copier.Copy(&e, request.Env)
 	selector := map[string]string{}
-	if nodeSelector != "" {
-		selector[strings.Split(nodeSelector, "=")[0]] = strings.Split(nodeSelector, "=")[1]
+	if request.NodeSelector != "" {
+		selector[strings.Split(request.NodeSelector, "=")[0]] = strings.Split(request.NodeSelector, "=")[1]
 	}
 	p := make([]corev1.ContainerPort, 0)
-	copier.Copy(&p, ports)
+	copier.Copy(&p, request.Ports)
 	cfg := &v1.DeploymentConfig{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "apps.openshift.io/v1",
 			Kind:       "DeploymentConfig",
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Name:   fullName,
-			Labels: labels,
+			Name:   request.FullName,
+			Labels: request.Labels,
 		},
 		Spec: v1.DeploymentConfigSpec{
-			Replicas: replicas,
+			Replicas: request.Replicas,
 
 			Selector: map[string]string{
-				"app":     name,
-				"version": version,
+				"app":     request.Name,
+				"version": request.Version,
 			},
 
 			Strategy: v1.DeploymentStrategy{
@@ -71,8 +86,8 @@ func (dc *DeploymentConfig) Create(name, namespace, fullName, version string, en
 
 			Template: &corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:   name,
-					Labels: labels,
+					Name:   request.Name,
+					Labels: request.Labels,
 				},
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{
@@ -80,7 +95,7 @@ func (dc *DeploymentConfig) Create(name, namespace, fullName, version string, en
 							Env:             e,
 							Image:           " ",
 							ImagePullPolicy: corev1.PullAlways,
-							Name:            name,
+							Name:            request.Name,
 							Ports:           p,
 							ReadinessProbe: &corev1.Probe{
 								Handler: corev1.Handler{
@@ -90,7 +105,7 @@ func (dc *DeploymentConfig) Create(name, namespace, fullName, version string, en
 											"--silent",
 											"--show-error",
 											"--fail",
-											healthEndPoint,
+											request.HealthEndPoint,
 										},
 									},
 								},
@@ -106,7 +121,7 @@ func (dc *DeploymentConfig) Create(name, namespace, fullName, version string, en
 											"--silent",
 											"--show-error",
 											"--fail",
-											healthEndPoint,
+											request.HealthEndPoint,
 										},
 									},
 								},
@@ -129,12 +144,12 @@ func (dc *DeploymentConfig) Create(name, namespace, fullName, version string, en
 					ImageChangeParams: &v1.DeploymentTriggerImageChangeParams{
 						Automatic: true,
 						ContainerNames: []string{
-							name,
+							request.Name,
 						},
 						From: corev1.ObjectReference{
 							Kind:      "ImageStreamTag",
-							Name:      name + ":" + version,
-							Namespace: namespace,
+							Name:      request.Name + ":" + request.Tag,
+							Namespace: request.Namespace,
 						},
 					},
 				},
@@ -142,16 +157,16 @@ func (dc *DeploymentConfig) Create(name, namespace, fullName, version string, en
 		},
 	}
 
-	result, err := dc.clientSet.DeploymentConfigs(namespace).Get(fullName, metav1.GetOptions{})
+	result, err := dc.clientSet.DeploymentConfigs(request.Namespace).Get(request.FullName, metav1.GetOptions{})
 	switch {
 	case err == nil:
 		// select update or patch according to the user's request
-		if force {
+		if request.Force {
 			cfg.ObjectMeta.ResourceVersion = result.ResourceVersion
-			result, err = dc.clientSet.DeploymentConfigs(namespace).Update(cfg)
+			result, err = dc.clientSet.DeploymentConfigs(request.Namespace).Update(cfg)
 			if err == nil {
 				log.Infof("Updated DeploymentConfig %v.", result.Name)
-				_, err := dc.Instantiate(name, namespace, fullName)
+				_, err := dc.Instantiate(request.Name, request.Namespace, request.FullName)
 				if err != nil {
 					log.Error(err.Error())
 				}
@@ -161,11 +176,11 @@ func (dc *DeploymentConfig) Create(name, namespace, fullName, version string, en
 			}
 		}
 	case errors.IsNotFound(err):
-		_, err := dc.clientSet.DeploymentConfigs(namespace).Create(cfg)
+		_, err := dc.clientSet.DeploymentConfigs(request.Namespace).Create(cfg)
 		if err != nil {
 			return err
 		}
-		log.Infof("Created DeploymentConfig %v.\n", name)
+		log.Infof("Created DeploymentConfig %v.\n", request.Name)
 	default:
 		return fmt.Errorf("failed to create DeploymentConfig: %s", err)
 	}
