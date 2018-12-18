@@ -32,81 +32,105 @@ func newConfiguration() *configuration {
 }
 
 func (c *configuration) Auth(restConfig *kube.RestConfig) (retVal *OAuthAccessToken) {
-	clientSet, err := oauthv1.NewForConfig(restConfig.Config)
-	if err != nil {
-		log.Errorf("oauthv1.NewForConfig %v", err)
+	if restConfig != nil {
+		clientSet, err := oauthv1.NewForConfig(restConfig.Config)
+		if err != nil {
+			log.Errorf("oauthv1.NewForConfig %v", err)
+			return
+		}
+		retVal = NewOAuthAccessToken(clientSet)
 		return
 	}
-	retVal = NewOAuthAccessToken(clientSet)
 	return
 }
 
 func (c *configuration) DeploymentConfig(restConfig *kube.RestConfig) (retVal *DeploymentConfig) {
-	clientSet, err := appsv1.NewForConfig(restConfig.Config)
-	if err != nil {
-		log.Errorf("appsv1.NewForConfig %v", err)
+	if restConfig != nil {
+		clientSet, err := appsv1.NewForConfig(restConfig.Config)
+		if err != nil {
+			log.Errorf("appsv1.NewForConfig %v", err)
+			return
+		}
+		retVal = newDeploymentConfig(clientSet)
 		return
 	}
-	retVal = newDeploymentConfig(clientSet)
 	return
 }
 
 func (c *configuration) ImageStream(restConfig *kube.RestConfig) (retVal *ImageStream) {
-	clientSet, err := imagev1.NewForConfig(restConfig.Config)
-	if err != nil {
-		log.Errorf("imagev1.NewForConfig %v", err)
+	if restConfig != nil {
+		clientSet, err := imagev1.NewForConfig(restConfig.Config)
+		if err != nil {
+			log.Errorf("imagev1.NewForConfig %v", err)
+			return
+		}
+		retVal = newImageStream(clientSet)
 		return
 	}
-	retVal = newImageStream(clientSet)
 	return
 }
 
 func (c *configuration) ImageStreamTag(restConfig *kube.RestConfig) (retVal *ImageStreamTag) {
-	clientSet, err := imagev1.NewForConfig(restConfig.Config)
-	if err != nil {
-		log.Errorf("imagev1.NewForConfig %v", err)
+	if restConfig != nil {
+		clientSet, err := imagev1.NewForConfig(restConfig.Config)
+		if err != nil {
+			log.Errorf("imagev1.NewForConfig %v", err)
+			return
+		}
+		retVal = newImageStreamTags(clientSet)
 		return
 	}
-	retVal = newImageStreamTags(clientSet)
 	return
 }
 
 func (c *configuration) Project(restConfig *kube.RestConfig) (retVal *Project) {
-	clientSet, err := projectv1.NewForConfig(restConfig.Config)
-	if err != nil {
-		log.Errorf("projectv1.NewForConfig %v", err)
+	if restConfig != nil {
+		clientSet, err := projectv1.NewForConfig(restConfig.Config)
+		if err != nil {
+			log.Errorf("projectv1.NewForConfig %v", err)
+			return
+		}
+		retVal = newProject(clientSet)
 		return
 	}
-	retVal = newProject(clientSet)
 	return
 }
 
 func (c *configuration) RoleBinding(restConfig *kube.RestConfig) (retVal *RoleBinding) {
-	clientSet, err := authorizationv1.NewForConfig(restConfig.Config)
-	if err != nil {
-		log.Errorf("authorizationv1.NewForConfig %v", err)
+	if restConfig != nil {
+		clientSet, err := authorizationv1.NewForConfig(restConfig.Config)
+		if err != nil {
+			log.Errorf("authorizationv1.NewForConfig %v", err)
+			return
+		}
+		retVal = newRoleBinding(clientSet)
 		return
 	}
-	retVal = newRoleBinding(clientSet)
 	return
 }
 
 func (c *configuration) Route(restConfig *kube.RestConfig) (retVal *Route) {
-	clientSet, err := routev1.NewForConfig(restConfig.Config)
-	if err != nil {
-		log.Errorf("routev1.NewForConfig %v", err)
+	if restConfig != nil {
+		clientSet, err := routev1.NewForConfig(restConfig.Config)
+		if err != nil {
+			log.Errorf("routev1.NewForConfig %v", err)
+			return
+		}
+		retVal = newRoute(clientSet)
 		return
 	}
-	retVal = newRoute(clientSet)
 	return
 }
 
 func (c *configuration) BuildConfig(restConfig *kube.RestConfig) (retVal *BuildConfig) {
-	clientSet, err := buildv1.NewForConfig(restConfig.Config)
-	if err != nil {
-		log.Errorf("routev1.NewForConfig %v", err)
+	if restConfig != nil {
+		clientSet, err := buildv1.NewForConfig(restConfig.Config)
+		if err != nil {
+			log.Errorf("routev1.NewForConfig %v", err)
+			return
+		}
+		retVal = newBuildConfig(clientSet)
 		return
 	}
-	retVal = newBuildConfig(clientSet)
 	return
 }
