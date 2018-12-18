@@ -48,4 +48,28 @@ func TestConfiguration(t *testing.T) {
 	c.BuildConfig(restConfig)
 	_, err = imagev1.NewForConfig(restConfig.Config)
 	assert.Equal(t, nil, err)
+
+	auth := c.Auth(nil)
+	assert.Equal(t, (*OAuthAccessToken)(nil) , auth)
+
+	deploymentConfig := c.DeploymentConfig(nil)
+	assert.Equal(t, (*DeploymentConfig)(nil) , deploymentConfig)
+
+	imageStream := c.ImageStream(nil)
+	assert.Equal(t, (*ImageStream)(nil) , imageStream)
+
+	imageStreamTag := c.ImageStreamTag(nil)
+	assert.Equal(t, (*ImageStreamTag)(nil) , imageStreamTag)
+
+	project := c.Project(nil)
+	assert.Equal(t, (*Project)(nil) , project)
+
+	roleBinding := c.RoleBinding(nil)
+	assert.Equal(t, (*RoleBinding)(nil) , roleBinding)
+
+	route := c.Route(nil)
+	assert.Equal(t, (*Route)(nil) , route)
+
+	buildConfig := c.BuildConfig(nil)
+	assert.Equal(t, (*BuildConfig)(nil) , buildConfig)
 }
