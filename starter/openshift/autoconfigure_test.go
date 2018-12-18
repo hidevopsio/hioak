@@ -17,35 +17,51 @@ func TestConfiguration(t *testing.T) {
 			BearerToken: "",
 		},
 	}
+
+	rest := &kube.RestConfig{
+		Config: &rest.Config{
+			BearerToken: "",
+		},
+	}
+	rest.GroupVersion = nil
+
 	c.Auth(restConfig)
+	c.Auth(rest)
 	_, err := oauthv1.NewForConfig(restConfig.Config)
 	assert.Equal(t, nil, err)
 
 	c.DeploymentConfig(restConfig)
+	c.DeploymentConfig(rest)
 	_, err = appsv1.NewForConfig(restConfig.Config)
 	assert.Equal(t, nil, err)
 
 	c.ImageStream(restConfig)
+	c.ImageStream(rest)
 	_, err = imagev1.NewForConfig(restConfig.Config)
 	assert.Equal(t, nil, err)
 
 	c.ImageStreamTag(restConfig)
+	c.ImageStreamTag(rest)
 	_, err = imagev1.NewForConfig(restConfig.Config)
 	assert.Equal(t, nil, err)
 
 	c.Project(restConfig)
+	c.Project(rest)
 	_, err = imagev1.NewForConfig(restConfig.Config)
 	assert.Equal(t, nil, err)
 
 	c.RoleBinding(restConfig)
+	c.RoleBinding(rest)
 	_, err = imagev1.NewForConfig(restConfig.Config)
 	assert.Equal(t, nil, err)
 
 	c.Route(restConfig)
+	c.Route(rest)
 	_, err = imagev1.NewForConfig(restConfig.Config)
 	assert.Equal(t, nil, err)
 
 	c.BuildConfig(restConfig)
+	c.BuildConfig(rest)
 	_, err = imagev1.NewForConfig(restConfig.Config)
 	assert.Equal(t, nil, err)
 
@@ -72,4 +88,5 @@ func TestConfiguration(t *testing.T) {
 
 	buildConfig := c.BuildConfig(nil)
 	assert.Equal(t, (*BuildConfig)(nil) , buildConfig)
+
 }

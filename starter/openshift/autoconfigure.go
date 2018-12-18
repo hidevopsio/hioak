@@ -8,7 +8,6 @@ import (
 	oauthv1 "github.com/openshift/client-go/oauth/clientset/versioned/typed/oauth/v1"
 	projectv1 "github.com/openshift/client-go/project/clientset/versioned/typed/project/v1"
 	routev1 "github.com/openshift/client-go/route/clientset/versioned/typed/route/v1"
-	"github.com/prometheus/common/log"
 	"hidevops.io/hiboot/pkg/app"
 	"hidevops.io/hiboot/pkg/at"
 	"hidevops.io/hioak/starter/kube"
@@ -35,7 +34,6 @@ func (c *configuration) Auth(restConfig *kube.RestConfig) (retVal *OAuthAccessTo
 	if restConfig != nil {
 		clientSet, err := oauthv1.NewForConfig(restConfig.Config)
 		if err != nil {
-			log.Errorf("oauthv1.NewForConfig %v", err)
 			return
 		}
 		retVal = NewOAuthAccessToken(clientSet)
@@ -48,7 +46,6 @@ func (c *configuration) DeploymentConfig(restConfig *kube.RestConfig) (retVal *D
 	if restConfig != nil {
 		clientSet, err := appsv1.NewForConfig(restConfig.Config)
 		if err != nil {
-			log.Errorf("appsv1.NewForConfig %v", err)
 			return
 		}
 		retVal = newDeploymentConfig(clientSet)
@@ -61,7 +58,6 @@ func (c *configuration) ImageStream(restConfig *kube.RestConfig) (retVal *ImageS
 	if restConfig != nil {
 		clientSet, err := imagev1.NewForConfig(restConfig.Config)
 		if err != nil {
-			log.Errorf("imagev1.NewForConfig %v", err)
 			return
 		}
 		retVal = newImageStream(clientSet)
@@ -74,7 +70,6 @@ func (c *configuration) ImageStreamTag(restConfig *kube.RestConfig) (retVal *Ima
 	if restConfig != nil {
 		clientSet, err := imagev1.NewForConfig(restConfig.Config)
 		if err != nil {
-			log.Errorf("imagev1.NewForConfig %v", err)
 			return
 		}
 		retVal = newImageStreamTags(clientSet)
@@ -87,7 +82,6 @@ func (c *configuration) Project(restConfig *kube.RestConfig) (retVal *Project) {
 	if restConfig != nil {
 		clientSet, err := projectv1.NewForConfig(restConfig.Config)
 		if err != nil {
-			log.Errorf("projectv1.NewForConfig %v", err)
 			return
 		}
 		retVal = newProject(clientSet)
@@ -100,7 +94,6 @@ func (c *configuration) RoleBinding(restConfig *kube.RestConfig) (retVal *RoleBi
 	if restConfig != nil {
 		clientSet, err := authorizationv1.NewForConfig(restConfig.Config)
 		if err != nil {
-			log.Errorf("authorizationv1.NewForConfig %v", err)
 			return
 		}
 		retVal = newRoleBinding(clientSet)
@@ -113,7 +106,6 @@ func (c *configuration) Route(restConfig *kube.RestConfig) (retVal *Route) {
 	if restConfig != nil {
 		clientSet, err := routev1.NewForConfig(restConfig.Config)
 		if err != nil {
-			log.Errorf("routev1.NewForConfig %v", err)
 			return
 		}
 		retVal = newRoute(clientSet)
@@ -126,7 +118,6 @@ func (c *configuration) BuildConfig(restConfig *kube.RestConfig) (retVal *BuildC
 	if restConfig != nil {
 		clientSet, err := buildv1.NewForConfig(restConfig.Config)
 		if err != nil {
-			log.Errorf("routev1.NewForConfig %v", err)
 			return
 		}
 		retVal = newBuildConfig(clientSet)
