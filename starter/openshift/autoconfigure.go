@@ -8,7 +8,6 @@ import (
 	oauthv1 "github.com/openshift/client-go/oauth/clientset/versioned/typed/oauth/v1"
 	projectv1 "github.com/openshift/client-go/project/clientset/versioned/typed/project/v1"
 	routev1 "github.com/openshift/client-go/route/clientset/versioned/typed/route/v1"
-	"github.com/prometheus/common/log"
 	"hidevops.io/hiboot/pkg/app"
 	"hidevops.io/hiboot/pkg/at"
 	"hidevops.io/hioak/starter/kube"
@@ -32,81 +31,73 @@ func newConfiguration() *configuration {
 }
 
 func (c *configuration) Auth(restConfig *kube.RestConfig) (retVal *OAuthAccessToken) {
-	clientSet, err := oauthv1.NewForConfig(restConfig.Config)
-	if err != nil {
-		log.Errorf("oauthv1.NewForConfig %v", err)
+	if restConfig != nil {
+		clientSet, _ := oauthv1.NewForConfig(restConfig.Config)
+		retVal = NewOAuthAccessToken(clientSet)
 		return
 	}
-	retVal = NewOAuthAccessToken(clientSet)
 	return
 }
 
 func (c *configuration) DeploymentConfig(restConfig *kube.RestConfig) (retVal *DeploymentConfig) {
-	clientSet, err := appsv1.NewForConfig(restConfig.Config)
-	if err != nil {
-		log.Errorf("appsv1.NewForConfig %v", err)
+	if restConfig != nil {
+		clientSet, _ := appsv1.NewForConfig(restConfig.Config)
+		retVal = newDeploymentConfig(clientSet)
 		return
 	}
-	retVal = newDeploymentConfig(clientSet)
 	return
 }
 
 func (c *configuration) ImageStream(restConfig *kube.RestConfig) (retVal *ImageStream) {
-	clientSet, err := imagev1.NewForConfig(restConfig.Config)
-	if err != nil {
-		log.Errorf("imagev1.NewForConfig %v", err)
+	if restConfig != nil {
+		clientSet, _ := imagev1.NewForConfig(restConfig.Config)
+		retVal = newImageStream(clientSet)
 		return
 	}
-	retVal = newImageStream(clientSet)
 	return
 }
 
 func (c *configuration) ImageStreamTag(restConfig *kube.RestConfig) (retVal *ImageStreamTag) {
-	clientSet, err := imagev1.NewForConfig(restConfig.Config)
-	if err != nil {
-		log.Errorf("imagev1.NewForConfig %v", err)
+	if restConfig != nil {
+		clientSet, _ := imagev1.NewForConfig(restConfig.Config)
+		retVal = newImageStreamTags(clientSet)
 		return
 	}
-	retVal = newImageStreamTags(clientSet)
 	return
 }
 
 func (c *configuration) Project(restConfig *kube.RestConfig) (retVal *Project) {
-	clientSet, err := projectv1.NewForConfig(restConfig.Config)
-	if err != nil {
-		log.Errorf("projectv1.NewForConfig %v", err)
+	if restConfig != nil {
+		clientSet, _ := projectv1.NewForConfig(restConfig.Config)
+		retVal = newProject(clientSet)
 		return
 	}
-	retVal = newProject(clientSet)
 	return
 }
 
 func (c *configuration) RoleBinding(restConfig *kube.RestConfig) (retVal *RoleBinding) {
-	clientSet, err := authorizationv1.NewForConfig(restConfig.Config)
-	if err != nil {
-		log.Errorf("authorizationv1.NewForConfig %v", err)
+	if restConfig != nil {
+		clientSet, _ := authorizationv1.NewForConfig(restConfig.Config)
+		retVal = newRoleBinding(clientSet)
 		return
 	}
-	retVal = newRoleBinding(clientSet)
 	return
 }
 
 func (c *configuration) Route(restConfig *kube.RestConfig) (retVal *Route) {
-	clientSet, err := routev1.NewForConfig(restConfig.Config)
-	if err != nil {
-		log.Errorf("routev1.NewForConfig %v", err)
+	if restConfig != nil {
+		clientSet, _ := routev1.NewForConfig(restConfig.Config)
+		retVal = newRoute(clientSet)
 		return
 	}
-	retVal = newRoute(clientSet)
 	return
 }
 
 func (c *configuration) BuildConfig(restConfig *kube.RestConfig) (retVal *BuildConfig) {
-	clientSet, err := buildv1.NewForConfig(restConfig.Config)
-	if err != nil {
-		log.Errorf("routev1.NewForConfig %v", err)
+	if restConfig != nil {
+		clientSet, _ := buildv1.NewForConfig(restConfig.Config)
+		retVal = newBuildConfig(clientSet)
 		return
 	}
-	retVal = newBuildConfig(clientSet)
 	return
 }
