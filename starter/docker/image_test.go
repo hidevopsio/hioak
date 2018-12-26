@@ -76,7 +76,7 @@ func TestImage_GetImage(t *testing.T) {
 	var s []types.ImageSummary
 	c.On("ImageList", nil, nil).Return(s, nil)
 	_, err = client.GetImage(image)
-	assert.Equal(t, nil, err)
+	assert.Equal(t, "docker get image is not found", err.Error())
 }
 
 func TestImage_BuildImage(t *testing.T) {

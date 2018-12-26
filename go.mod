@@ -64,6 +64,11 @@ require (
 	github.com/stretchr/testify v1.2.2
 	github.com/xanzy/go-gitlab v0.0.0-20170825130035-896163fa8f7a
 	github.com/xanzy/ssh-agent v0.2.0
+	golang.org/x/crypto v0.0.0-20181030102418-4d3f4d9ffa16
+	golang.org/x/net v0.0.0-20181102091132-c10e9556a7bc
+	golang.org/x/sys v0.0.0-20181031143558-9b800f95dbbc
+	golang.org/x/text v0.3.0
+	golang.org/x/time v0.0.0-20180412165947-fbb02b2291d2
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
 	gopkg.in/inf.v0 v0.9.1
 	gopkg.in/src-d/go-billy.v4 v4.3.0
