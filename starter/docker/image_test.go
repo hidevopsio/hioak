@@ -69,14 +69,58 @@ func TestImage_GetImage(t *testing.T) {
 	assert.Equal(t, nil, err)
 	image := &docker.Image{
 		FromImage: "docker.io/library/nginx",
+		Tag:       "latest",
 	}
 	client := docker.ImageClient{
 		Client: c,
 	}
-	var s []types.ImageSummary
+	s1 := []types.ImageSummary{}
+	c.On("ImageList", nil, nil).Return(s1, nil)
+	_, err = client.GetImage(image)
+	assert.Equal(t, "docker get image is not found", err.Error())
+}
+
+func TestImageGetImage(t *testing.T) {
+	c, err := fake.NewClient()
+	assert.Equal(t, nil, err)
+	image := &docker.Image{
+		FromImage: "docker.io/library/nginx",
+		Tag:       "latest",
+	}
+	client := docker.ImageClient{
+		Client: c,
+	}
+	s := []types.ImageSummary{
+		types.ImageSummary{
+			RepoTags: []string{"docker.io/library/nginx:latest"},
+		},
+	}
 	c.On("ImageList", nil, nil).Return(s, nil)
 	_, err = client.GetImage(image)
 	assert.Equal(t, nil, err)
+}
+
+
+
+func TestImageGetImaErr(t *testing.T) {
+	c, err := fake.NewClient()
+	assert.Equal(t, nil, err)
+	image := &docker.Image{
+		FromImage: "docker.io/library/nginx",
+		Tag:       "latest",
+	}
+	client := docker.ImageClient{
+		Client: c,
+	}
+	s := []types.ImageSummary{
+		types.ImageSummary{
+			RepoTags: []string{"docker.io/library/nginx:latest"},
+		},
+	}
+	assert.Equal(t, nil, err)
+	c.On("ImageList", nil, nil).Return(s, errors.New("err"))
+	_, err = client.GetImage(image)
+	assert.Equal(t, "err", err.Error())
 }
 
 func TestImage_BuildImage(t *testing.T) {
@@ -132,3 +176,17 @@ func TestApp(t *testing.T) {
 		assert.Equal(t, nil, err)
 	})
 }
+
+/*
+func TestImageGetImage(t *testing.T) {
+	c, err := docker.NewClient()
+	assert.Equal(t, nil, err)
+	image := &docker.Image{
+		FromImage: "hiadmin1",
+	}
+	client := docker.ImageClient{
+		Client: c,
+	}
+	s, err := client.GetImage(image)
+	log.Info(s)
+}*/
