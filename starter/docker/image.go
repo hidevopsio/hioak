@@ -5,6 +5,7 @@ import (
 	"compress/gzip"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/docker/docker/api/types"
 	"golang.org/x/net/context"
@@ -106,6 +107,9 @@ func (i *ImageClient) GetImage(image *Image) (types.ImageSummary, error) {
 	ref := GetTag(image.Tag, image.FromImage)
 	opt := types.ImageListOptions{}
 	summaries, err := i.Client.ImageList(ctx, opt)
+	if err != nil {
+		return s, err
+	}
 	for _, summary := range summaries {
 		log.Infof("Summary RepoTags: %v ", summary.RepoTags)
 		for _, tag := range summary.RepoTags {
@@ -115,7 +119,7 @@ func (i *ImageClient) GetImage(image *Image) (types.ImageSummary, error) {
 			}
 		}
 	}
-	return s, err
+	return s, errors.New("docker get image is not found")
 }
 
 func GetTag(tag, name string) string {

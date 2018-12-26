@@ -132,3 +132,18 @@ func TestApp(t *testing.T) {
 		assert.Equal(t, nil, err)
 	})
 }
+
+
+/*
+func TestImageGetImage(t *testing.T) {
+	c, err := docker.NewClient()
+	assert.Equal(t, nil, err)
+	image := &docker.Image{
+		FromImage: "hiadmin1",
+	}
+	client := docker.ImageClient{
+		Client: c,
+	}
+	s, err := client.GetImage(image)
+	log.Info(s)
+}*/
