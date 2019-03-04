@@ -1,5 +1,7 @@
 module hidevops.io/hioak
 
+go 1.12
+
 require (
 	github.com/Microsoft/go-winio v0.4.11
 	github.com/Shopify/goreferrer v0.0.0-20180807163728-b9777dc9f9cc
