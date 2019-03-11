@@ -183,3 +183,13 @@ func (c *configuration) CustomResourceDefinition(apiExtensionsClient ApiExtensio
 	return nil
 
 }
+
+
+//Ingress autoConfigure deployment need initialize construction
+func (c *configuration) Ingress(clientSet ClientSet) *Ingress {
+	if clientSet != nil {
+		return NewIngress(clientSet)
+	}
+	return nil
+
+}
