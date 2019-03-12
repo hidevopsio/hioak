@@ -46,6 +46,7 @@ func TestNewAutoConfigure(t *testing.T) {
 		{(*ReplicaSet)(nil), c.ReplicaSet(nil)},
 		{(*Events)(nil), c.Events(nil)},
 		{(*CustomResourceDefinition)(nil), c.CustomResourceDefinition(nil)},
+		{(*Ingress)(nil), c.Ingress(nil)},
 	}
 
 	for _, item := range testCases {
