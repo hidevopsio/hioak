@@ -228,7 +228,10 @@ type DeployData struct {
 	Image          string
 	Ports          []int
 	Envs           map[string]string
-	HostPathVolume map[string]string
+	//Volumes 存储名称
+	Volumes        []corev1.Volume
+	//VolumeMounts 挂载进去的名称
+	VolumeMounts   []corev1.VolumeMount
 	NodeSelector   map[string]string
 	NodeName       string
 }
@@ -252,28 +255,6 @@ func (d *Deployment) DeployNode(deployData *DeployData) (string, error) {
 		envs = append(envs, corev1.EnvVar{
 			Name:  k,
 			Value: v,
-		})
-	}
-
-	//volume
-	var Volumes []corev1.Volume
-	var VolumeMounts []corev1.VolumeMount
-	i := 0
-	for k, v := range deployData.HostPathVolume {
-		i++
-		volumeName := fmt.Sprintf("volume%d", i)
-		Volumes = append(Volumes, corev1.Volume{
-			Name: volumeName,
-			VolumeSource: corev1.VolumeSource{
-				HostPath: &corev1.HostPathVolumeSource{
-					Path: k,
-				},
-			},
-		})
-
-		VolumeMounts = append(VolumeMounts, corev1.VolumeMount{
-			Name:      volumeName,
-			MountPath: v,
 		})
 	}
 
@@ -316,10 +297,10 @@ func (d *Deployment) DeployNode(deployData *DeployData) (string, error) {
 							Ports:           containerPorts,
 							Env:             envs,
 							ImagePullPolicy: corev1.PullIfNotPresent,
-							VolumeMounts:    VolumeMounts,
+							VolumeMounts:    deployData.VolumeMounts,
 						},
 					},
-					Volumes: Volumes,
+					Volumes: deployData.Volumes,
 				},
 			},
 		},

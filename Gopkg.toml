@@ -42,5 +42,5 @@
   version = "kubernetes-1.10.4"
 
 [[constraint]]
-  version = "v1.0.0"
+  version = "v1.0.4"
   name = "hidevops.io/hiboot"
