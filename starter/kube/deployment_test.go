@@ -73,7 +73,6 @@ func TestDeployment(t *testing.T) {
 		Image:          "demo:0.1",
 		Ports:          []int{8080},
 		Envs:           map[string]string{"ENVTEST": "ENVTEST"},
-		HostPathVolume: map[string]string{"/var": "var"},
 		NodeName:       "1",
 	}
 
@@ -102,7 +101,6 @@ func TestDeleteDeployment(t *testing.T) {
 		Image:          "demo:0.1",
 		Ports:          []int{8080},
 		Envs:           map[string]string{"ENVTEST": "ENVTEST"},
-		HostPathVolume: map[string]string{"/var": "var"},
 	}
 	_, err := deploy.DeployNode(deployDate)
 	assert.Equal(t, nil, err)
