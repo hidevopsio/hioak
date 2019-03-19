@@ -26,10 +26,6 @@ type Session struct {
 	newClient NewClient
 }
 
-const (
-	ApiVersion = "/api/v3"
-)
-
 func NewSession(c NewClient) *Session {
 	return &Session{
 		newClient: c,
