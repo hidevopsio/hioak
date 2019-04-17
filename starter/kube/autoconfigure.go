@@ -194,6 +194,7 @@ func (c *configuration) Ingress(clientSet ClientSet) *Ingress {
 
 }
 
+//ClientConfig creates a ConfigClientClientConfig using the passed context name
 func (c *configuration) ClientConfig() ClientConfig {
 	loadingRules := clientcmd.NewDefaultClientConfigLoadingRules()
 	configOverrides := &clientcmd.ConfigOverrides{}
