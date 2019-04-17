@@ -20,9 +20,11 @@ type properties struct {
 // define type configuration
 type configuration struct {
 	at.AutoConfiguration
-
+	Namespace  string     `json:"namespace" mapstructure:"kube"`
 	Properties properties `json:"properties" mapstructure:"kube"`
 }
+
+type ClientConfig clientcmd.ClientConfig
 
 func newConfiguration() *configuration {
 	return &configuration{}
@@ -184,7 +186,6 @@ func (c *configuration) CustomResourceDefinition(apiExtensionsClient ApiExtensio
 
 }
 
-
 //Ingress autoConfigure deployment need initialize construction
 func (c *configuration) Ingress(clientSet ClientSet) *Ingress {
 	if clientSet != nil {
@@ -192,4 +193,10 @@ func (c *configuration) Ingress(clientSet ClientSet) *Ingress {
 	}
 	return nil
 
+}
+
+func (c *configuration) ClientConfig() ClientConfig {
+	loadingRules := clientcmd.NewDefaultClientConfigLoadingRules()
+	configOverrides := &clientcmd.ConfigOverrides{}
+	return clientcmd.NewNonInteractiveDeferredLoadingClientConfig(loadingRules, configOverrides)
 }
