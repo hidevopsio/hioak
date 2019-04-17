@@ -20,7 +20,6 @@ type properties struct {
 // define type configuration
 type configuration struct {
 	at.AutoConfiguration
-	Namespace  string     `json:"namespace" mapstructure:"kube"`
 	Properties properties `json:"properties" mapstructure:"kube"`
 }
 
