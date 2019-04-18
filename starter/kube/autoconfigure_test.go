@@ -3,6 +3,7 @@ package kube
 import (
 	"fmt"
 	"github.com/magiconair/properties/assert"
+	"hidevops.io/hiboot/pkg/log"
 	apiextensionsclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -70,4 +71,10 @@ func TestConfigurationClientSet(t *testing.T) {
 	c.ApiExtensionsClient(config)
 	_, err := apiextensionsclient.NewForConfig(&rest.Config{})
 	assert.Equal(t, nil, err)
+}
+
+func TestConfiguration_ClientConfig(t *testing.T) {
+	c := newConfiguration()
+	clientConfig := c.ClientConfig()
+	log.Info(clientConfig)
 }
