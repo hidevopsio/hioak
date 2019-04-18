@@ -1,6 +1,7 @@
 module hidevops.io/hioak
 
 go 1.12
+
 require (
 	github.com/Microsoft/go-winio v0.4.11
 	github.com/Shopify/goreferrer v0.0.0-20180807163728-b9777dc9f9cc
@@ -69,7 +70,7 @@ require (
 	golang.org/x/net v0.0.0-20190213061140-3a22650c66bd
 	golang.org/x/sys v0.0.0-20181031143558-9b800f95dbbc
 	golang.org/x/text v0.3.1-0.20180807135948-17ff2d5776d2
-	golang.org/x/time v0.0.0-20180412165947-fbb02b2291d2
+	golang.org/x/time v0.0.0-20181108054448-85acf8d2951c
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
 	gopkg.in/inf.v0 v0.9.1
 	gopkg.in/src-d/go-billy.v4 v4.3.0
