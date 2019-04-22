@@ -194,6 +194,15 @@ func (c *configuration) Ingress(clientSet ClientSet) *Ingress {
 
 }
 
+//Namespace autoConfigure deployment need initialize construction
+func (c *configuration) Namespace(clientSet ClientSet) *Namespace {
+	if clientSet != nil {
+		return NewNamespace(clientSet)
+	}
+	return nil
+
+}
+
 //ClientConfig creates a ConfigClientClientConfig using the passed context name
 func (c *configuration) ClientConfig() ClientConfig {
 	loadingRules := clientcmd.NewDefaultClientConfigLoadingRules()
