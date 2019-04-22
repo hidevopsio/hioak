@@ -33,7 +33,7 @@ func TestNewAutoConfigure(t *testing.T) {
 		{NewDeployment(clientSet), c.Deployment(clientSet)},
 		{NewReplicaSet(clientSet), c.ReplicaSet(clientSet)},
 		{NewSecret(clientSet), c.Secret(clientSet)},
-		{NewNamespace(clientSet), c.Secret(clientSet)},
+		{NewNamespace(clientSet), c.Namespace(clientSet)},
 		{NewReplicationController(clientSet), c.ReplicationController(clientSet)},
 		{NewEvents(clientSet), c.Events(clientSet)},
 		{NewCustomResourceDefinition(apiExtensionsClient), c.CustomResourceDefinition(apiExtensionsClient)},
