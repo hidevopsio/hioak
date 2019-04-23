@@ -36,6 +36,8 @@ func TestNewAutoConfigure(t *testing.T) {
 		{NewNamespace(clientSet), c.Namespace(clientSet)},
 		{NewReplicationController(clientSet), c.ReplicationController(clientSet)},
 		{NewEvents(clientSet), c.Events(clientSet)},
+		{NewClusterRoleBining(clientSet), c.ClusterRoleBinding(clientSet)},
+		{NewClusterRole(clientSet), c.ClusterRole(clientSet)},
 		{NewCustomResourceDefinition(apiExtensionsClient), c.CustomResourceDefinition(apiExtensionsClient)},
 		{Token(""), c.Token(restConfig)},
 		{(*ConfigMaps)(nil), c.ConfigMaps(nil)},
@@ -50,6 +52,8 @@ func TestNewAutoConfigure(t *testing.T) {
 		{(*CustomResourceDefinition)(nil), c.CustomResourceDefinition(nil)},
 		{(*Ingress)(nil), c.Ingress(nil)},
 		{(*Namespace)(nil), c.Namespace(nil)},
+		{(*ClusterRoleBining)(nil), c.ClusterRoleBinding(nil)},
+		{(*ClusterRole)(nil), c.ClusterRole(nil)},
 	}
 
 	for _, item := range testCases {
