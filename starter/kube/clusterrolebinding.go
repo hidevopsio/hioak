@@ -23,6 +23,11 @@ func (c *ClusterRoleBining) Create(crb *v1.ClusterRoleBinding) (clusterRoleBindi
 	return
 }
 
+func (c *ClusterRoleBining) Get(name string, options meta_v1.GetOptions) (clusterRoleBinding *v1.ClusterRoleBinding, err error) {
+	clusterRoleBinding, err = c.clientSet.RbacV1().ClusterRoleBindings().Get(name, options)
+	return
+}
+
 func (c *ClusterRoleBining) Delete(name string, options *meta_v1.DeleteOptions) (err error) {
 	err = c.clientSet.RbacV1().ClusterRoleBindings().Delete(name, options)
 	return

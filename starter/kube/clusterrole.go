@@ -23,6 +23,11 @@ func (c *ClusterRole) Create(cr *v1.ClusterRole) (clusterRole *v1.ClusterRole, e
 	return
 }
 
+func (c *ClusterRole) Get(name string, options meta_v1.GetOptions) (clusterRole *v1.ClusterRole, err error) {
+	clusterRole, err = c.clientSet.RbacV1().ClusterRoles().Get(name, options)
+	return
+}
+
 func (c *ClusterRole) Delete(name string, options *meta_v1.DeleteOptions) (err error) {
 	err = c.clientSet.RbacV1().ClusterRoles().Delete(name, options)
 	return
