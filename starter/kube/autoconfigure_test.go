@@ -38,6 +38,8 @@ func TestNewAutoConfigure(t *testing.T) {
 		{NewEvents(clientSet), c.Events(clientSet)},
 		{NewClusterRoleBining(clientSet), c.ClusterRoleBinding(clientSet)},
 		{NewClusterRole(clientSet), c.ClusterRole(clientSet)},
+		{NewRole(clientSet), c.Role(clientSet)},
+		{NewRoleBinding(clientSet), c.RoleBinding(clientSet)},
 		{NewCustomResourceDefinition(apiExtensionsClient), c.CustomResourceDefinition(apiExtensionsClient)},
 		{Token(""), c.Token(restConfig)},
 		{(*ConfigMaps)(nil), c.ConfigMaps(nil)},
@@ -54,6 +56,8 @@ func TestNewAutoConfigure(t *testing.T) {
 		{(*Namespace)(nil), c.Namespace(nil)},
 		{(*ClusterRoleBining)(nil), c.ClusterRoleBinding(nil)},
 		{(*ClusterRole)(nil), c.ClusterRole(nil)},
+		{(*Role)(nil), c.Role(nil)},
+		{(*RoleBinding)(nil), c.RoleBinding(nil)},
 	}
 
 	for _, item := range testCases {

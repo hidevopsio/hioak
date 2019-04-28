@@ -221,6 +221,25 @@ func (c *configuration) ClusterRole(clientSet ClientSet) *ClusterRole {
 
 }
 
+//Role autoConfigure deployment need initialize construction
+func (c *configuration) Role(clientSet ClientSet) *Role {
+	if clientSet != nil {
+		return NewRole(clientSet)
+	}
+	return nil
+
+}
+
+
+//RoleBinding autoConfigure deployment need initialize construction
+func (c *configuration) RoleBinding(clientSet ClientSet) *RoleBinding {
+	if clientSet != nil {
+		return NewRoleBinding(clientSet)
+	}
+	return nil
+
+}
+
 //ClientConfig creates a ConfigClientClientConfig using the passed context name
 func (c *configuration) ClientConfig() ClientConfig {
 	loadingRules := clientcmd.NewDefaultClientConfigLoadingRules()
