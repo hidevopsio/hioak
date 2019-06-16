@@ -16,6 +16,7 @@ func TestPersistentVolumeClaimCrud(t *testing.T) {
 	pvc := &v1.PersistentVolumeClaim{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: name,
+			Namespace:namespace,
 		},
 	}
 	result, err := crb.Create(pvc)
