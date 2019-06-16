@@ -237,7 +237,14 @@ func (c *configuration) RoleBinding(clientSet ClientSet) *RoleBinding {
 		return NewRoleBinding(clientSet)
 	}
 	return nil
+}
 
+//PersistentVolumeClaim autoConfigure deployment need initialize construction
+func (c *configuration) PersistentVolumeClaim(clientSet ClientSet) *PersistentVolumeClaim {
+	if clientSet != nil {
+		return NewPersistentVolumeClaim(clientSet)
+	}
+	return nil
 }
 
 //ClientConfig creates a ConfigClientClientConfig using the passed context name

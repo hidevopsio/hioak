@@ -1,25 +1,25 @@
 package kube
 
 import (
-	"github.com/magiconair/properties/assert"
-	"k8s.io/api/rbac/v1"
+	"github.com/stretchr/testify/assert"
+	 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/fake"
 	"testing"
 )
 
-func TestRole_Crud(t *testing.T) {
+func TestPersistentVolumeClaimCrud(t *testing.T) {
 	name := "test"
 	namespace := "demo"
 	clientSet := fake.NewSimpleClientset()
-	crb := NewRole(clientSet)
-	role := &v1.Role{
+	crb := NewPersistentVolumeClaim(clientSet)
+	pvc := &v1.PersistentVolumeClaim{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: name,
 			Namespace:namespace,
 		},
 	}
-	result, err := crb.Create(namespace, role)
+	result, err := crb.Create(pvc)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, name, result.Name)
 	options := metav1.GetOptions{}
@@ -27,7 +27,7 @@ func TestRole_Crud(t *testing.T) {
 	assert.Equal(t, nil, err)
 	assert.Equal(t, name, result.Name)
 
-	result, err = crb.Update(namespace, role)
+	result, err = crb.Update(pvc)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, name, result.Name)
 	dOptions := &metav1.DeleteOptions{}
