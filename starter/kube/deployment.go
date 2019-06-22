@@ -317,6 +317,13 @@ func (d *Deployment) DeployNode(deployData *DeployData) (string, error) {
 	return string(deploymentJson), nil
 }
 
+
+func (d *Deployment) Create(deploy *extensionsV1beta1.Deployment) (*extensionsV1beta1.Deployment, error) {
+	log.Debugf("create deployment name :%v, namespace :%v", deploy.Name, deploy.Namespace)
+	dpm, err := d.clientSet.ExtensionsV1beta1().Deployments(deploy.Namespace).Create(deploy)
+	return dpm, err
+}
+
 func (d *Deployment) Delete(name, namespace string, option *metav1.DeleteOptions) error {
 	log.Debugf("delete deployment name :%v, namespace :%v", name, namespace)
 	err := d.clientSet.ExtensionsV1beta1().Deployments(namespace).Delete(name, option)
