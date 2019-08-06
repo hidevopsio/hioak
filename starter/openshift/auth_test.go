@@ -3,7 +3,7 @@ package openshift
 import (
 	"github.com/magiconair/properties/assert"
 	"github.com/openshift/client-go/oauth/clientset/versioned/fake"
-	"github.com/prometheus/common/log"
+	"hidevops.io/hiboot/pkg/log"
 	"testing"
 )
 

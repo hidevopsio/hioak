@@ -253,3 +253,11 @@ func (c *configuration) ClientConfig() ClientConfig {
 	configOverrides := &clientcmd.ConfigOverrides{}
 	return clientcmd.NewNonInteractiveDeferredLoadingClientConfig(loadingRules, configOverrides)
 }
+
+//PersistentVolume autoConfigure deployment need initialize construction
+func (c *configuration) PersistentVolume(clientSet ClientSet) *PersistentVolume {
+	if clientSet != nil {
+		return NewPersistentVolume(clientSet)
+	}
+	return nil
+}

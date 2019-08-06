@@ -3,9 +3,9 @@ package docker_test
 import (
 	"errors"
 	"github.com/docker/docker/api/types"
-	"github.com/prometheus/common/log"
 	"github.com/stretchr/testify/assert"
 	"hidevops.io/hiboot/pkg/app/cli"
+	"hidevops.io/hiboot/pkg/log"
 	"hidevops.io/hioak/starter/docker"
 	"hidevops.io/hioak/starter/docker/fake"
 	"io"

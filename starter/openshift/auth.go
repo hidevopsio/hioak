@@ -3,7 +3,7 @@ package openshift
 import (
 	"github.com/openshift/api/oauth/v1"
 	oauthv1 "github.com/openshift/client-go/oauth/clientset/versioned/typed/oauth/v1"
-	"github.com/prometheus/common/log"
+	"hidevops.io/hiboot/pkg/log"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
