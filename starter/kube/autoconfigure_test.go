@@ -42,6 +42,7 @@ func TestNewAutoConfigure(t *testing.T) {
 		{NewRoleBinding(clientSet), c.RoleBinding(clientSet)},
 		{NewCustomResourceDefinition(apiExtensionsClient), c.CustomResourceDefinition(apiExtensionsClient)},
 		{NewPersistentVolumeClaim(clientSet), c.PersistentVolumeClaim(clientSet)},
+		{NewPersistentVolume(clientSet), c.PersistentVolume(clientSet)},
 		{Token(""), c.Token(restConfig)},
 		{(*ConfigMaps)(nil), c.ConfigMaps(nil)},
 		{(Token)(""), c.Token(nil)},
@@ -60,6 +61,7 @@ func TestNewAutoConfigure(t *testing.T) {
 		{(*Role)(nil), c.Role(nil)},
 		{(*RoleBinding)(nil), c.RoleBinding(nil)},
 		{(*PersistentVolumeClaim)(nil), c.PersistentVolumeClaim(nil)},
+		{(*PersistentVolume)(nil), c.PersistentVolume(nil)},
 	}
 
 	for _, item := range testCases {
