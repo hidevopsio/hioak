@@ -5,8 +5,8 @@ import (
 	"hidevops.io/hiboot/pkg/log"
 	"hidevops.io/hioak/starter"
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/client-go/kubernetes/fake"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes/fake"
 	"testing"
 )
 
@@ -77,4 +77,42 @@ func TestServiceCreate(t *testing.T) {
 
 	err = service.Delete(app, namespace)
 	assert.Equal(t, nil, err)
+}
+
+func TestSvcCreate(t *testing.T) {
+	log.Debug("TestServiceCreation()")
+	p := []corev1.ServicePort{
+		{
+			Name: "8080-tcp",
+			Port: 8080,
+		},
+		{
+			Name: "7575-tcp",
+			Port: 7575,
+		},
+	}
+	projectName := "demo"
+	profile := "dev"
+	namespace := projectName + "-" + profile
+	serviceSpec := &corev1.Service{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: projectName,
+			Labels: map[string]string{
+				"app":  projectName,
+				"name": projectName,
+			},
+		},
+		Spec: corev1.ServiceSpec{
+			Type:  corev1.ServiceTypeClusterIP,
+			Ports: p,
+			Selector: map[string]string{
+				"app": profile,
+			},
+		},
+	}
+	clientSet := fake.NewSimpleClientset()
+	service := NewService(clientSet)
+	_, err := service.CreateSvc(namespace, serviceSpec)
+	assert.Equal(t, nil, err)
+
 }
