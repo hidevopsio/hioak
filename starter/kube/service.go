@@ -137,3 +137,7 @@ func (s *Service) List(namespace string, option metav1.ListOptions) (*corev1.Ser
 func (s *Service) CreateSvc(namespace string, svc *corev1.Service) (*corev1.Service, error) {
 	return s.clientSet.CoreV1().Services(namespace).Create(svc)
 }
+
+func (s *Service) Update(namespace string, svc *corev1.Service) (*corev1.Service, error) {
+	return s.clientSet.CoreV1().Services(namespace).Update(svc)
+}

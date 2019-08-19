@@ -71,7 +71,25 @@ func TestServiceCreate(t *testing.T) {
 	svc, err := service.Get(app, namespace)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, app, svc.Name)
-
+	serviceSpec := &corev1.Service{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: app,
+			Namespace: namespace,
+			Labels: map[string]string{
+				"app":  app,
+				"name": projectName,
+			},
+		},
+		Spec: corev1.ServiceSpec{
+			Type:  corev1.ServiceTypeClusterIP,
+			Ports: p,
+			Selector: map[string]string{
+				"app": profile,
+			},
+		},
+	}
+	_, err = service.Update(namespace, serviceSpec)
+	assert.Equal(t, nil, err)
 	_, err = service.List(namespace, metav1.ListOptions{})
 	assert.Equal(t, nil, err)
 
